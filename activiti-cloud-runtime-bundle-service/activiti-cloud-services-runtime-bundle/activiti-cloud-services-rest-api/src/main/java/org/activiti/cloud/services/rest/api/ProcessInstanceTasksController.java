@@ -25,11 +25,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping(value = "/v1/process-instances/{processInstanceId}", produces = {MediaTypes.HAL_JSON_VALUE,
-    MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(
+    value = "/v1/process-instances/{processInstanceId}",
+    produces = { MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE }
+)
 public interface ProcessInstanceTasksController {
-
     @GetMapping(value = "/tasks")
-    PagedModel<EntityModel<CloudTask>> getTasks(@PathVariable(value = "processInstanceId") String processInstanceId,
-        Pageable pageable);
+    PagedModel<EntityModel<CloudTask>> getTasks(
+        @PathVariable(value = "processInstanceId") String processInstanceId,
+        Pageable pageable
+    );
 }

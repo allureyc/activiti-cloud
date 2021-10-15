@@ -36,7 +36,6 @@ public class TaskEntityVariableEntityUpdatedEventHandlerTest {
     @Mock
     private TaskVariableUpdater variableUpdater;
 
-
     @BeforeEach
     public void setUp() {
         initMocks(this);
@@ -56,7 +55,11 @@ public class TaskEntityVariableEntityUpdatedEventHandlerTest {
         handler.handle(updatedVariableEntity);
 
         //then
-        verify(variableUpdater).update(eq(updatedVariableEntity), any(Predicate.class), anyString());
+        verify(variableUpdater)
+            .update(
+                eq(updatedVariableEntity),
+                any(Predicate.class),
+                anyString()
+            );
     }
-
 }

@@ -15,11 +15,9 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.Date;
-
-import javax.persistence.EntityManager;
-
 import com.querydsl.core.types.dsl.BooleanExpression;
+import java.util.Date;
+import javax.persistence.EntityManager;
 import org.activiti.api.model.shared.event.VariableEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
 import org.activiti.cloud.api.model.shared.events.CloudVariableCreatedEvent;
@@ -36,121 +34,162 @@ import org.slf4j.LoggerFactory;
 
 public class VariableCreatedEventHandler implements QueryEventHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(VariableCreatedEventHandler.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        VariableCreatedEventHandler.class
+    );
 
     private final VariableRepository variableRepository;
     private final TaskVariableRepository taskVariableRepository;
     private final EntityManager entityManager;
 
-    public VariableCreatedEventHandler(VariableRepository variableRepository,
-                                       TaskVariableRepository taskVariableRepository,
-                                       EntityManager entityManager) {
+    public VariableCreatedEventHandler(
+        VariableRepository variableRepository,
+        TaskVariableRepository taskVariableRepository,
+        EntityManager entityManager
+    ) {
         this.variableRepository = variableRepository;
         this.taskVariableRepository = taskVariableRepository;
         this.entityManager = entityManager;
     }
-    
+
     @Override
     public void handle(CloudRuntimeEvent<?, ?> event) {
         CloudVariableCreatedEvent variableCreatedEvent = (CloudVariableCreatedEvent) event;
-        LOGGER.debug("Handling variableEntity created event: " + variableCreatedEvent.getEntity().getName());
-        
+        LOGGER.debug(
+            "Handling variableEntity created event: " +
+            variableCreatedEvent.getEntity().getName()
+        );
+
         try {
-            if (variableCreatedEvent.getEntity().isTaskVariable()) {           
-                createTaskVariableEntity(variableCreatedEvent); 
-            } else { 
-                createProcessVariableEntity(variableCreatedEvent); 
+            if (variableCreatedEvent.getEntity().isTaskVariable()) {
+                createTaskVariableEntity(variableCreatedEvent);
+            } else {
+                createProcessVariableEntity(variableCreatedEvent);
             }
-        
         } catch (Exception cause) {
-            LOGGER.debug("Error handling VariableCreatedEvent[" + event + "]",
-                         cause);
+            LOGGER.debug(
+                "Error handling VariableCreatedEvent[" + event + "]",
+                cause
+            );
         }
-   
     }
-   
-    private void createTaskVariableEntity(CloudVariableCreatedEvent variableCreatedEvent) {
-        ProcessInstanceEntity processInstanceEntity= getProcessInstance(variableCreatedEvent);
-        
+
+    private void createTaskVariableEntity(
+        CloudVariableCreatedEvent variableCreatedEvent
+    ) {
+        ProcessInstanceEntity processInstanceEntity = getProcessInstance(
+            variableCreatedEvent
+        );
+
         String taskId = variableCreatedEvent.getEntity().getTaskId();
         String variableName = variableCreatedEvent.getEntity().getName();
-        TaskEntity taskEntity = entityManager.getReference(TaskEntity.class,
-                                                           taskId);
-           
-        BooleanExpression predicate = QTaskVariableEntity.taskVariableEntity.name.eq(variableName)
-                .and(
-                        QTaskVariableEntity.taskVariableEntity.taskId.eq(taskId)
-                );
+        TaskEntity taskEntity = entityManager.getReference(
+            TaskEntity.class,
+            taskId
+        );
+
+        BooleanExpression predicate = QTaskVariableEntity.taskVariableEntity.name
+            .eq(variableName)
+            .and(QTaskVariableEntity.taskVariableEntity.taskId.eq(taskId));
 
         if (taskVariableRepository.exists(predicate)) {
-            LOGGER.debug("Variable " + variableName + " already exists in the task " + taskId + "!");
+            LOGGER.debug(
+                "Variable " +
+                variableName +
+                " already exists in the task " +
+                taskId +
+                "!"
+            );
             return;
         }
-        
-        TaskVariableEntity taskVariableEntity = new TaskVariableEntity(null, 
-                                                           variableCreatedEvent.getEntity().getType(),
-                                                           variableName,
-                                                           variableCreatedEvent.getEntity().getProcessInstanceId(),
-                                                           variableCreatedEvent.getServiceName(),
-                                                           variableCreatedEvent.getServiceFullName(),
-                                                           variableCreatedEvent.getServiceVersion(),
-                                                           variableCreatedEvent.getAppName(),
-                                                           variableCreatedEvent.getAppVersion(),
-                                                           taskId,
-                                                           new Date(variableCreatedEvent.getTimestamp()),
-                                                           new Date(variableCreatedEvent.getTimestamp()),
-                                                           null);
-        taskVariableEntity.setValue(variableCreatedEvent.getEntity().getValue());
-                  
+
+        TaskVariableEntity taskVariableEntity = new TaskVariableEntity(
+            null,
+            variableCreatedEvent.getEntity().getType(),
+            variableName,
+            variableCreatedEvent.getEntity().getProcessInstanceId(),
+            variableCreatedEvent.getServiceName(),
+            variableCreatedEvent.getServiceFullName(),
+            variableCreatedEvent.getServiceVersion(),
+            variableCreatedEvent.getAppName(),
+            variableCreatedEvent.getAppVersion(),
+            taskId,
+            new Date(variableCreatedEvent.getTimestamp()),
+            new Date(variableCreatedEvent.getTimestamp()),
+            null
+        );
+        taskVariableEntity.setValue(
+            variableCreatedEvent.getEntity().getValue()
+        );
+
         taskVariableEntity.setProcessInstance(processInstanceEntity);
-        
+
         taskVariableEntity.setTask(taskEntity);
-    
+
         taskVariableRepository.save(taskVariableEntity);
     }
-    
-    private void createProcessVariableEntity(CloudVariableCreatedEvent variableCreatedEvent) {
-        ProcessInstanceEntity processInstanceEntity= getProcessInstance(variableCreatedEvent);
-        String processInstanceId = variableCreatedEvent.getEntity().getProcessInstanceId();
+
+    private void createProcessVariableEntity(
+        CloudVariableCreatedEvent variableCreatedEvent
+    ) {
+        ProcessInstanceEntity processInstanceEntity = getProcessInstance(
+            variableCreatedEvent
+        );
+        String processInstanceId = variableCreatedEvent
+            .getEntity()
+            .getProcessInstanceId();
         String variableName = variableCreatedEvent.getEntity().getName();
-        
-        BooleanExpression predicate = QProcessVariableEntity.processVariableEntity.name.eq(variableName)
-                .and(
-                        QProcessVariableEntity.processVariableEntity.processInstanceId.eq(processInstanceId)
-                );
-        
+
+        BooleanExpression predicate = QProcessVariableEntity.processVariableEntity.name
+            .eq(variableName)
+            .and(
+                QProcessVariableEntity.processVariableEntity.processInstanceId.eq(
+                    processInstanceId
+                )
+            );
+
         if (variableRepository.exists(predicate)) {
-            LOGGER.debug("Variable " + variableName + " already exists in the process " + processInstanceId + "!");
+            LOGGER.debug(
+                "Variable " +
+                variableName +
+                " already exists in the process " +
+                processInstanceId +
+                "!"
+            );
             return;
         }
- 
-        ProcessVariableEntity variableEntity = new ProcessVariableEntity(null, 
-                                                           variableCreatedEvent.getEntity().getType(),
-                                                           variableName,
-                                                           processInstanceId,
-                                                           variableCreatedEvent.getServiceName(),
-                                                           variableCreatedEvent.getServiceFullName(),
-                                                           variableCreatedEvent.getServiceVersion(),
-                                                           variableCreatedEvent.getAppName(),
-                                                           variableCreatedEvent.getAppVersion(),
-                                                           new Date(variableCreatedEvent.getTimestamp()),
-                                                           new Date(variableCreatedEvent.getTimestamp()),
-                                                           null);
+
+        ProcessVariableEntity variableEntity = new ProcessVariableEntity(
+            null,
+            variableCreatedEvent.getEntity().getType(),
+            variableName,
+            processInstanceId,
+            variableCreatedEvent.getServiceName(),
+            variableCreatedEvent.getServiceFullName(),
+            variableCreatedEvent.getServiceVersion(),
+            variableCreatedEvent.getAppName(),
+            variableCreatedEvent.getAppVersion(),
+            new Date(variableCreatedEvent.getTimestamp()),
+            new Date(variableCreatedEvent.getTimestamp()),
+            null
+        );
         variableEntity.setValue(variableCreatedEvent.getEntity().getValue());
-                  
+
         variableEntity.setProcessInstance(processInstanceEntity);
- 
+
         variableRepository.save(variableEntity);
     }
-    
-    
-    private ProcessInstanceEntity getProcessInstance(CloudVariableCreatedEvent variableCreatedEvent) {
-        if(variableCreatedEvent.getEntity().getProcessInstanceId() == null){
+
+    private ProcessInstanceEntity getProcessInstance(
+        CloudVariableCreatedEvent variableCreatedEvent
+    ) {
+        if (variableCreatedEvent.getEntity().getProcessInstanceId() == null) {
             return null;
-        }else {
-            return entityManager
-                    .getReference(ProcessInstanceEntity.class,
-                            variableCreatedEvent.getEntity().getProcessInstanceId());
+        } else {
+            return entityManager.getReference(
+                ProcessInstanceEntity.class,
+                variableCreatedEvent.getEntity().getProcessInstanceId()
+            );
         }
     }
 

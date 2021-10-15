@@ -39,8 +39,8 @@ import org.activiti.cloud.services.rest.api.TaskVariableController;
 import org.activiti.cloud.services.rest.assemblers.CollectionModelAssembler;
 import org.activiti.cloud.services.rest.assemblers.TaskVariableInstanceRepresentationModelAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -55,26 +55,34 @@ public class TaskVariableControllerImpl implements TaskVariableController {
     private final TaskRuntime taskRuntime;
 
     @Autowired
-    public TaskVariableControllerImpl(TaskVariableInstanceRepresentationModelAssembler variableRepresentationModelAssembler,
-                                      CollectionModelAssembler resourcesAssembler,
-                                      TaskRuntime taskRuntime) {
-        this.variableRepresentationModelAssembler = variableRepresentationModelAssembler;
+    public TaskVariableControllerImpl(
+        TaskVariableInstanceRepresentationModelAssembler variableRepresentationModelAssembler,
+        CollectionModelAssembler resourcesAssembler,
+        TaskRuntime taskRuntime
+    ) {
+        this.variableRepresentationModelAssembler =
+            variableRepresentationModelAssembler;
         this.resourcesAssembler = resourcesAssembler;
         this.taskRuntime = taskRuntime;
     }
 
     @Override
-    public CollectionModel<EntityModel<CloudVariableInstance>> getVariables(@PathVariable String taskId) {
-        return resourcesAssembler.toCollectionModel(taskRuntime.variables(TaskPayloadBuilder.variables()
-                                                                            .withTaskId(taskId)
-                                                                            .build()),
-                                              variableRepresentationModelAssembler);
+    public CollectionModel<EntityModel<CloudVariableInstance>> getVariables(
+        @PathVariable String taskId
+    ) {
+        return resourcesAssembler.toCollectionModel(
+            taskRuntime.variables(
+                TaskPayloadBuilder.variables().withTaskId(taskId).build()
+            ),
+            variableRepresentationModelAssembler
+        );
     }
 
     @Override
-    public ResponseEntity<Void> createVariable(@PathVariable String taskId,
-                                               @RequestBody CreateTaskVariablePayload createTaskVariablePayload) {
-
+    public ResponseEntity<Void> createVariable(
+        @PathVariable String taskId,
+        @RequestBody CreateTaskVariablePayload createTaskVariablePayload
+    ) {
         createTaskVariablePayload.setTaskId(taskId);
         taskRuntime.createVariable(createTaskVariablePayload);
 
@@ -82,15 +90,15 @@ public class TaskVariableControllerImpl implements TaskVariableController {
     }
 
     @Override
-    public ResponseEntity<Void> updateVariable(@PathVariable String taskId,
-                                               @PathVariable String variableName,
-                                               @RequestBody UpdateTaskVariablePayload updateTaskVariablePayload) {
-
+    public ResponseEntity<Void> updateVariable(
+        @PathVariable String taskId,
+        @PathVariable String variableName,
+        @RequestBody UpdateTaskVariablePayload updateTaskVariablePayload
+    ) {
         updateTaskVariablePayload.setTaskId(taskId);
         updateTaskVariablePayload.setName(variableName);
         taskRuntime.updateVariable(updateTaskVariablePayload);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

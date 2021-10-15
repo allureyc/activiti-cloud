@@ -15,15 +15,13 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
-import org.activiti.api.process.model.BPMNMessage;
-import org.activiti.cloud.api.process.model.events.CloudBPMNMessageEvent;
-import org.activiti.cloud.services.audit.jpa.converters.json.MessageJpaJsonConverter;
-
 import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.MappedSuperclass;
+import org.activiti.api.process.model.BPMNMessage;
+import org.activiti.cloud.api.process.model.events.CloudBPMNMessageEvent;
+import org.activiti.cloud.services.audit.jpa.converters.json.MessageJpaJsonConverter;
 
 @MappedSuperclass
 public abstract class MessageAuditEventEntity extends AuditEventEntity {
@@ -32,8 +30,7 @@ public abstract class MessageAuditEventEntity extends AuditEventEntity {
     @Column(columnDefinition = "text")
     private BPMNMessage message;
 
-    public MessageAuditEventEntity() {
-    }
+    public MessageAuditEventEntity() {}
 
     public MessageAuditEventEntity(CloudBPMNMessageEvent cloudEvent) {
         super(cloudEvent);
@@ -79,11 +76,12 @@ public abstract class MessageAuditEventEntity extends AuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("MessageAuditEventEntity [message=")
-               .append(message)
-               .append(", toString()=")
-               .append(super.toString())
-               .append("]");
+        builder
+            .append("MessageAuditEventEntity [message=")
+            .append(message)
+            .append(", toString()=")
+            .append(super.toString())
+            .append("]");
         return builder.toString();
     }
 }

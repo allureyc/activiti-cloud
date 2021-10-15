@@ -15,19 +15,17 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
-import org.activiti.cloud.api.process.model.events.CloudBPMNTimerFailedEvent;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import org.activiti.cloud.api.process.model.events.CloudBPMNTimerFailedEvent;
 
 @Entity(name = TimerFailedAuditEventEntity.TIMER_FAILED_EVENT)
 @DiscriminatorValue(value = TimerFailedAuditEventEntity.TIMER_FAILED_EVENT)
 public class TimerFailedAuditEventEntity extends TimerAuditEventEntity {
 
     protected static final String TIMER_FAILED_EVENT = "TimerFailedEvent";
-    
-    public TimerFailedAuditEventEntity() {
-    }
+
+    public TimerFailedAuditEventEntity() {}
 
     public TimerFailedAuditEventEntity(CloudBPMNTimerFailedEvent cloudEvent) {
         super(cloudEvent);
@@ -55,7 +53,10 @@ public class TimerFailedAuditEventEntity extends TimerAuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("TimerFailedAuditEventEntity [toString()=").append(super.toString()).append("]");
+        builder
+            .append("TimerFailedAuditEventEntity [toString()=")
+            .append(super.toString())
+            .append("]");
         return builder.toString();
-    }   
+    }
 }

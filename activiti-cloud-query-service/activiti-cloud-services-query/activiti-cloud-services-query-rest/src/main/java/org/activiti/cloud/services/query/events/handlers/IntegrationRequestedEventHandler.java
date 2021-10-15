@@ -17,9 +17,7 @@ package org.activiti.cloud.services.query.events.handlers;
 
 import java.util.Date;
 import java.util.Optional;
-
 import javax.persistence.EntityManager;
-
 import org.activiti.api.process.model.events.IntegrationEvent.IntegrationEvents;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
 import org.activiti.cloud.api.process.model.CloudIntegrationContext.IntegrationContextStatus;
@@ -32,28 +30,37 @@ import org.slf4j.LoggerFactory;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class IntegrationRequestedEventHandler extends BaseIntegrationEventHandler implements QueryEventHandler {
+public class IntegrationRequestedEventHandler
+    extends BaseIntegrationEventHandler
+    implements QueryEventHandler {
 
-    private final static Logger logger = LoggerFactory.getLogger(IntegrationRequestedEventHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(
+        IntegrationRequestedEventHandler.class
+    );
 
-    public IntegrationRequestedEventHandler(IntegrationContextRepository repository,
-                                            ServiceTaskRepository serviceTaskRepository,
-                                            EntityManager entityManager) {
-        super(repository,
-              serviceTaskRepository,
-              entityManager);
+    public IntegrationRequestedEventHandler(
+        IntegrationContextRepository repository,
+        ServiceTaskRepository serviceTaskRepository,
+        EntityManager entityManager
+    ) {
+        super(repository, serviceTaskRepository, entityManager);
     }
 
     @Override
     public void handle(CloudRuntimeEvent<?, ?> event) {
-        CloudIntegrationRequestedEvent integrationEvent = CloudIntegrationRequestedEvent.class.cast(event);
+        CloudIntegrationRequestedEvent integrationEvent =
+            CloudIntegrationRequestedEvent.class.cast(event);
 
-        Optional<IntegrationContextEntity> result = findOrCreateIntegrationContextEntity(integrationEvent);
+        Optional<IntegrationContextEntity> result = findOrCreateIntegrationContextEntity(
+            integrationEvent
+        );
 
         result.ifPresent(entity -> {
             entity.setRequestDate(new Date(integrationEvent.getTimestamp()));
             entity.setStatus(IntegrationContextStatus.INTEGRATION_REQUESTED);
-            entity.setInBoundVariables(integrationEvent.getEntity().getInBoundVariables());
+            entity.setInBoundVariables(
+                integrationEvent.getEntity().getInBoundVariables()
+            );
         });
     }
 

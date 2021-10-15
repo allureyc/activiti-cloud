@@ -26,21 +26,30 @@ public class ProcessVariableUpdater {
 
     private VariableRepository variableRepository;
 
-    public ProcessVariableUpdater(EntityFinder entityFinder,
-                           VariableRepository variableRepository) {
+    public ProcessVariableUpdater(
+        EntityFinder entityFinder,
+        VariableRepository variableRepository
+    ) {
         this.entityFinder = entityFinder;
         this.variableRepository = variableRepository;
     }
 
-    public void update(ProcessVariableEntity updatedVariableEntity, Predicate predicate, String notFoundMessage) {
-        ProcessVariableEntity variableEntity = entityFinder.findOne(variableRepository,
-                                                             predicate,
-                                                             notFoundMessage);
-        variableEntity.setLastUpdatedTime(updatedVariableEntity.getLastUpdatedTime());
+    public void update(
+        ProcessVariableEntity updatedVariableEntity,
+        Predicate predicate,
+        String notFoundMessage
+    ) {
+        ProcessVariableEntity variableEntity = entityFinder.findOne(
+            variableRepository,
+            predicate,
+            notFoundMessage
+        );
+        variableEntity.setLastUpdatedTime(
+            updatedVariableEntity.getLastUpdatedTime()
+        );
         variableEntity.setType(updatedVariableEntity.getType());
         variableEntity.setValue(updatedVariableEntity.getValue());
 
         variableRepository.save(variableEntity);
     }
-
 }

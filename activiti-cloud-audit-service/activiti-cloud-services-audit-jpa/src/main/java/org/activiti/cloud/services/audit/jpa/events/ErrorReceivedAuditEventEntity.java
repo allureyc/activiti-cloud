@@ -19,7 +19,6 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-
 import org.activiti.api.process.model.BPMNError;
 import org.activiti.cloud.api.process.model.events.CloudBPMNErrorReceivedEvent;
 import org.activiti.cloud.services.audit.jpa.converters.json.ErrorJpaJsonConverter;
@@ -34,10 +33,11 @@ public class ErrorReceivedAuditEventEntity extends AuditEventEntity {
     @Column(columnDefinition = "text")
     private BPMNError error;
 
-    public ErrorReceivedAuditEventEntity() {
-    }
+    public ErrorReceivedAuditEventEntity() {}
 
-    public ErrorReceivedAuditEventEntity(CloudBPMNErrorReceivedEvent cloudEvent) {
+    public ErrorReceivedAuditEventEntity(
+        CloudBPMNErrorReceivedEvent cloudEvent
+    ) {
         super(cloudEvent);
         setError(cloudEvent.getEntity());
         if (error != null) {

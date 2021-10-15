@@ -18,8 +18,6 @@ package org.activiti.cloud.acc.shared.service;
 import feign.RequestLine;
 
 public interface SwaggerService {
-
     @RequestLine("GET /v2/api-docs")
     String getSwaggerSpecification();
-
 }

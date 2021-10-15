@@ -40,8 +40,7 @@ public class TaskLookupRestrictionService implements QueryDslPredicateFilter {
         this.securityManager = securityManager;
     }
 
-    public Predicate restrictTaskQuery(Predicate predicate){
-
+    public Predicate restrictTaskQuery(Predicate predicate) {
         return restrictTaskQuery(predicate, QTaskEntity.taskEntity);
     }
 
@@ -50,18 +49,19 @@ public class TaskLookupRestrictionService implements QueryDslPredicateFilter {
         return restrictTaskQuery(currentPredicate);
     }
 
-    public Predicate restrictTaskVariableQuery(Predicate predicate){
-
+    public Predicate restrictTaskVariableQuery(Predicate predicate) {
         QTaskEntity task = QTaskVariableEntity.taskVariableEntity.task;
 
-        Predicate extendedPredicate = addAndConditionToPredicate(predicate,task.isNotNull());
+        Predicate extendedPredicate = addAndConditionToPredicate(
+            predicate,
+            task.isNotNull()
+        );
 
         return restrictTaskQuery(extendedPredicate, task);
     }
 
-    private Predicate restrictTaskQuery(Predicate predicate, QTaskEntity task){
-
-        if (!restrictionsEnabled){
+    private Predicate restrictTaskQuery(Predicate predicate, QTaskEntity task) {
+        if (!restrictionsEnabled) {
             return predicate;
         }
 
@@ -70,40 +70,55 @@ public class TaskLookupRestrictionService implements QueryDslPredicateFilter {
 
         BooleanExpression restriction = null;
 
-        if(userId!=null) {
-
+        if (userId != null) {
             BooleanExpression isNotAssigned = task.assignee.isNull();
-            restriction = task.assignee.eq(userId) //user is assignee
+            restriction =
+                task.assignee
+                    .eq(userId) //user is assignee
                     .or(task.owner.eq(userId)) //user is owner
-                    .or(task.taskCandidateUsers.any().userId.eq(userId) //is candidate user and task is not assigned
-                                .and(isNotAssigned));
-
+                    .or(
+                        task.taskCandidateUsers
+                            .any()
+                            .userId.eq(userId) //is candidate user and task is not assigned
+                            .and(isNotAssigned)
+                    );
 
             List<String> groups = null;
             if (securityManager != null) {
                 groups = securityManager.getAuthenticatedUserGroups();
             }
-            if(groups!=null && groups.size()>0) {
+            if (groups != null && groups.size() > 0) {
                 //belongs to candidate group and task is not assigned
-                restriction = restriction.or(task.taskCandidateGroups.any().groupId.in(groups)
-                                                     .and(isNotAssigned));
+                restriction =
+                    restriction.or(
+                        task.taskCandidateGroups
+                            .any()
+                            .groupId.in(groups)
+                            .and(isNotAssigned)
+                    );
             }
 
             //or there are no candidates set and task is not assigned
-            restriction = restriction.or(task.taskCandidateUsers.isEmpty()
-                                                 .and(task.taskCandidateGroups.isEmpty())
-                                                 .and(isNotAssigned));
-
+            restriction =
+                restriction.or(
+                    task.taskCandidateUsers
+                        .isEmpty()
+                        .and(task.taskCandidateGroups.isEmpty())
+                        .and(isNotAssigned)
+                );
         }
 
-        return addAndConditionToPredicate(predicate,restriction);
+        return addAndConditionToPredicate(predicate, restriction);
     }
 
-    private Predicate addAndConditionToPredicate(Predicate predicate, BooleanExpression expression){
-        if(expression != null && predicate !=null){
+    private Predicate addAndConditionToPredicate(
+        Predicate predicate,
+        BooleanExpression expression
+    ) {
+        if (expression != null && predicate != null) {
             return expression.and(predicate);
         }
-        if(expression == null){
+        if (expression == null) {
             return predicate;
         }
         return expression;

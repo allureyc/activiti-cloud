@@ -23,10 +23,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import com.querydsl.core.types.Predicate;
 import java.util.Optional;
 import java.util.UUID;
-
-import com.querydsl.core.types.Predicate;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.activiti.api.task.model.Task.TaskStatus;
 import org.activiti.cloud.api.model.shared.impl.events.CloudVariableDeletedEventImpl;
@@ -62,10 +61,16 @@ public class TaskEntityVariableEntityDeletedEventHandlerTest {
     @Test
     public void handleShouldDeleteIt() {
         //given
-        VariableInstanceImpl<String> variableInstance = new VariableInstanceImpl<>("var",
-                                                                                   "string",
-                                                                                   "v1", "procInstId", "taskId");
-        CloudVariableDeletedEventImpl event = new CloudVariableDeletedEventImpl(variableInstance);
+        VariableInstanceImpl<String> variableInstance = new VariableInstanceImpl<>(
+            "var",
+            "string",
+            "v1",
+            "procInstId",
+            "taskId"
+        );
+        CloudVariableDeletedEventImpl event = new CloudVariableDeletedEventImpl(
+            variableInstance
+        );
 
         TaskVariableEntity variableEntity = new TaskVariableEntity();
         TaskEntity taskEntity = new TaskEntity();
@@ -73,14 +78,19 @@ public class TaskEntityVariableEntityDeletedEventHandlerTest {
         Optional<TaskEntity> optional = Optional.of(taskEntity);
 
         when(taskRepository.findById(anyString())).thenReturn(optional);
-        given(entityFinder.findOne(eq(variableRepository), any(Predicate.class), anyString())).willReturn(variableEntity);
+        given(
+            entityFinder.findOne(
+                eq(variableRepository),
+                any(Predicate.class),
+                anyString()
+            )
+        )
+            .willReturn(variableEntity);
 
         //when
         handler.handle(event);
 
         //then
         verify(variableRepository).delete(variableEntity);
-
     }
-
 }

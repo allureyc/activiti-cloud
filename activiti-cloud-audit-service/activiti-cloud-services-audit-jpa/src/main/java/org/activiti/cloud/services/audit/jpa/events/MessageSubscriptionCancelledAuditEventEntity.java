@@ -19,29 +19,35 @@ import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-
 import org.activiti.api.process.model.MessageSubscription;
 import org.activiti.cloud.api.process.model.events.CloudMessageSubscriptionCancelledEvent;
 import org.activiti.cloud.services.audit.jpa.converters.json.MessageSubscriptionJpaJsonConverter;
 
 @Entity
-@DiscriminatorValue(value = MessageSubscriptionCancelledAuditEventEntity.MESSAGE_SUBSCRIPTION_CANCELLED_EVENT)
-public class MessageSubscriptionCancelledAuditEventEntity extends AuditEventEntity {
+@DiscriminatorValue(
+    value = MessageSubscriptionCancelledAuditEventEntity.MESSAGE_SUBSCRIPTION_CANCELLED_EVENT
+)
+public class MessageSubscriptionCancelledAuditEventEntity
+    extends AuditEventEntity {
 
-    protected static final String MESSAGE_SUBSCRIPTION_CANCELLED_EVENT = "MsgSubscriptionCancelledEvent";
+    protected static final String MESSAGE_SUBSCRIPTION_CANCELLED_EVENT =
+        "MsgSubscriptionCancelledEvent";
 
     @Convert(converter = MessageSubscriptionJpaJsonConverter.class)
-    @Column(columnDefinition="text")
+    @Column(columnDefinition = "text")
     private MessageSubscription messageSubscription;
 
-    public MessageSubscriptionCancelledAuditEventEntity() {
-    }
+    public MessageSubscriptionCancelledAuditEventEntity() {}
 
-    public MessageSubscriptionCancelledAuditEventEntity(CloudMessageSubscriptionCancelledEvent cloudEvent) {
+    public MessageSubscriptionCancelledAuditEventEntity(
+        CloudMessageSubscriptionCancelledEvent cloudEvent
+    ) {
         super(cloudEvent);
-        setMessageSubscription(cloudEvent.getEntity()) ;
+        setMessageSubscription(cloudEvent.getEntity());
         if (messageSubscription != null) {
-            setProcessDefinitionId(messageSubscription.getProcessDefinitionId());
+            setProcessDefinitionId(
+                messageSubscription.getProcessDefinitionId()
+            );
             setProcessInstanceId(messageSubscription.getProcessInstanceId());
             setEntityId(messageSubscription.getId());
         }
@@ -51,7 +57,9 @@ public class MessageSubscriptionCancelledAuditEventEntity extends AuditEventEnti
         return messageSubscription;
     }
 
-    public void setMessageSubscription(MessageSubscription messageSubscription) {
+    public void setMessageSubscription(
+        MessageSubscription messageSubscription
+    ) {
         this.messageSubscription = messageSubscription;
     }
 }

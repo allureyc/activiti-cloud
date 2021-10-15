@@ -15,21 +15,23 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
-import org.activiti.cloud.api.process.model.events.CloudBPMNMessageWaitingEvent;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import org.activiti.cloud.api.process.model.events.CloudBPMNMessageWaitingEvent;
 
 @Entity(name = MessageWaitingAuditEventEntity.MESSAGE_WAITING_EVENT)
-@DiscriminatorValue(value = MessageWaitingAuditEventEntity.MESSAGE_WAITING_EVENT)
+@DiscriminatorValue(
+    value = MessageWaitingAuditEventEntity.MESSAGE_WAITING_EVENT
+)
 public class MessageWaitingAuditEventEntity extends MessageAuditEventEntity {
 
     protected static final String MESSAGE_WAITING_EVENT = "MessageWaitingEvent";
-    
-    public MessageWaitingAuditEventEntity() {
-    }
-    
-    public MessageWaitingAuditEventEntity(CloudBPMNMessageWaitingEvent cloudEvent) {
+
+    public MessageWaitingAuditEventEntity() {}
+
+    public MessageWaitingAuditEventEntity(
+        CloudBPMNMessageWaitingEvent cloudEvent
+    ) {
         super(cloudEvent);
     }
 
@@ -55,7 +57,10 @@ public class MessageWaitingAuditEventEntity extends MessageAuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("MessageWaitingAuditEventEntity [toString()=").append(super.toString()).append("]");
+        builder
+            .append("MessageWaitingAuditEventEntity [toString()=")
+            .append(super.toString())
+            .append("]");
         return builder.toString();
-    }    
+    }
 }

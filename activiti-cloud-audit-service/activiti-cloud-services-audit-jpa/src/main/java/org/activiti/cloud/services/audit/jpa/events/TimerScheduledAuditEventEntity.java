@@ -15,22 +15,24 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
-import org.activiti.cloud.api.process.model.events.CloudBPMNTimerScheduledEvent;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import org.activiti.cloud.api.process.model.events.CloudBPMNTimerScheduledEvent;
 
 @Entity(name = TimerScheduledAuditEventEntity.TIMER_SCHEDULED_EVENT)
-@DiscriminatorValue(value = TimerScheduledAuditEventEntity.TIMER_SCHEDULED_EVENT)
+@DiscriminatorValue(
+    value = TimerScheduledAuditEventEntity.TIMER_SCHEDULED_EVENT
+)
 public class TimerScheduledAuditEventEntity extends TimerAuditEventEntity {
 
     protected static final String TIMER_SCHEDULED_EVENT = "TimerScheduledEvent";
-    
-    public TimerScheduledAuditEventEntity() {
-    }
 
-    public TimerScheduledAuditEventEntity(CloudBPMNTimerScheduledEvent cloudEvent) {
-        super(cloudEvent);   
+    public TimerScheduledAuditEventEntity() {}
+
+    public TimerScheduledAuditEventEntity(
+        CloudBPMNTimerScheduledEvent cloudEvent
+    ) {
+        super(cloudEvent);
     }
 
     @Override
@@ -55,7 +57,10 @@ public class TimerScheduledAuditEventEntity extends TimerAuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("TimerScheduledAuditEventEntity [toString()=").append(super.toString()).append("]");
+        builder
+            .append("TimerScheduledAuditEventEntity [toString()=")
+            .append(super.toString())
+            .append("]");
         return builder.toString();
-    }   
+    }
 }

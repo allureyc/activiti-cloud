@@ -19,7 +19,9 @@ import org.activiti.api.process.model.ProcessDefinition;
 import org.activiti.cloud.api.model.shared.impl.CloudRuntimeEntityImpl;
 import org.activiti.cloud.api.process.model.CloudProcessDefinition;
 
-public class CloudProcessDefinitionImpl extends CloudRuntimeEntityImpl implements CloudProcessDefinition {
+public class CloudProcessDefinitionImpl
+    extends CloudRuntimeEntityImpl
+    implements CloudProcessDefinition {
 
     private String id;
     private String name;
@@ -28,8 +30,7 @@ public class CloudProcessDefinitionImpl extends CloudRuntimeEntityImpl implement
     private int version;
     private String formKey;
 
-    public CloudProcessDefinitionImpl() {
-    }
+    public CloudProcessDefinitionImpl() {}
 
     public CloudProcessDefinitionImpl(ProcessDefinition processDefinition) {
         super(processDefinition);

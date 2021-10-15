@@ -16,7 +16,6 @@
 package org.activiti.cloud.services.query.events.handlers;
 
 import java.util.Optional;
-
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
 import org.activiti.cloud.api.task.model.events.CloudTaskCreatedEvent;
@@ -25,13 +24,16 @@ import org.activiti.cloud.services.query.app.repository.TaskRepository;
 import org.activiti.cloud.services.query.model.ProcessInstanceEntity;
 import org.activiti.cloud.services.query.model.QueryException;
 import org.activiti.cloud.services.query.model.TaskEntity;
+
 public class TaskCreatedEventHandler implements QueryEventHandler {
 
     private final TaskRepository taskRepository;
     private final ProcessInstanceRepository processInstanceRepository;
 
-    public TaskCreatedEventHandler(TaskRepository taskRepository,
-                                   ProcessInstanceRepository processInstanceRepository) {
+    public TaskCreatedEventHandler(
+        TaskRepository taskRepository,
+        ProcessInstanceRepository processInstanceRepository
+    ) {
         this.taskRepository = taskRepository;
         this.processInstanceRepository = processInstanceRepository;
     }
@@ -42,26 +44,31 @@ public class TaskCreatedEventHandler implements QueryEventHandler {
         TaskEntity queryTaskEntity = new TaskEntity(taskCreatedEvent);
 
         if (!queryTaskEntity.isStandalone()) {
-            Optional<ProcessInstanceEntity> processInstanceEntity = processInstanceRepository
-                    .findById(queryTaskEntity.getProcessInstanceId());
-            
-            if(processInstanceEntity.isPresent()) {
+            Optional<ProcessInstanceEntity> processInstanceEntity = processInstanceRepository.findById(
+                queryTaskEntity.getProcessInstanceId()
+            );
+
+            if (processInstanceEntity.isPresent()) {
                 queryTaskEntity.setProcessInstance(processInstanceEntity.get());
-                queryTaskEntity.setProcessDefinitionName(processInstanceEntity.get().getProcessDefinitionName());
+                queryTaskEntity.setProcessDefinitionName(
+                    processInstanceEntity.get().getProcessDefinitionName()
+                );
             }
-  
         }
-        persistIntoDatabase(event,
-                            queryTaskEntity);
+        persistIntoDatabase(event, queryTaskEntity);
     }
 
-    private void persistIntoDatabase(CloudRuntimeEvent<?, ?> event,
-                                     TaskEntity queryTaskEntity) {
+    private void persistIntoDatabase(
+        CloudRuntimeEvent<?, ?> event,
+        TaskEntity queryTaskEntity
+    ) {
         try {
             taskRepository.save(queryTaskEntity);
         } catch (Exception cause) {
-            throw new QueryException("Error handling TaskCreatedEvent[" + event + "]",
-                                     cause);
+            throw new QueryException(
+                "Error handling TaskCreatedEvent[" + event + "]",
+                cause
+            );
         }
     }
 

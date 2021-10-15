@@ -26,15 +26,15 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(exported = false)
-public interface TaskCandidateUserRepository extends PagingAndSortingRepository<TaskCandidateUser, TaskCandidateUserId>,
-                                                     QuerydslPredicateExecutor<TaskCandidateUser>,
-                                                     QuerydslBinderCustomizer<QTaskCandidateUser> {
-
+public interface TaskCandidateUserRepository
+    extends
+        PagingAndSortingRepository<TaskCandidateUser, TaskCandidateUserId>,
+        QuerydslPredicateExecutor<TaskCandidateUser>,
+        QuerydslBinderCustomizer<QTaskCandidateUser> {
     @Override
-    default void customize(QuerydslBindings bindings,
-                           QTaskCandidateUser root) {
-
-        bindings.bind(String.class).first(
-                (StringPath path, String value) -> path.eq(value));
+    default void customize(QuerydslBindings bindings, QTaskCandidateUser root) {
+        bindings
+            .bind(String.class)
+            .first((StringPath path, String value) -> path.eq(value));
     }
 }

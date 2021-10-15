@@ -15,21 +15,24 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
-import org.activiti.cloud.api.process.model.events.CloudProcessSuspendedEvent;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import org.activiti.cloud.api.process.model.events.CloudProcessSuspendedEvent;
 
 @Entity(name = ProcessSuspendedAuditEventEntity.PROCESS_SUSPENDED_EVENT)
-@DiscriminatorValue(value = ProcessSuspendedAuditEventEntity.PROCESS_SUSPENDED_EVENT)
+@DiscriminatorValue(
+    value = ProcessSuspendedAuditEventEntity.PROCESS_SUSPENDED_EVENT
+)
 public class ProcessSuspendedAuditEventEntity extends ProcessAuditEventEntity {
 
-    protected static final String PROCESS_SUSPENDED_EVENT = "ProcessSuspendedEvent";
+    protected static final String PROCESS_SUSPENDED_EVENT =
+        "ProcessSuspendedEvent";
 
-    public ProcessSuspendedAuditEventEntity() {
-    }
+    public ProcessSuspendedAuditEventEntity() {}
 
-    public ProcessSuspendedAuditEventEntity(CloudProcessSuspendedEvent cloudEvent) {
+    public ProcessSuspendedAuditEventEntity(
+        CloudProcessSuspendedEvent cloudEvent
+    ) {
         super(cloudEvent);
     }
 
@@ -55,7 +58,10 @@ public class ProcessSuspendedAuditEventEntity extends ProcessAuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ProcessSuspendedAuditEventEntity [toString()=").append(super.toString()).append("]");
+        builder
+            .append("ProcessSuspendedAuditEventEntity [toString()=")
+            .append(super.toString())
+            .append("]");
         return builder.toString();
     }
 }

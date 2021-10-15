@@ -23,23 +23,22 @@ import org.activiti.cloud.api.process.model.CloudApplication;
 
 @Entity(name = "Application")
 @Table(name = "APPLICATION")
-public class ApplicationEntity implements CloudApplication{
+public class ApplicationEntity implements CloudApplication {
+
     @Id
     private String id;
+
     private String version;
     private String name;
 
-    public ApplicationEntity() {
-    }
+    public ApplicationEntity() {}
 
-    public ApplicationEntity(String id,
-            String name,
-            String version) {
+    public ApplicationEntity(String id, String name, String version) {
         this.id = id;
         this.name = name;
         this.version = version;
     }
-    
+
     public String getId() {
         return id;
     }
@@ -63,7 +62,7 @@ public class ApplicationEntity implements CloudApplication{
     public void setName(String name) {
         this.name = name;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -74,15 +73,14 @@ public class ApplicationEntity implements CloudApplication{
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (!super.equals(obj)) return false;
+        if (getClass() != obj.getClass()) return false;
         ApplicationEntity other = (ApplicationEntity) obj;
-        return  Objects.equals(id, other.id) &&
-                Objects.equals(version, other.version) && 
-                Objects.equals(name, other.name) ;
+        return (
+            Objects.equals(id, other.id) &&
+            Objects.equals(version, other.version) &&
+            Objects.equals(name, other.name)
+        );
     }
 }

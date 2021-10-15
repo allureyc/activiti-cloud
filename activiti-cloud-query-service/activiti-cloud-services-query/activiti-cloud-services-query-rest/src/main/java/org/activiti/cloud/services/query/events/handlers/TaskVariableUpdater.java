@@ -26,21 +26,30 @@ public class TaskVariableUpdater {
 
     private TaskVariableRepository variableRepository;
 
-    public TaskVariableUpdater(EntityFinder entityFinder,
-                           TaskVariableRepository variableRepository) {
+    public TaskVariableUpdater(
+        EntityFinder entityFinder,
+        TaskVariableRepository variableRepository
+    ) {
         this.entityFinder = entityFinder;
         this.variableRepository = variableRepository;
     }
 
-    public void update(TaskVariableEntity updatedVariableEntity, Predicate predicate, String notFoundMessage) {
-        TaskVariableEntity variableEntity = entityFinder.findOne(variableRepository,
-                                                             predicate,
-                                                             notFoundMessage);
-        variableEntity.setLastUpdatedTime(updatedVariableEntity.getLastUpdatedTime());
+    public void update(
+        TaskVariableEntity updatedVariableEntity,
+        Predicate predicate,
+        String notFoundMessage
+    ) {
+        TaskVariableEntity variableEntity = entityFinder.findOne(
+            variableRepository,
+            predicate,
+            notFoundMessage
+        );
+        variableEntity.setLastUpdatedTime(
+            updatedVariableEntity.getLastUpdatedTime()
+        );
         variableEntity.setType(updatedVariableEntity.getType());
         variableEntity.setValue(updatedVariableEntity.getValue());
 
         variableRepository.save(variableEntity);
     }
-
 }

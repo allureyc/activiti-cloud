@@ -15,42 +15,50 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import org.activiti.api.task.model.TaskCandidateUser;
 import org.activiti.api.task.model.impl.TaskCandidateUserImpl;
 import org.activiti.cloud.api.task.model.events.CloudTaskCandidateUserRemovedEvent;
 import org.activiti.cloud.services.audit.jpa.converters.json.TaskCandidateUserJpaJsonConverter;
 
-import java.util.Objects;
-
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-
-@Entity(name = TaskCandidateUserRemovedEventEntity.TASK_CANDIDATE_USER_REMOVED_EVENT)
-@DiscriminatorValue(value = TaskCandidateUserRemovedEventEntity.TASK_CANDIDATE_USER_REMOVED_EVENT)
+@Entity(
+    name = TaskCandidateUserRemovedEventEntity.TASK_CANDIDATE_USER_REMOVED_EVENT
+)
+@DiscriminatorValue(
+    value = TaskCandidateUserRemovedEventEntity.TASK_CANDIDATE_USER_REMOVED_EVENT
+)
 public class TaskCandidateUserRemovedEventEntity extends AuditEventEntity {
 
-    protected static final String TASK_CANDIDATE_USER_REMOVED_EVENT = "TaskCandidateUserRemovedEvent";
+    protected static final String TASK_CANDIDATE_USER_REMOVED_EVENT =
+        "TaskCandidateUserRemovedEvent";
 
     @Convert(converter = TaskCandidateUserJpaJsonConverter.class)
     @Column(columnDefinition = "text")
     private TaskCandidateUserImpl candidateUser;
-    
-    public TaskCandidateUserRemovedEventEntity() {
-    }
 
-    public TaskCandidateUserRemovedEventEntity(CloudTaskCandidateUserRemovedEvent cloudEvent) {
+    public TaskCandidateUserRemovedEventEntity() {}
+
+    public TaskCandidateUserRemovedEventEntity(
+        CloudTaskCandidateUserRemovedEvent cloudEvent
+    ) {
         super(cloudEvent);
         setCandidateUser(cloudEvent.getEntity());
     }
-    
+
     public TaskCandidateUser getCandidateUser() {
         return candidateUser;
     }
-    
+
     public void setCandidateUser(TaskCandidateUser candidateUser) {
-        this.candidateUser = new TaskCandidateUserImpl(candidateUser.getUserId(),candidateUser.getTaskId());
+        this.candidateUser =
+            new TaskCandidateUserImpl(
+                candidateUser.getUserId(),
+                candidateUser.getTaskId()
+            );
     }
 
     @Override
@@ -79,11 +87,12 @@ public class TaskCandidateUserRemovedEventEntity extends AuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("TaskCandidateUserRemovedEventEntity [candidateUser=")
-               .append(candidateUser)
-               .append(", toString()=")
-               .append(super.toString())
-               .append("]");
+        builder
+            .append("TaskCandidateUserRemovedEventEntity [candidateUser=")
+            .append(candidateUser)
+            .append(", toString()=")
+            .append(super.toString())
+            .append("]");
         return builder.toString();
     }
 }

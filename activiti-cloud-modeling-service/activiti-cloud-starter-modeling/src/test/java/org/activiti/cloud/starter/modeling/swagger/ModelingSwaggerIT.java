@@ -15,6 +15,10 @@
  */
 package org.activiti.cloud.starter.modeling.swagger;
 
+import static org.hamcrest.Matchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import org.activiti.cloud.services.test.containers.KeycloakContainerApplicationInitializer;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,32 +29,53 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.hamcrest.Matchers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext
-@ContextConfiguration(initializers = {KeycloakContainerApplicationInitializer.class})
+@ContextConfiguration(
+    initializers = { KeycloakContainerApplicationInitializer.class }
+)
 public class ModelingSwaggerIT {
 
     @Autowired
     private MockMvc mockMvc;
 
     @Test
-    public void should_swaggerDefinitionHavePathsAndDefinitionsAndInfo() throws Exception {
-        mockMvc.perform(get("/v2/api-docs").accept(MediaType.APPLICATION_JSON))
+    public void should_swaggerDefinitionHavePathsAndDefinitionsAndInfo()
+        throws Exception {
+        mockMvc
+            .perform(get("/v2/api-docs").accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("$.paths").isNotEmpty())
             .andExpect(jsonPath("$.definitions").isNotEmpty())
-            .andExpect(jsonPath("$.definitions").value(hasKey(startsWith("ListResponseContent"))))
-            .andExpect(jsonPath("$.definitions").value(hasKey(startsWith("EntriesResponseContent"))))
-            .andExpect(jsonPath("$.definitions").value(hasKey(startsWith("EntryResponseContent"))))
-            .andExpect(jsonPath("$.info.title").value("Activiti Cloud Starter :: Modeling ReST API"))
-            .andExpect(jsonPath("$['paths']['/v1/projects/{projectId}/models']['get']['parameters'][*]['name']",
-                containsInAnyOrder("projectId", "type", "skipCount", "maxItems", "sort")));
+            .andExpect(
+                jsonPath("$.definitions")
+                    .value(hasKey(startsWith("ListResponseContent")))
+            )
+            .andExpect(
+                jsonPath("$.definitions")
+                    .value(hasKey(startsWith("EntriesResponseContent")))
+            )
+            .andExpect(
+                jsonPath("$.definitions")
+                    .value(hasKey(startsWith("EntryResponseContent")))
+            )
+            .andExpect(
+                jsonPath("$.info.title")
+                    .value("Activiti Cloud Starter :: Modeling ReST API")
+            )
+            .andExpect(
+                jsonPath(
+                    "$['paths']['/v1/projects/{projectId}/models']['get']['parameters'][*]['name']",
+                    containsInAnyOrder(
+                        "projectId",
+                        "type",
+                        "skipCount",
+                        "maxItems",
+                        "sort"
+                    )
+                )
+            );
     }
-
 }

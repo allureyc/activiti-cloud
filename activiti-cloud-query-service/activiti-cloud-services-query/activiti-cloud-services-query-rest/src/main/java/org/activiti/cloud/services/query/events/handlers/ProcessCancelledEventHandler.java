@@ -16,7 +16,6 @@
 package org.activiti.cloud.services.query.events.handlers;
 
 import java.util.Date;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
@@ -29,29 +28,45 @@ import org.slf4j.LoggerFactory;
 
 public class ProcessCancelledEventHandler implements QueryEventHandler {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(ProcessCancelledEventHandler.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(
+        ProcessCancelledEventHandler.class
+    );
 
     private ProcessInstanceRepository processInstanceRepository;
 
-    public ProcessCancelledEventHandler(ProcessInstanceRepository processInstanceRepository) {
+    public ProcessCancelledEventHandler(
+        ProcessInstanceRepository processInstanceRepository
+    ) {
         this.processInstanceRepository = processInstanceRepository;
     }
 
     @Override
     public void handle(CloudRuntimeEvent<?, ?> event) {
         CloudProcessCancelledEvent cancelledEvent = (CloudProcessCancelledEvent) event;
-        LOGGER.debug("Handling cancel of process Instance " + cancelledEvent.getEntity().getId());
+        LOGGER.debug(
+            "Handling cancel of process Instance " +
+            cancelledEvent.getEntity().getId()
+        );
         updateProcessInstanceStatus(
-                processInstanceRepository
-                        .findById(cancelledEvent.getEntity().getId())
-                        .orElseThrow(() -> new QueryException(
-                                "Unable to find process instance with the given id: " + cancelledEvent.getEntity().getId())),
-                cancelledEvent.getTimestamp());
+            processInstanceRepository
+                .findById(cancelledEvent.getEntity().getId())
+                .orElseThrow(() ->
+                    new QueryException(
+                        "Unable to find process instance with the given id: " +
+                        cancelledEvent.getEntity().getId()
+                    )
+                ),
+            cancelledEvent.getTimestamp()
+        );
     }
 
-    private void updateProcessInstanceStatus(ProcessInstanceEntity processInstanceEntity,
-                                             Long eventTimestamp) {
-        processInstanceEntity.setStatus(ProcessInstance.ProcessInstanceStatus.CANCELLED);
+    private void updateProcessInstanceStatus(
+        ProcessInstanceEntity processInstanceEntity,
+        Long eventTimestamp
+    ) {
+        processInstanceEntity.setStatus(
+            ProcessInstance.ProcessInstanceStatus.CANCELLED
+        );
         processInstanceEntity.setLastModified(new Date(eventTimestamp));
         processInstanceRepository.save(processInstanceEntity);
     }

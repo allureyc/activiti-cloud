@@ -15,17 +15,17 @@
  */
 package org.activiti.cloud.services.query.app.repository;
 
+import com.querydsl.core.types.Predicate;
 import org.activiti.cloud.services.query.model.TaskEntity;
 import org.activiti.cloud.services.query.model.VariableValue;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.querydsl.core.types.Predicate;
-
 public interface CustomizedTaskRepository {
-
-    Page<TaskEntity> findByVariableNameAndValue(String name,
-                                                VariableValue<?> value,
-                                                Predicate predicate,
-                                                Pageable pageable);
+    Page<TaskEntity> findByVariableNameAndValue(
+        String name,
+        VariableValue<?> value,
+        Predicate predicate,
+        Pageable pageable
+    );
 }

@@ -15,33 +15,35 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
-import org.activiti.api.process.model.BPMNSequenceFlow;
-import org.activiti.cloud.api.process.model.events.CloudSequenceFlowTakenEvent;
-import org.activiti.cloud.services.audit.jpa.converters.json.SequenceFlowJpaJsonConverter;
-
 import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import org.activiti.api.process.model.BPMNSequenceFlow;
+import org.activiti.cloud.api.process.model.events.CloudSequenceFlowTakenEvent;
+import org.activiti.cloud.services.audit.jpa.converters.json.SequenceFlowJpaJsonConverter;
 
 @Entity(name = SequenceFlowAuditEventEntity.SEQUENCE_FLOW_TAKEN_EVENT)
-@DiscriminatorValue(value = SequenceFlowAuditEventEntity.SEQUENCE_FLOW_TAKEN_EVENT)
+@DiscriminatorValue(
+    value = SequenceFlowAuditEventEntity.SEQUENCE_FLOW_TAKEN_EVENT
+)
 public class SequenceFlowAuditEventEntity extends AuditEventEntity {
 
-    protected static final String SEQUENCE_FLOW_TAKEN_EVENT = "SequenceFlowTakenEvent";
+    protected static final String SEQUENCE_FLOW_TAKEN_EVENT =
+        "SequenceFlowTakenEvent";
 
     @Convert(converter = SequenceFlowJpaJsonConverter.class)
     @Column(columnDefinition = "text")
     private BPMNSequenceFlow sequenceFlow;
 
-    public SequenceFlowAuditEventEntity() {
-    }
+    public SequenceFlowAuditEventEntity() {}
 
-    public SequenceFlowAuditEventEntity(CloudSequenceFlowTakenEvent cloudEvent) {
+    public SequenceFlowAuditEventEntity(
+        CloudSequenceFlowTakenEvent cloudEvent
+    ) {
         super(cloudEvent);
-        setSequenceFlow(cloudEvent.getEntity()) ;
+        setSequenceFlow(cloudEvent.getEntity());
     }
 
     public BPMNSequenceFlow getSequenceFlow() {
@@ -78,11 +80,12 @@ public class SequenceFlowAuditEventEntity extends AuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("SequenceFlowAuditEventEntity [sequenceFlow=")
-               .append(sequenceFlow)
-               .append(", toString()=")
-               .append(super.toString())
-               .append("]");
+        builder
+            .append("SequenceFlowAuditEventEntity [sequenceFlow=")
+            .append(sequenceFlow)
+            .append(", toString()=")
+            .append(super.toString())
+            .append("]");
         return builder.toString();
     }
 }

@@ -16,9 +16,7 @@
 package org.activiti.cloud.services.query.events.handlers;
 
 import java.util.Date;
-
 import javax.persistence.EntityManager;
-
 import org.activiti.api.process.model.events.BPMNActivityEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
 import org.activiti.cloud.api.process.model.CloudBPMNActivity;
@@ -28,23 +26,33 @@ import org.activiti.cloud.services.query.model.BPMNActivityEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class BPMNActivityStartedEventHandler extends BaseBPMNActivityEventHandler implements QueryEventHandler {
+public class BPMNActivityStartedEventHandler
+    extends BaseBPMNActivityEventHandler
+    implements QueryEventHandler {
 
-    public BPMNActivityStartedEventHandler(BPMNActivityRepository activitiyRepository,
-                                           EntityManager entityManager) {
-        super(activitiyRepository,
-              entityManager);
+    public BPMNActivityStartedEventHandler(
+        BPMNActivityRepository activitiyRepository,
+        EntityManager entityManager
+    ) {
+        super(activitiyRepository, entityManager);
     }
 
     @Override
     public void handle(CloudRuntimeEvent<?, ?> event) {
-        CloudBPMNActivityStartedEvent activityEvent = CloudBPMNActivityStartedEvent.class.cast(event);
+        CloudBPMNActivityStartedEvent activityEvent =
+            CloudBPMNActivityStartedEvent.class.cast(event);
 
-        BPMNActivityEntity bpmnActivityEntity = findOrCreateBPMNActivityEntity(event);
+        BPMNActivityEntity bpmnActivityEntity = findOrCreateBPMNActivityEntity(
+            event
+        );
 
         // Activity can be cyclical, so we just update the status and started date anyways
-        bpmnActivityEntity.setStartedDate(new Date(activityEvent.getTimestamp()));
-        bpmnActivityEntity.setStatus(CloudBPMNActivity.BPMNActivityStatus.STARTED);
+        bpmnActivityEntity.setStartedDate(
+            new Date(activityEvent.getTimestamp())
+        );
+        bpmnActivityEntity.setStatus(
+            CloudBPMNActivity.BPMNActivityStatus.STARTED
+        );
     }
 
     @Override

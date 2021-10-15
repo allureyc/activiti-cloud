@@ -16,6 +16,9 @@
 
 package org.activiti.cloud.services.messages.core.router;
 
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Function;
 import org.springframework.cloud.stream.binding.BinderAwareChannelResolver;
 import org.springframework.cloud.stream.binding.BindingService;
 import org.springframework.cloud.stream.config.BindingServiceProperties;
@@ -23,45 +26,48 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.core.BeanFactoryMessageChannelDestinationResolver;
 import org.springframework.messaging.core.DestinationResolutionException;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Function;
-
-public class CommandConsumerMessageChannelResolver extends BeanFactoryMessageChannelDestinationResolver {
+public class CommandConsumerMessageChannelResolver
+    extends BeanFactoryMessageChannelDestinationResolver {
 
     private final BinderAwareChannelResolver binderAwareChannelResolver;
     private final BindingService bindingService;
     private final Function<String, String> destinationMapper;
 
-    public CommandConsumerMessageChannelResolver(Function<String, String> destinationMapper,
-                                                 BinderAwareChannelResolver binderAwareChannelResolver,
-                                                 BindingService bindingService) {
+    public CommandConsumerMessageChannelResolver(
+        Function<String, String> destinationMapper,
+        BinderAwareChannelResolver binderAwareChannelResolver,
+        BindingService bindingService
+    ) {
         this.destinationMapper = destinationMapper;
         this.binderAwareChannelResolver = binderAwareChannelResolver;
         this.bindingService = bindingService;
     }
 
     @Override
-    public MessageChannel resolveDestination(String name) throws DestinationResolutionException {
+    public MessageChannel resolveDestination(String name)
+        throws DestinationResolutionException {
         String destination = destinationMapper.apply(name);
 
         Optional<String> channelName = getChannelName(destination);
 
-        return channelName.map(super::resolveDestination)
-                          .orElseGet(() -> binderAwareChannelResolver.resolveDestination(destination));
+        return channelName
+            .map(super::resolveDestination)
+            .orElseGet(() ->
+                binderAwareChannelResolver.resolveDestination(destination)
+            );
     }
 
     protected Optional<String> getChannelName(String destination) {
         BindingServiceProperties bindingProperties = bindingService.getBindingServiceProperties();
 
-        return bindingProperties.getBindings()
-                                .entrySet()
-                                .stream()
-                                .filter(entry -> entry.getValue()
-                                                      .getDestination()
-                                                      .equals(destination))
-                                .map(Map.Entry::getKey)
-                                .findFirst();
+        return bindingProperties
+            .getBindings()
+            .entrySet()
+            .stream()
+            .filter(entry ->
+                entry.getValue().getDestination().equals(destination)
+            )
+            .map(Map.Entry::getKey)
+            .findFirst();
     }
-
 }

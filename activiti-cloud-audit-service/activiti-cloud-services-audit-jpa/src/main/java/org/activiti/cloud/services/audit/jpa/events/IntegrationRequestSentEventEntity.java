@@ -17,18 +17,22 @@ package org.activiti.cloud.services.audit.jpa.events;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-
 import org.activiti.cloud.api.process.model.events.CloudIntegrationRequestedEvent;
 
 @Entity(name = IntegrationRequestSentEventEntity.INTEGRATION_REQUEST_SENT_EVENT)
-@DiscriminatorValue(value = IntegrationRequestSentEventEntity.INTEGRATION_REQUEST_SENT_EVENT)
+@DiscriminatorValue(
+    value = IntegrationRequestSentEventEntity.INTEGRATION_REQUEST_SENT_EVENT
+)
 public class IntegrationRequestSentEventEntity extends IntegrationEventEntity {
 
-    protected static final String INTEGRATION_REQUEST_SENT_EVENT = "IntegrationRequestSentEvent";
+    protected static final String INTEGRATION_REQUEST_SENT_EVENT =
+        "IntegrationRequestSentEvent";
 
-    IntegrationRequestSentEventEntity() { }
+    IntegrationRequestSentEventEntity() {}
 
-    public IntegrationRequestSentEventEntity(CloudIntegrationRequestedEvent event) {
+    public IntegrationRequestSentEventEntity(
+        CloudIntegrationRequestedEvent event
+    ) {
         super(event);
     }
 
@@ -54,8 +58,10 @@ public class IntegrationRequestSentEventEntity extends IntegrationEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("IntegrationRequestSentEventEntity [toString()=").append(super.toString()).append("]");
+        builder
+            .append("IntegrationRequestSentEventEntity [toString()=")
+            .append(super.toString())
+            .append("]");
         return builder.toString();
     }
-
 }

@@ -28,12 +28,16 @@ public class QueryRestWebAutoConfiguration implements WebMvcConfigurer {
 
     private ConversionService conversionService;
 
-    public QueryRestWebAutoConfiguration(ConversionService mvcConversionService) {
+    public QueryRestWebAutoConfiguration(
+        ConversionService mvcConversionService
+    ) {
         this.conversionService = mvcConversionService;
     }
 
     @Override
-    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+    public void addArgumentResolvers(
+        List<HandlerMethodArgumentResolver> resolvers
+    ) {
         resolvers.add(new VariableSearchArgumentResolver(conversionService));
     }
 }

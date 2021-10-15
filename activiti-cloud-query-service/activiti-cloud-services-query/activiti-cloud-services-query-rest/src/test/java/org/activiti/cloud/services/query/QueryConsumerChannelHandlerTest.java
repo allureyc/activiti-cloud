@@ -15,6 +15,10 @@
  */
 package org.activiti.cloud.services.query;
 
+import static java.util.Arrays.asList;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.cloud.api.process.model.impl.events.CloudProcessCreatedEventImpl;
 import org.activiti.cloud.api.process.model.impl.events.CloudProcessStartedEventImpl;
 import org.activiti.cloud.services.query.app.QueryConsumerChannelHandler;
@@ -23,10 +27,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static java.util.Arrays.asList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class QueryConsumerChannelHandlerTest {
 
@@ -51,7 +51,7 @@ public class QueryConsumerChannelHandlerTest {
         consumer.receive(asList(processCreatedEvent, processStartedEvent));
 
         //then
-        verify(eventHandlerContext).handle(processCreatedEvent, processStartedEvent);
+        verify(eventHandlerContext)
+            .handle(processCreatedEvent, processStartedEvent);
     }
-
 }

@@ -36,10 +36,14 @@ public class QuerySwaggerConfig {
             .title(String.format("%s ReST API", buildProperties.getName()))
             .description(buildProperties.get("description"))
             .version(buildProperties.getVersion())
-            .license(String.format("© %s-%s %s. All rights reserved",
-                buildProperties.get("inceptionYear"),
-                buildProperties.get("year"),
-                buildProperties.get("organization.name")))
+            .license(
+                String.format(
+                    "© %s-%s %s. All rights reserved",
+                    buildProperties.get("inceptionYear"),
+                    buildProperties.get("year"),
+                    buildProperties.get("organization.name")
+                )
+            )
             .termsOfServiceUrl(buildProperties.get("organization.url"))
             .build();
     }
@@ -47,12 +51,16 @@ public class QuerySwaggerConfig {
     @Bean
     @ConditionalOnMissingBean
     public Predicate<RequestHandler> apiSelector() {
-        return RequestHandlerSelectors.basePackage("org.activiti.cloud.services.query.rest");
+        return RequestHandlerSelectors.basePackage(
+            "org.activiti.cloud.services.query.rest"
+        );
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public VariableSearchDocketCustomizer variableSearchDocketCustomizer(TypeResolver typeResolver) {
+    public VariableSearchDocketCustomizer variableSearchDocketCustomizer(
+        TypeResolver typeResolver
+    ) {
         return new VariableSearchDocketCustomizer(typeResolver);
     }
 }

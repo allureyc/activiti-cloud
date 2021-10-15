@@ -15,6 +15,7 @@
  */
 package org.activiti.cloud.services.job.executor;
 
+import java.util.Date;
 import org.activiti.engine.impl.asyncexecutor.DefaultJobManager;
 import org.activiti.engine.impl.cfg.ProcessEngineConfigurationImpl;
 import org.activiti.engine.impl.persistence.entity.JobEntity;
@@ -23,23 +24,26 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.stream.config.BindingProperties;
 
-import java.util.Date;
-
 public class MessageBasedJobManager extends DefaultJobManager {
-    private static final Logger logger = LoggerFactory.getLogger(MessageBasedJobManager.class);
 
-    private static final String DEFAULT_INPUT_CHANNEL_NAME = "asyncExecutorJobs";
+    private static final Logger logger = LoggerFactory.getLogger(
+        MessageBasedJobManager.class
+    );
+
+    private static final String DEFAULT_INPUT_CHANNEL_NAME =
+        "asyncExecutorJobs";
 
     private final BindingProperties bindingProperties;
     private final JobMessageProducer jobMessageProducer;
 
     private String inputChannelName = DEFAULT_INPUT_CHANNEL_NAME;
 
-    public MessageBasedJobManager(ProcessEngineConfigurationImpl processEngineConfiguration,
-                                  BindingProperties bindingProperties,
-                                  JobMessageProducer jobMessageProducer) {
+    public MessageBasedJobManager(
+        ProcessEngineConfigurationImpl processEngineConfiguration,
+        BindingProperties bindingProperties,
+        JobMessageProducer jobMessageProducer
+    ) {
         super(processEngineConfiguration);
-
         this.bindingProperties = bindingProperties;
         this.jobMessageProducer = jobMessageProducer;
     }
@@ -59,10 +63,17 @@ public class MessageBasedJobManager extends DefaultJobManager {
             JobEntity jobEntity = (JobEntity) job;
 
             // When unacquiring, we up the lock time again., so that it isn't cleared by the reset expired thread.
-            jobEntity.setLockExpirationTime(new Date(processEngineConfiguration.getClock()
-                                                                               .getCurrentTime()
-                                                                               .getTime() + processEngineConfiguration.getAsyncExecutor()
-                                                                                                                      .getAsyncJobLockTimeInMillis()));
+            jobEntity.setLockExpirationTime(
+                new Date(
+                    processEngineConfiguration
+                        .getClock()
+                        .getCurrentTime()
+                        .getTime() +
+                    processEngineConfiguration
+                        .getAsyncExecutor()
+                        .getAsyncJobLockTimeInMillis()
+                )
+            );
         }
 
         sendMessage(job);

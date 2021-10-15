@@ -25,14 +25,17 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 
-public class ServiceTaskRepresentationModelAssembler implements RepresentationModelAssembler<ServiceTaskEntity, EntityModel<CloudServiceTask>> {
+public class ServiceTaskRepresentationModelAssembler
+    implements
+        RepresentationModelAssembler<ServiceTaskEntity, EntityModel<CloudServiceTask>> {
 
     @Override
     public EntityModel<CloudServiceTask> toModel(ServiceTaskEntity entity) {
-        Link selfRel = linkTo(methodOn(ServiceTaskAdminController.class).findById(entity.getId())).withSelfRel();
+        Link selfRel = linkTo(
+            methodOn(ServiceTaskAdminController.class).findById(entity.getId())
+        )
+            .withSelfRel();
 
-        return new EntityModel<>(entity,
-                                 selfRel);
+        return new EntityModel<>(entity, selfRel);
     }
-
 }

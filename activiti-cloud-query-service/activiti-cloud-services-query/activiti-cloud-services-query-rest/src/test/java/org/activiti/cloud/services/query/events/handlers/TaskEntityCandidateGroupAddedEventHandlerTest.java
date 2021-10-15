@@ -15,8 +15,14 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.UUID;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.UUID;
 import org.activiti.api.task.model.events.TaskCandidateGroupEvent;
 import org.activiti.api.task.model.impl.TaskCandidateGroupImpl;
 import org.activiti.cloud.api.task.model.events.CloudTaskCandidateGroupAddedEvent;
@@ -28,13 +34,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.catchThrowable;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class TaskEntityCandidateGroupAddedEventHandlerTest {
 
@@ -57,10 +56,14 @@ public class TaskEntityCandidateGroupAddedEventHandlerTest {
         handler.handle(event);
 
         //then
-        ArgumentCaptor<org.activiti.cloud.services.query.model.TaskCandidateGroup> captor = ArgumentCaptor.forClass(org.activiti.cloud.services.query.model.TaskCandidateGroup.class);
+        ArgumentCaptor<org.activiti.cloud.services.query.model.TaskCandidateGroup> captor = ArgumentCaptor.forClass(
+            org.activiti.cloud.services.query.model.TaskCandidateGroup.class
+        );
         verify(taskCandidateRepository).save(captor.capture());
-        assertThat(captor.getValue().getTaskId()).isEqualTo(event.getEntity().getTaskId());
-        assertThat(captor.getValue().getGroupId()).isEqualTo(event.getEntity().getGroupId());
+        assertThat(captor.getValue().getTaskId())
+            .isEqualTo(event.getEntity().getTaskId());
+        assertThat(captor.getValue().getGroupId())
+            .isEqualTo(event.getEntity().getGroupId());
     }
 
     @Test
@@ -75,14 +78,20 @@ public class TaskEntityCandidateGroupAddedEventHandlerTest {
 
         //then
         assertThat(throwable)
-                .isInstanceOf(QueryException.class)
-                .hasCause(cause)
-                .hasMessageContaining("Error handling TaskCandidateGroupAddedEvent[");
+            .isInstanceOf(QueryException.class)
+            .hasCause(cause)
+            .hasMessageContaining(
+                "Error handling TaskCandidateGroupAddedEvent["
+            );
     }
 
     private CloudTaskCandidateGroupAddedEvent buildTaskCandidateGroupAddedEvent() {
-        return new CloudTaskCandidateGroupAddedEventImpl(new TaskCandidateGroupImpl(UUID.randomUUID().toString(),
-                                                                                    UUID.randomUUID().toString()));
+        return new CloudTaskCandidateGroupAddedEventImpl(
+            new TaskCandidateGroupImpl(
+                UUID.randomUUID().toString(),
+                UUID.randomUUID().toString()
+            )
+        );
     }
 
     @Test
@@ -91,6 +100,9 @@ public class TaskEntityCandidateGroupAddedEventHandlerTest {
         String event = handler.getHandledEvent();
 
         //then
-        assertThat(event).isEqualTo(TaskCandidateGroupEvent.TaskCandidateGroupEvents.TASK_CANDIDATE_GROUP_ADDED.name());
+        assertThat(event)
+            .isEqualTo(
+                TaskCandidateGroupEvent.TaskCandidateGroupEvents.TASK_CANDIDATE_GROUP_ADDED.name()
+            );
     }
 }

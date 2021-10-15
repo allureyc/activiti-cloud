@@ -16,7 +16,6 @@
 package org.activiti.cloud.services.query.model;
 
 import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -36,15 +35,16 @@ public class ProcessModelEntity {
     @MapsId
     private ProcessDefinitionEntity processDefinition;
 
-    @Column(columnDefinition="text")
+    @Column(columnDefinition = "text")
     private String processModelContent;
 
     //used by persistence framework
-    public ProcessModelEntity() {
-    }
+    public ProcessModelEntity() {}
 
-    public ProcessModelEntity(ProcessDefinitionEntity processDefinition,
-                              String processModelContent) {
+    public ProcessModelEntity(
+        ProcessDefinitionEntity processDefinition,
+        String processModelContent
+    ) {
         this.processDefinition = processDefinition;
         this.processModelContent = processModelContent;
     }
@@ -72,12 +72,9 @@ public class ProcessModelEntity {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         ProcessModelEntity other = (ProcessModelEntity) obj;
         return Objects.equals(id, other.id);
     }

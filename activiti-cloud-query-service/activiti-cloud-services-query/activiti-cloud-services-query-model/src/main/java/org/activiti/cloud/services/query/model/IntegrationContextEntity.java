@@ -42,13 +42,30 @@ import javax.persistence.Table;
 import org.activiti.cloud.api.process.model.CloudIntegrationContext;
 import org.springframework.format.annotation.DateTimeFormat;
 
-@Entity(name="IntegrationContext")
-@Table(name="INTEGRATION_CONTEXT", indexes={
-    @Index(name="integration_context_status_idx", columnList="status", unique=false),
-    @Index(name="integration_context_processInstance_idx", columnList="processInstanceId", unique=false),
-    @Index(name="integration_context_processInstance_elementId_idx", columnList="processInstanceId,clientId,executionId", unique=true)
-})
-public class IntegrationContextEntity extends ActivitiEntityMetadata implements CloudIntegrationContext {
+@Entity(name = "IntegrationContext")
+@Table(
+    name = "INTEGRATION_CONTEXT",
+    indexes = {
+        @Index(
+            name = "integration_context_status_idx",
+            columnList = "status",
+            unique = false
+        ),
+        @Index(
+            name = "integration_context_processInstance_idx",
+            columnList = "processInstanceId",
+            unique = false
+        ),
+        @Index(
+            name = "integration_context_processInstance_elementId_idx",
+            columnList = "processInstanceId,clientId,executionId",
+            unique = true
+        ),
+    }
+)
+public class IntegrationContextEntity
+    extends ActivitiEntityMetadata
+    implements CloudIntegrationContext {
 
     public static final int ERROR_MESSAGE_LENGTH = 255;
 
@@ -56,11 +73,11 @@ public class IntegrationContextEntity extends ActivitiEntityMetadata implements 
     private String id;
 
     @Convert(converter = MapOfStringObjectJsonConverter.class)
-    @Column(columnDefinition="text", name = "inbound_variables")
+    @Column(columnDefinition = "text", name = "inbound_variables")
     private Map<String, Object> inBoundVariables = new HashMap<>();
 
     @Convert(converter = MapOfStringObjectJsonConverter.class)
-    @Column(columnDefinition="text")
+    @Column(columnDefinition = "text")
     private Map<String, Object> outBoundVariables = new HashMap<>();
 
     private String rootProcessInstanceId;
@@ -93,7 +110,7 @@ public class IntegrationContextEntity extends ActivitiEntityMetadata implements 
     private String errorClassName;
 
     @Convert(converter = ListOfStackTraceElementsJsonConverter.class)
-    @Column(columnDefinition="text")
+    @Column(columnDefinition = "text")
     private List<StackTraceElement> stackTraceElements;
 
     @JsonFormat(shape = Shape.STRING)
@@ -110,16 +127,20 @@ public class IntegrationContextEntity extends ActivitiEntityMetadata implements 
         this.id = UUID.randomUUID().toString();
     }
 
-    public IntegrationContextEntity(String serviceName,
-                                    String serviceFullName,
-                                    String serviceVersion,
-                                    String appName,
-                                    String appVersion) {
-        super(serviceName,
-              serviceFullName,
-              serviceVersion,
-              appName,
-              appVersion);
+    public IntegrationContextEntity(
+        String serviceName,
+        String serviceFullName,
+        String serviceVersion,
+        String appName,
+        String appVersion
+    ) {
+        super(
+            serviceName,
+            serviceFullName,
+            serviceVersion,
+            appName,
+            appVersion
+        );
     }
 
     @Override
@@ -213,7 +234,6 @@ public class IntegrationContextEntity extends ActivitiEntityMetadata implements 
         return clientName;
     }
 
-
     public void setClientName(String clientName) {
         this.clientName = clientName;
     }
@@ -223,11 +243,9 @@ public class IntegrationContextEntity extends ActivitiEntityMetadata implements 
         return clientType;
     }
 
-
     public void setClientType(String clientType) {
         this.clientType = clientType;
     }
-
 
     @Override
     public String getBusinessKey() {
@@ -291,7 +309,8 @@ public class IntegrationContextEntity extends ActivitiEntityMetadata implements 
     }
 
     public void setErrorMessage(String errorMessage) {
-        this.errorMessage = StringUtils.truncate(errorMessage, ERROR_MESSAGE_LENGTH);
+        this.errorMessage =
+            StringUtils.truncate(errorMessage, ERROR_MESSAGE_LENGTH);
     }
 
     @Override
@@ -308,7 +327,9 @@ public class IntegrationContextEntity extends ActivitiEntityMetadata implements 
         return stackTraceElements;
     }
 
-    public void setStackTraceElements(List<StackTraceElement> stackTraceElements) {
+    public void setStackTraceElements(
+        List<StackTraceElement> stackTraceElements
+    ) {
         this.stackTraceElements = stackTraceElements;
     }
 
@@ -329,28 +350,33 @@ public class IntegrationContextEntity extends ActivitiEntityMetadata implements 
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + Objects.hash(businessKey,
-                                               clientId,
-                                               clientName,
-                                               clientType,
-                                               connectorType,
-                                               errorClassName,
-                                               errorDate,
-                                               errorMessage,
-                                               id,
-                                               inBoundVariables,
-                                               outBoundVariables,
-                                               parentProcessInstanceId,
-                                               processDefinitionId,
-                                               processDefinitionKey,
-                                               processDefinitionVersion,
-                                               rootProcessInstanceId,
-                                               processInstanceId,
-                                               executionId,
-                                               requestDate,
-                                               resultDate,
-                                               stackTraceElements,
-                                               status);
+        result =
+            prime *
+            result +
+            Objects.hash(
+                businessKey,
+                clientId,
+                clientName,
+                clientType,
+                connectorType,
+                errorClassName,
+                errorDate,
+                errorMessage,
+                id,
+                inBoundVariables,
+                outBoundVariables,
+                parentProcessInstanceId,
+                processDefinitionId,
+                processDefinitionKey,
+                processDefinitionVersion,
+                rootProcessInstanceId,
+                processInstanceId,
+                executionId,
+                requestDate,
+                resultDate,
+                stackTraceElements,
+                status
+            );
         return result;
     }
 
@@ -366,79 +392,103 @@ public class IntegrationContextEntity extends ActivitiEntityMetadata implements 
             return false;
         }
         IntegrationContextEntity other = (IntegrationContextEntity) obj;
-        return Objects.equals(businessKey, other.businessKey) &&
-               Objects.equals(clientId, other.clientId) &&
-               Objects.equals(clientName, other.clientName) &&
-               Objects.equals(clientType, other.clientType) &&
-               Objects.equals(connectorType, other.connectorType) &&
-               Objects.equals(errorClassName, other.errorClassName) &&
-               Objects.equals(errorDate,other.errorDate) &&
-               Objects.equals(errorMessage, other.errorMessage) &&
-               Objects.equals(id, other.id) &&
-               Objects.equals(inBoundVariables, other.inBoundVariables) &&
-               Objects.equals(outBoundVariables, other.outBoundVariables) &&
-               Objects.equals(parentProcessInstanceId, other.parentProcessInstanceId) &&
-               Objects.equals(processDefinitionId, other.processDefinitionId) &&
-               Objects.equals(processDefinitionKey, other.processDefinitionKey) &&
-               Objects.equals(processDefinitionVersion, other.processDefinitionVersion) &&
-               Objects.equals(processInstanceId, other.processInstanceId) &&
-               Objects.equals(rootProcessInstanceId, other.rootProcessInstanceId) &&
-               Objects.equals(executionId, other.executionId) &&
-               Objects.equals(requestDate, other.requestDate) &&
-               Objects.equals(resultDate, other.resultDate) &&
-               Objects.equals(stackTraceElements, other.stackTraceElements) &&
-               status == other.status;
+        return (
+            Objects.equals(businessKey, other.businessKey) &&
+            Objects.equals(clientId, other.clientId) &&
+            Objects.equals(clientName, other.clientName) &&
+            Objects.equals(clientType, other.clientType) &&
+            Objects.equals(connectorType, other.connectorType) &&
+            Objects.equals(errorClassName, other.errorClassName) &&
+            Objects.equals(errorDate, other.errorDate) &&
+            Objects.equals(errorMessage, other.errorMessage) &&
+            Objects.equals(id, other.id) &&
+            Objects.equals(inBoundVariables, other.inBoundVariables) &&
+            Objects.equals(outBoundVariables, other.outBoundVariables) &&
+            Objects.equals(
+                parentProcessInstanceId,
+                other.parentProcessInstanceId
+            ) &&
+            Objects.equals(processDefinitionId, other.processDefinitionId) &&
+            Objects.equals(processDefinitionKey, other.processDefinitionKey) &&
+            Objects.equals(
+                processDefinitionVersion,
+                other.processDefinitionVersion
+            ) &&
+            Objects.equals(processInstanceId, other.processInstanceId) &&
+            Objects.equals(
+                rootProcessInstanceId,
+                other.rootProcessInstanceId
+            ) &&
+            Objects.equals(executionId, other.executionId) &&
+            Objects.equals(requestDate, other.requestDate) &&
+            Objects.equals(resultDate, other.resultDate) &&
+            Objects.equals(stackTraceElements, other.stackTraceElements) &&
+            status == other.status
+        );
     }
 
     @Override
     public String toString() {
         final int maxLen = 10;
         StringBuilder builder = new StringBuilder();
-        builder.append("IntegrationContextEntity [id=")
-               .append(id)
-               .append(", inboundVariables=")
-               .append(inBoundVariables != null ? toString(inBoundVariables.entrySet(), maxLen) : null)
-               .append(", outBoundVariables=")
-               .append(outBoundVariables != null ? toString(outBoundVariables.entrySet(), maxLen) : null)
-               .append(", rootProcessInstanceId=")
-               .append(rootProcessInstanceId)
-               .append(", processInstanceId=")
-               .append(processInstanceId)
-               .append(", executionId=")
-               .append(executionId)
-               .append(", parentProcessInstanceId=")
-               .append(parentProcessInstanceId)
-               .append(", processDefinitionId=")
-               .append(processDefinitionId)
-               .append(", processDefinitionKey=")
-               .append(processDefinitionKey)
-               .append(", processDefinitionVersion=")
-               .append(processDefinitionVersion)
-               .append(", businessKey=")
-               .append(businessKey)
-               .append(", clientId=")
-               .append(clientId)
-               .append(", clientName=")
-               .append(clientName)
-               .append(", clientType=")
-               .append(clientType)
-               .append(", connectorType=")
-               .append(connectorType)
-               .append(", requestDate=")
-               .append(requestDate)
-               .append(", resultDate=")
-               .append(resultDate)
-               .append(", errorDate=")
-               .append(errorDate)
-               .append(", errorMessage=")
-               .append(errorMessage)
-               .append(", errorClassName=")
-               .append(errorClassName)
-               .append(", stackTraceElements=")
-               .append(stackTraceElements != null ? toString(stackTraceElements, maxLen) : null)
-               .append(", status=")
-               .append(status)
-               .append("]");
+        builder
+            .append("IntegrationContextEntity [id=")
+            .append(id)
+            .append(", inboundVariables=")
+            .append(
+                inBoundVariables != null
+                    ? toString(inBoundVariables.entrySet(), maxLen)
+                    : null
+            )
+            .append(", outBoundVariables=")
+            .append(
+                outBoundVariables != null
+                    ? toString(outBoundVariables.entrySet(), maxLen)
+                    : null
+            )
+            .append(", rootProcessInstanceId=")
+            .append(rootProcessInstanceId)
+            .append(", processInstanceId=")
+            .append(processInstanceId)
+            .append(", executionId=")
+            .append(executionId)
+            .append(", parentProcessInstanceId=")
+            .append(parentProcessInstanceId)
+            .append(", processDefinitionId=")
+            .append(processDefinitionId)
+            .append(", processDefinitionKey=")
+            .append(processDefinitionKey)
+            .append(", processDefinitionVersion=")
+            .append(processDefinitionVersion)
+            .append(", businessKey=")
+            .append(businessKey)
+            .append(", clientId=")
+            .append(clientId)
+            .append(", clientName=")
+            .append(clientName)
+            .append(", clientType=")
+            .append(clientType)
+            .append(", connectorType=")
+            .append(connectorType)
+            .append(", requestDate=")
+            .append(requestDate)
+            .append(", resultDate=")
+            .append(resultDate)
+            .append(", errorDate=")
+            .append(errorDate)
+            .append(", errorMessage=")
+            .append(errorMessage)
+            .append(", errorClassName=")
+            .append(errorClassName)
+            .append(", stackTraceElements=")
+            .append(
+                stackTraceElements != null
+                    ? toString(stackTraceElements, maxLen)
+                    : null
+            )
+            .append(", status=")
+            .append(status)
+            .append("]");
         return builder.toString();
     }
 
@@ -446,7 +496,11 @@ public class IntegrationContextEntity extends ActivitiEntityMetadata implements 
         StringBuilder builder = new StringBuilder();
         builder.append("[");
         int i = 0;
-        for (Iterator<?> iterator = collection.iterator(); iterator.hasNext() && i < maxLen; i++) {
+        for (
+            Iterator<?> iterator = collection.iterator();
+            iterator.hasNext() && i < maxLen;
+            i++
+        ) {
             if (i > 0) {
                 builder.append(", ");
             }
@@ -456,30 +510,25 @@ public class IntegrationContextEntity extends ActivitiEntityMetadata implements 
         return builder.toString();
     }
 
-
     @Override
     public IntegrationContextStatus getStatus() {
         return status;
     }
 
-
     public void setStatus(IntegrationContextStatus status) {
         this.status = status;
     }
 
-
     public ServiceTaskEntity getServiceTask() {
         return serviceTask;
     }
-
 
     public void setServiceTask(ServiceTaskEntity serviceTask) {
         if (serviceTask == null) {
             if (this.serviceTask != null) {
                 this.serviceTask.setIntegrationContext(null);
             }
-        }
-        else {
+        } else {
             serviceTask.setIntegrationContext(this);
         }
 
@@ -496,10 +545,10 @@ public class IntegrationContextEntity extends ActivitiEntityMetadata implements 
     }
 
     @Override
-    public void addOutBoundVariable(String name,
-                                    Object value) {
+    public void addOutBoundVariable(String name, Object value) {
         outBoundVariables.put(name, value);
     }
+
     @Override
     public void addOutBoundVariables(Map<String, Object> variables) {
         outBoundVariables.putAll(variables);
@@ -508,32 +557,36 @@ public class IntegrationContextEntity extends ActivitiEntityMetadata implements 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getInBoundVariable(String name) {
-        return Optional.ofNullable(inBoundVariables)
-                       .map(it -> (T) inBoundVariables.get(name))
-                       .orElse(null);
+        return Optional
+            .ofNullable(inBoundVariables)
+            .map(it -> (T) inBoundVariables.get(name))
+            .orElse(null);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getInBoundVariable(String name, Class<T> type) {
-        return Optional.ofNullable(inBoundVariables)
-                       .map(it -> (T) inBoundVariables.get(name))
-                       .orElse(null);
+        return Optional
+            .ofNullable(inBoundVariables)
+            .map(it -> (T) inBoundVariables.get(name))
+            .orElse(null);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getOutBoundVariable(String name) {
-        return Optional.ofNullable(outBoundVariables)
-                       .map(it -> (T) it.get(name))
-                       .orElse(null);
+        return Optional
+            .ofNullable(outBoundVariables)
+            .map(it -> (T) it.get(name))
+            .orElse(null);
     }
 
     @SuppressWarnings("unchecked")
     @Override
     public <T> T getOutBoundVariable(String name, Class<T> type) {
-        return Optional.ofNullable(outBoundVariables)
-                       .map(it -> (T) it.get(name))
-                       .orElse(null);
+        return Optional
+            .ofNullable(outBoundVariables)
+            .map(it -> (T) it.get(name))
+            .orElse(null);
     }
 }

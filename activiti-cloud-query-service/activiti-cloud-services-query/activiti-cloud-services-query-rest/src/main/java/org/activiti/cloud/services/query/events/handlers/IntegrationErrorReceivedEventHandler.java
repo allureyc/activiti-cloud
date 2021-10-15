@@ -17,9 +17,7 @@ package org.activiti.cloud.services.query.events.handlers;
 
 import java.util.Date;
 import java.util.Optional;
-
 import javax.persistence.EntityManager;
-
 import org.activiti.api.process.model.events.IntegrationEvent.IntegrationEvents;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
 import org.activiti.cloud.api.process.model.CloudBPMNActivity;
@@ -32,34 +30,49 @@ import org.activiti.cloud.services.query.model.ServiceTaskEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
-public class IntegrationErrorReceivedEventHandler extends BaseIntegrationEventHandler implements QueryEventHandler {
+public class IntegrationErrorReceivedEventHandler
+    extends BaseIntegrationEventHandler
+    implements QueryEventHandler {
 
-    public IntegrationErrorReceivedEventHandler(IntegrationContextRepository repository,
-                                                ServiceTaskRepository serviceTaskRepository,
-                                                EntityManager entityManager) {
-        super(repository,
-              serviceTaskRepository,
-              entityManager);
+    public IntegrationErrorReceivedEventHandler(
+        IntegrationContextRepository repository,
+        ServiceTaskRepository serviceTaskRepository,
+        EntityManager entityManager
+    ) {
+        super(repository, serviceTaskRepository, entityManager);
     }
 
     @Override
     public void handle(CloudRuntimeEvent<?, ?> event) {
-        CloudIntegrationErrorReceivedEvent integrationEvent = CloudIntegrationErrorReceivedEvent.class.cast(event);
+        CloudIntegrationErrorReceivedEvent integrationEvent =
+            CloudIntegrationErrorReceivedEvent.class.cast(event);
 
-        Optional<IntegrationContextEntity> result = findOrCreateIntegrationContextEntity(integrationEvent);
+        Optional<IntegrationContextEntity> result = findOrCreateIntegrationContextEntity(
+            integrationEvent
+        );
 
         result.ifPresent(entity -> {
             entity.setErrorDate(new Date(integrationEvent.getTimestamp()));
-            entity.setStatus(IntegrationContextStatus.INTEGRATION_ERROR_RECEIVED);
+            entity.setStatus(
+                IntegrationContextStatus.INTEGRATION_ERROR_RECEIVED
+            );
             entity.setErrorCode(integrationEvent.getErrorCode());
             entity.setErrorMessage(integrationEvent.getErrorMessage());
             entity.setErrorClassName(integrationEvent.getErrorClassName());
-            entity.setStackTraceElements(integrationEvent.getStackTraceElements());
-            entity.setInBoundVariables(integrationEvent.getEntity().getInBoundVariables());
-            entity.setOutBoundVariables(integrationEvent.getEntity().getOutBoundVariables());
+            entity.setStackTraceElements(
+                integrationEvent.getStackTraceElements()
+            );
+            entity.setInBoundVariables(
+                integrationEvent.getEntity().getInBoundVariables()
+            );
+            entity.setOutBoundVariables(
+                integrationEvent.getEntity().getOutBoundVariables()
+            );
 
             ServiceTaskEntity serviceTaskEntity = entity.getServiceTask();
-            serviceTaskEntity.setStatus(CloudBPMNActivity.BPMNActivityStatus.ERROR);
+            serviceTaskEntity.setStatus(
+                CloudBPMNActivity.BPMNActivityStatus.ERROR
+            );
         });
     }
 

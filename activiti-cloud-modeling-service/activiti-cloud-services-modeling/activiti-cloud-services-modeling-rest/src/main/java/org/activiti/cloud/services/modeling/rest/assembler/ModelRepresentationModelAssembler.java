@@ -26,12 +26,15 @@ import org.springframework.hateoas.server.RepresentationModelAssembler;
 /**
  * Assembler for {@link Model} resource
  */
-public class ModelRepresentationModelAssembler implements RepresentationModelAssembler<Model, EntityModel<Model>> {
+public class ModelRepresentationModelAssembler
+    implements RepresentationModelAssembler<Model, EntityModel<Model>> {
 
     @Override
     public EntityModel<Model> toModel(Model model) {
-        return new EntityModel<>(model,
-                              linkTo(methodOn(ModelController.class).getModel(model.getId())).withSelfRel());
+        return new EntityModel<>(
+            model,
+            linkTo(methodOn(ModelController.class).getModel(model.getId()))
+                .withSelfRel()
+        );
     }
-
 }

@@ -53,11 +53,18 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 public class SwaggerAutoConfiguration {
 
     @Bean
-    public SwaggerDocketBuilder swaggerDocketBuilder(Predicate<RequestHandler> apiSelector,
+    public SwaggerDocketBuilder swaggerDocketBuilder(
+        Predicate<RequestHandler> apiSelector,
         TypeResolver typeResolver,
         @Autowired(required = false) List<DocketCustomizer> docketCustomizers,
-        @Autowired(required = false) ApiInfo apiInfo) {
-        return new SwaggerDocketBuilder(apiSelector, typeResolver, docketCustomizers, apiInfo);
+        @Autowired(required = false) ApiInfo apiInfo
+    ) {
+        return new SwaggerDocketBuilder(
+            apiSelector,
+            typeResolver,
+            docketCustomizers,
+            apiInfo
+        );
     }
 
     @Bean(name = "alfrescoAPIDocket")
@@ -65,5 +72,4 @@ public class SwaggerAutoConfiguration {
     public Docket alfrescoAPIDocket(SwaggerDocketBuilder swaggerDocketBuilder) {
         return swaggerDocketBuilder.buildAlfrescoAPIDocket();
     }
-
 }

@@ -22,9 +22,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import java.util.UUID;
-
 import javax.persistence.EntityManager;
-
 import org.activiti.api.model.shared.event.VariableEvent;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.activiti.cloud.api.model.shared.impl.events.CloudVariableCreatedEventImpl;
@@ -63,70 +61,108 @@ public class VariableEntityCreatedEventHandlerTest {
     @Test
     public void handleShouldCreateAndStoreProcessInstanceVariable() {
         //given
-        CloudVariableCreatedEventImpl event = new CloudVariableCreatedEventImpl(buildVariable());
+        CloudVariableCreatedEventImpl event = new CloudVariableCreatedEventImpl(
+            buildVariable()
+        );
 
-        ProcessInstanceEntity processInstanceEntity = mock(ProcessInstanceEntity.class);
-        when(entityManager.getReference(ProcessInstanceEntity.class,
-                                        event.getEntity().getProcessInstanceId()))
-                .thenReturn(processInstanceEntity);
+        ProcessInstanceEntity processInstanceEntity = mock(
+            ProcessInstanceEntity.class
+        );
+        when(
+            entityManager.getReference(
+                ProcessInstanceEntity.class,
+                event.getEntity().getProcessInstanceId()
+            )
+        )
+            .thenReturn(processInstanceEntity);
 
         //when
         handler.handle(event);
 
         //then
-        ArgumentCaptor<ProcessVariableEntity> captor = ArgumentCaptor.forClass(ProcessVariableEntity.class);
+        ArgumentCaptor<ProcessVariableEntity> captor = ArgumentCaptor.forClass(
+            ProcessVariableEntity.class
+        );
         verify(variableRepository).save(captor.capture());
 
         ProcessVariableEntity variableEntity = captor.getValue();
 
-        Assertions.assertThat(variableEntity)
-                .hasProcessInstanceId(event.getEntity().getProcessInstanceId())
-                .hasName(event.getEntity().getName())
-                .hasTaskId(event.getEntity().getTaskId())
-                .hasType(event.getEntity().getType())
-                .isNotTaskVariable()
-                .hasProcessInstance(processInstanceEntity);
+        Assertions
+            .assertThat(variableEntity)
+            .hasProcessInstanceId(event.getEntity().getProcessInstanceId())
+            .hasName(event.getEntity().getName())
+            .hasTaskId(event.getEntity().getTaskId())
+            .hasType(event.getEntity().getType())
+            .isNotTaskVariable()
+            .hasProcessInstance(processInstanceEntity);
     }
 
     private static VariableInstanceImpl<String> buildVariable() {
-        return new VariableInstanceImpl<>("var", "string", "v1", "procInstId", null);
+        return new VariableInstanceImpl<>(
+            "var",
+            "string",
+            "v1",
+            "procInstId",
+            null
+        );
     }
 
     @Test
     public void handleShouldCreateAndStoreTaskVariable() {
         //given
-        CloudVariableCreatedEventImpl event = new CloudVariableCreatedEventImpl(buildVariableWithTaskId());
+        CloudVariableCreatedEventImpl event = new CloudVariableCreatedEventImpl(
+            buildVariableWithTaskId()
+        );
 
-        ProcessInstanceEntity processInstanceEntity = mock(ProcessInstanceEntity.class);
-        when(entityManager.getReference(ProcessInstanceEntity.class,
-                                        event.getEntity().getProcessInstanceId()))
-                .thenReturn(processInstanceEntity);
+        ProcessInstanceEntity processInstanceEntity = mock(
+            ProcessInstanceEntity.class
+        );
+        when(
+            entityManager.getReference(
+                ProcessInstanceEntity.class,
+                event.getEntity().getProcessInstanceId()
+            )
+        )
+            .thenReturn(processInstanceEntity);
 
         TaskEntity taskEntity = mock(TaskEntity.class);
-        when(entityManager.getReference(TaskEntity.class,
-                                        event.getEntity().getTaskId()))
-                .thenReturn(taskEntity);
+        when(
+            entityManager.getReference(
+                TaskEntity.class,
+                event.getEntity().getTaskId()
+            )
+        )
+            .thenReturn(taskEntity);
 
         //when
         handler.handle(event);
 
         //then
-        ArgumentCaptor<TaskVariableEntity> captor = ArgumentCaptor.forClass(TaskVariableEntity.class);
+        ArgumentCaptor<TaskVariableEntity> captor = ArgumentCaptor.forClass(
+            TaskVariableEntity.class
+        );
         verify(taskVariableRepository).save(captor.capture());
 
         TaskVariableEntity variableEntity = captor.getValue();
 
-        Assertions.assertThat(variableEntity)
-                .hasProcessInstanceId(event.getEntity().getProcessInstanceId())
-                .hasName(event.getEntity().getName())
-                .hasTaskId(event.getEntity().getTaskId())
-                .hasType(event.getEntity().getType())
-                .hasTask(taskEntity)
-                .hasProcessInstance(processInstanceEntity);
+        Assertions
+            .assertThat(variableEntity)
+            .hasProcessInstanceId(event.getEntity().getProcessInstanceId())
+            .hasName(event.getEntity().getName())
+            .hasTaskId(event.getEntity().getTaskId())
+            .hasType(event.getEntity().getType())
+            .hasTask(taskEntity)
+            .hasProcessInstance(processInstanceEntity);
     }
 
     private static VariableInstanceImpl<String> buildVariableWithTaskId() {
-        return new VariableInstanceImpl<>("var", "string", "v1", "procInstId", "taskId");
+        return new VariableInstanceImpl<>(
+            "var",
+            "string",
+            "v1",
+            "procInstId",
+            "taskId"
+        );
     }
 
     @Test
@@ -135,6 +171,7 @@ public class VariableEntityCreatedEventHandlerTest {
         String handledEvent = handler.getHandledEvent();
 
         //then
-        assertThat(handledEvent).isEqualTo(VariableEvent.VariableEvents.VARIABLE_CREATED.name());
+        assertThat(handledEvent)
+            .isEqualTo(VariableEvent.VariableEvents.VARIABLE_CREATED.name());
     }
 }

@@ -25,14 +25,20 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 
-public class IntegrationContextRepresentationModelAssembler implements RepresentationModelAssembler<IntegrationContextEntity, EntityModel<CloudIntegrationContext>> {
+public class IntegrationContextRepresentationModelAssembler
+    implements
+        RepresentationModelAssembler<IntegrationContextEntity, EntityModel<CloudIntegrationContext>> {
 
     @Override
-    public EntityModel<CloudIntegrationContext> toModel(IntegrationContextEntity entity) {
-        Link selfRel = linkTo(methodOn(ServiceTaskIntegrationContextAdminController.class).findById(entity.getId())).withSelfRel();
+    public EntityModel<CloudIntegrationContext> toModel(
+        IntegrationContextEntity entity
+    ) {
+        Link selfRel = linkTo(
+            methodOn(ServiceTaskIntegrationContextAdminController.class)
+                .findById(entity.getId())
+        )
+            .withSelfRel();
 
-        return new EntityModel<>(entity,
-                                 selfRel);
+        return new EntityModel<>(entity, selfRel);
     }
-
 }

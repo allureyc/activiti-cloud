@@ -26,16 +26,19 @@ public class TaskCandidateGroupAddedEventHandler implements QueryEventHandler {
 
     private final TaskCandidateGroupRepository taskCandidateGroupRepository;
 
-    public TaskCandidateGroupAddedEventHandler(TaskCandidateGroupRepository taskCandidateGroupRepository) {
+    public TaskCandidateGroupAddedEventHandler(
+        TaskCandidateGroupRepository taskCandidateGroupRepository
+    ) {
         this.taskCandidateGroupRepository = taskCandidateGroupRepository;
     }
 
     @Override
     public void handle(CloudRuntimeEvent<?, ?> event) {
-
         CloudTaskCandidateGroupAddedEvent taskCandidateGroupAddedEvent = (CloudTaskCandidateGroupAddedEvent) event;
-        TaskCandidateGroup taskCandidateGroup = new TaskCandidateGroup(taskCandidateGroupAddedEvent.getEntity().getTaskId(),
-                                                                       taskCandidateGroupAddedEvent.getEntity().getGroupId());
+        TaskCandidateGroup taskCandidateGroup = new TaskCandidateGroup(
+            taskCandidateGroupAddedEvent.getEntity().getTaskId(),
+            taskCandidateGroupAddedEvent.getEntity().getGroupId()
+        );
 
         // not going to look up task as candidate can be created before task
 
@@ -43,8 +46,10 @@ public class TaskCandidateGroupAddedEventHandler implements QueryEventHandler {
         try {
             taskCandidateGroupRepository.save(taskCandidateGroup);
         } catch (Exception cause) {
-            throw new QueryException("Error handling TaskCandidateGroupAddedEvent[" + event + "]",
-                                     cause);
+            throw new QueryException(
+                "Error handling TaskCandidateGroupAddedEvent[" + event + "]",
+                cause
+            );
         }
     }
 

@@ -15,43 +15,47 @@
  */
 package org.activiti.cloud.services.modeling.validation.process;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowNode;
 import org.activiti.cloud.modeling.api.ModelValidationError;
 import org.activiti.cloud.modeling.api.ValidationContext;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
 /**
  * Implementation of {@link BpmnModelValidator} for validating Incoming and Outgoing flows
  */
-public class BpmnModelIncomingOutgoingFlowValidator implements BpmnModelValidator{
+public class BpmnModelIncomingOutgoingFlowValidator
+    implements BpmnModelValidator {
 
     private final List<FlowNodeFlowsValidator> flowNodeFlowsValidators;
 
-    public BpmnModelIncomingOutgoingFlowValidator(List<FlowNodeFlowsValidator> flowNodeFlowsValidators) {
+    public BpmnModelIncomingOutgoingFlowValidator(
+        List<FlowNodeFlowsValidator> flowNodeFlowsValidators
+    ) {
         this.flowNodeFlowsValidators = flowNodeFlowsValidators;
     }
 
     @Override
-    public Stream<ModelValidationError> validate(BpmnModel bpmnModel, ValidationContext validationContext) {
+    public Stream<ModelValidationError> validate(
+        BpmnModel bpmnModel,
+        ValidationContext validationContext
+    ) {
         List<ModelValidationError> errors = new ArrayList<>();
-        getFlowElements(bpmnModel,
-            FlowNode.class).forEach(flowNode -> {
-            errors.addAll(validateFlowNode(flowNode));
-        });
+        getFlowElements(bpmnModel, FlowNode.class)
+            .forEach(flowNode -> {
+                errors.addAll(validateFlowNode(flowNode));
+            });
 
         return errors.stream();
     }
 
     private List<ModelValidationError> validateFlowNode(FlowNode flowNode) {
-
         List<ModelValidationError> errors = new ArrayList<>();
 
-        for (FlowNodeFlowsValidator validator: flowNodeFlowsValidators) {
-            if (validator.canValidate(flowNode)){
+        for (FlowNodeFlowsValidator validator : flowNodeFlowsValidators) {
+            if (validator.canValidate(flowNode)) {
                 errors.addAll(validator.validate(flowNode));
             }
         }

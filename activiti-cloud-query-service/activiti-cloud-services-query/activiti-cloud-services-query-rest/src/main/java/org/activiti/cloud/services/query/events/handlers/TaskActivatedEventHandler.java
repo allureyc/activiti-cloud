@@ -17,7 +17,6 @@ package org.activiti.cloud.services.query.events.handlers;
 
 import java.util.Date;
 import java.util.Optional;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
@@ -38,18 +37,27 @@ public class TaskActivatedEventHandler implements QueryEventHandler {
     public void handle(CloudRuntimeEvent<?, ?> event) {
         CloudTaskActivatedEvent taskActivatedEvent = (CloudTaskActivatedEvent) event;
         Task eventTask = taskActivatedEvent.getEntity();
-        Optional<TaskEntity> findResult = taskRepository.findById(eventTask.getId());
-        TaskEntity taskEntity = findResult.orElseThrow(
-                () -> new QueryException("Unable to find taskEntity with id: " + eventTask.getId())
+        Optional<TaskEntity> findResult = taskRepository.findById(
+            eventTask.getId()
         );
-        if (taskEntity.getAssignee() != null && !taskEntity.getAssignee().isEmpty()) {
+        TaskEntity taskEntity = findResult.orElseThrow(() ->
+            new QueryException(
+                "Unable to find taskEntity with id: " + eventTask.getId()
+            )
+        );
+        if (
+            taskEntity.getAssignee() != null &&
+            !taskEntity.getAssignee().isEmpty()
+        ) {
             taskEntity.setStatus(Task.TaskStatus.ASSIGNED);
         } else {
             taskEntity.setStatus(Task.TaskStatus.CREATED);
         }
         taskEntity.setLastModified(new Date(taskActivatedEvent.getTimestamp()));
         taskEntity.setOwner(taskActivatedEvent.getEntity().getOwner());
-        taskEntity.setClaimedDate(taskActivatedEvent.getEntity().getClaimedDate());
+        taskEntity.setClaimedDate(
+            taskActivatedEvent.getEntity().getClaimedDate()
+        );
         taskRepository.save(taskEntity);
     }
 

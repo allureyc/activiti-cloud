@@ -52,14 +52,17 @@ import org.springframework.test.web.servlet.MockMvc;
 @WebMvcTest(AuditEventsDeleteController.class)
 @EnableSpringDataWebSupport
 @AutoConfigureMockMvc
-@Import({
-    AuditAPIAutoConfiguration.class,
-    AuditJPAAutoConfiguration.class,
-    AlfrescoWebAutoConfiguration.class
-})
+@Import(
+    {
+        AuditAPIAutoConfiguration.class,
+        AuditJPAAutoConfiguration.class,
+        AlfrescoWebAutoConfiguration.class,
+    }
+)
 public class AuditEventDeleteControllerIT {
 
-    private static final String DOCUMENTATION_ALFRESCO_IDENTIFIER = "events-alfresco";
+    private static final String DOCUMENTATION_ALFRESCO_IDENTIFIER =
+        "events-alfresco";
 
     @MockBean
     private EventsRepository eventsRepository;
@@ -80,24 +83,28 @@ public class AuditEventDeleteControllerIT {
     }
 
     @Test
-    public void deleteEventsShouldReturnAllEventsAndDeleteThem() throws Exception {
-
+    public void deleteEventsShouldReturnAllEventsAndDeleteThem()
+        throws Exception {
         //given
         List<AuditEventEntity> list = buildEventsData(1);
-        given(eventsRepository.findAll())
-                .willReturn(list);
+        given(eventsRepository.findAll()).willReturn(list);
 
         //when
-        mockMvc.perform(delete("/admin/v1/" + EventsLinkRelationProvider.COLLECTION_RESOURCE_REL)
-                .accept(MediaType.APPLICATION_JSON))
-                //then
-                .andExpect(status().isOk());
+        mockMvc
+            .perform(
+                delete(
+                    "/admin/v1/" +
+                    EventsLinkRelationProvider.COLLECTION_RESOURCE_REL
+                )
+                    .accept(MediaType.APPLICATION_JSON)
+            )
+            //then
+            .andExpect(status().isOk());
 
         verify(eventsRepository).deleteAll(list);
     }
 
     private List<AuditEventEntity> buildEventsData(int recordsNumber) {
-
         List<AuditEventEntity> eventsList = new ArrayList<>();
 
         for (long i = 0; i < recordsNumber; i++) {
@@ -119,7 +126,9 @@ public class AuditEventDeleteControllerIT {
         processInstance.setProcessDefinitionId("1");
         eventEntity.setProcessInstance(processInstance);
         eventEntity.setServiceName("rb-my-app");
-        eventEntity.setEventType(ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED.name());
+        eventEntity.setEventType(
+            ProcessRuntimeEvent.ProcessEvents.PROCESS_STARTED.name()
+        );
         eventEntity.setProcessDefinitionId("1");
         eventEntity.setProcessInstanceId("10");
         eventEntity.setTimestamp(System.currentTimeMillis());

@@ -23,19 +23,26 @@ public class TaskVariableUpdatedEventHandler {
 
     private final TaskVariableUpdater variableUpdater;
 
-    public TaskVariableUpdatedEventHandler(TaskVariableUpdater variableUpdater) {
+    public TaskVariableUpdatedEventHandler(
+        TaskVariableUpdater variableUpdater
+    ) {
         this.variableUpdater = variableUpdater;
     }
 
     public void handle(TaskVariableEntity updatedVariableEntity) {
         String variableName = updatedVariableEntity.getName();
         String taskId = updatedVariableEntity.getTaskId();
-        BooleanExpression predicate = QTaskVariableEntity.taskVariableEntity.name.eq(variableName)
-                .and(
-                        QTaskVariableEntity.taskVariableEntity.taskId.eq(taskId)
-                );
-        variableUpdater.update(updatedVariableEntity,
-                               predicate,
-                               "Unable to find variable named '" + variableName + "' for task '" + taskId + "'");
+        BooleanExpression predicate = QTaskVariableEntity.taskVariableEntity.name
+            .eq(variableName)
+            .and(QTaskVariableEntity.taskVariableEntity.taskId.eq(taskId));
+        variableUpdater.update(
+            updatedVariableEntity,
+            predicate,
+            "Unable to find variable named '" +
+            variableName +
+            "' for task '" +
+            taskId +
+            "'"
+        );
     }
 }

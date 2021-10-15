@@ -15,28 +15,32 @@
  */
 package org.activiti.cloud.services.modeling.validation.process;
 
+import java.util.Optional;
+import java.util.stream.Stream;
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.Process;
 import org.activiti.cloud.modeling.api.ModelValidationError;
 import org.activiti.cloud.modeling.api.ValidationContext;
 import org.activiti.cloud.services.modeling.validation.DNSNameValidator;
 
-import java.util.Optional;
-import java.util.stream.Stream;
-
 /**
  * Implementation of {@link BpmnModelValidator} for validating process name
  */
-public class BpmnModelNameValidator implements BpmnModelValidator,
-                                               DNSNameValidator {
+public class BpmnModelNameValidator
+    implements BpmnModelValidator, DNSNameValidator {
 
     @Override
-    public Stream<ModelValidationError> validate(BpmnModel bpmnModel,
-                                                 ValidationContext validationContext) {
-        return validateDNSName(Optional.ofNullable(bpmnModel)
-                                       .map(BpmnModel::getMainProcess)
-                                       .map(Process::getName)
-                                       .orElse(null),
-                               "process");
+    public Stream<ModelValidationError> validate(
+        BpmnModel bpmnModel,
+        ValidationContext validationContext
+    ) {
+        return validateDNSName(
+            Optional
+                .ofNullable(bpmnModel)
+                .map(BpmnModel::getMainProcess)
+                .map(Process::getName)
+                .orElse(null),
+            "process"
+        );
     }
 }

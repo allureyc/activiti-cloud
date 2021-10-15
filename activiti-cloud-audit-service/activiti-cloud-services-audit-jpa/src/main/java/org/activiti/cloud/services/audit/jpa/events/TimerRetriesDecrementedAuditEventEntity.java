@@ -15,21 +15,27 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
-import org.activiti.cloud.api.process.model.events.CloudBPMNTimerRetriesDecrementedEvent;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import org.activiti.cloud.api.process.model.events.CloudBPMNTimerRetriesDecrementedEvent;
 
-@Entity(name = TimerRetriesDecrementedAuditEventEntity.TIMER_RETRIES_DECREMENTED_EVENT)
-@DiscriminatorValue(value = TimerRetriesDecrementedAuditEventEntity.TIMER_RETRIES_DECREMENTED_EVENT)
-public class TimerRetriesDecrementedAuditEventEntity extends TimerAuditEventEntity {
+@Entity(
+    name = TimerRetriesDecrementedAuditEventEntity.TIMER_RETRIES_DECREMENTED_EVENT
+)
+@DiscriminatorValue(
+    value = TimerRetriesDecrementedAuditEventEntity.TIMER_RETRIES_DECREMENTED_EVENT
+)
+public class TimerRetriesDecrementedAuditEventEntity
+    extends TimerAuditEventEntity {
 
-    protected static final String TIMER_RETRIES_DECREMENTED_EVENT = "TimerRetriesDecrementedEvent";
-    
-    public TimerRetriesDecrementedAuditEventEntity() {
-    }
+    protected static final String TIMER_RETRIES_DECREMENTED_EVENT =
+        "TimerRetriesDecrementedEvent";
 
-    public TimerRetriesDecrementedAuditEventEntity(CloudBPMNTimerRetriesDecrementedEvent cloudEvent) {
+    public TimerRetriesDecrementedAuditEventEntity() {}
+
+    public TimerRetriesDecrementedAuditEventEntity(
+        CloudBPMNTimerRetriesDecrementedEvent cloudEvent
+    ) {
         super(cloudEvent);
     }
 
@@ -55,7 +61,10 @@ public class TimerRetriesDecrementedAuditEventEntity extends TimerAuditEventEnti
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("TimerRetriesDecrementedAuditEventEntity [toString()=").append(super.toString()).append("]");
+        builder
+            .append("TimerRetriesDecrementedAuditEventEntity [toString()=")
+            .append(super.toString())
+            .append("]");
         return builder.toString();
     }
 }

@@ -55,8 +55,13 @@ import org.springframework.test.context.TestPropertySource;
 @TestPropertySource("classpath:application-test.properties")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext
-@ContextConfiguration(classes = RuntimeITConfiguration.class,
-    initializers = {RabbitMQContainerApplicationInitializer.class, KeycloakContainerApplicationInitializer.class})
+@ContextConfiguration(
+    classes = RuntimeITConfiguration.class,
+    initializers = {
+        RabbitMQContainerApplicationInitializer.class,
+        KeycloakContainerApplicationInitializer.class,
+    }
+)
 public class MQServiceTaskIT {
 
     @Autowired
@@ -79,7 +84,9 @@ public class MQServiceTaskIT {
 
     @BeforeEach
     public void setUp() {
-        keycloakSecurityContextClientRequestInterceptor.setKeycloakTestUser(keycloakTestUser);
+        keycloakSecurityContextClientRequestInterceptor.setKeycloakTestUser(
+            keycloakTestUser
+        );
     }
 
     @Test
@@ -100,24 +107,37 @@ public class MQServiceTaskIT {
         variables.put("customPojoAnnotated", customPojoAnnotated);
 
         //when
-        ProcessInstance procInst = runtimeService.startProcessInstanceByKey("MQServiceTaskProcess",
+        ProcessInstance procInst = runtimeService.startProcessInstanceByKey(
+            "MQServiceTaskProcess",
             "businessKey",
-            variables);
+            variables
+        );
         assertThat(procInst).isNotNull();
 
         //then
-        await("the execution should arrive in the human tasks which follows the service task")
+        await(
+            "the execution should arrive in the human tasks which follows the service task"
+        )
             .untilAsserted(() -> {
-                    List<Task> tasks = taskService.createTaskQuery().processInstanceId(procInst.getProcessInstanceId()).list();
-                    assertThat(tasks).isNotNull();
-                    assertThat(tasks).extracting(Task::getName).containsExactly("Schedule meeting after service");
-                }
-            );
+                List<Task> tasks = taskService
+                    .createTaskQuery()
+                    .processInstanceId(procInst.getProcessInstanceId())
+                    .list();
+                assertThat(tasks).isNotNull();
+                assertThat(tasks)
+                    .extracting(Task::getName)
+                    .containsExactly("Schedule meeting after service");
+            });
 
-        List<Task> tasks = taskService.createTaskQuery().processInstanceId(procInst.getProcessInstanceId()).list();
+        List<Task> tasks = taskService
+            .createTaskQuery()
+            .processInstanceId(procInst.getProcessInstanceId())
+            .list();
 
         // the variable "age" should be updated based on ServiceTaskConsumerHandler.receive
-        Map<String, Object> updatedVariables = runtimeService.getVariables(procInst.getId());
+        Map<String, Object> updatedVariables = runtimeService.getVariables(
+            procInst.getId()
+        );
         assertThat(updatedVariables)
             .containsEntry("firstName", "John")
             .containsEntry("lastName", "Smith")
@@ -125,41 +145,68 @@ public class MQServiceTaskIT {
             .containsEntry("boolVar", false);
 
         //engine can resolve annotated pojo in var to correct type but not without annotation
-        assertThat(updatedVariables.get("customPojo").getClass()).isEqualTo(CustomPojo.class);
-        assertThat(updatedVariables.get("customPojoAnnotated").getClass()).isEqualTo(CustomPojoAnnotated.class);
+        assertThat(updatedVariables.get("customPojo").getClass())
+            .isEqualTo(CustomPojo.class);
+        assertThat(updatedVariables.get("customPojoAnnotated").getClass())
+            .isEqualTo(CustomPojoAnnotated.class);
 
-        assertThat(updatedVariables.get("customPojoTypeInConnector")).isEqualTo("Type of customPojo var in connector is " + LinkedHashMap.class);
-        assertThat(updatedVariables.get("customPojoField1InConnector")).isEqualTo("Value of field1 on customPojo is field1");
-        assertThat(updatedVariables.get("customPojoAnnotatedTypeInConnector")).isEqualTo("Type of customPojoAnnotated var in connector is " + LinkedHashMap.class);
+        assertThat(updatedVariables.get("customPojoTypeInConnector"))
+            .isEqualTo(
+                "Type of customPojo var in connector is " + LinkedHashMap.class
+            );
+        assertThat(updatedVariables.get("customPojoField1InConnector"))
+            .isEqualTo("Value of field1 on customPojo is field1");
+        assertThat(updatedVariables.get("customPojoAnnotatedTypeInConnector"))
+            .isEqualTo(
+                "Type of customPojoAnnotated var in connector is " +
+                LinkedHashMap.class
+            );
 
         //should be able to complete the process
         //when
         taskService.complete(tasks.get(0).getId());
 
         //then
-        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processInstanceId(procInst.getId()).list();
+        List<ProcessInstance> processInstances = runtimeService
+            .createProcessInstanceQuery()
+            .processInstanceId(procInst.getId())
+            .list();
         assertThat(processInstances).isEmpty();
     }
 
     @Test
     public void integrationContextShouldBeDeletedWhenTheTaskIsCancelled() {
         //given
-        ProcessInstance procInst = runtimeService.startProcessInstanceByKey("MQServiceTaskWithBoundaryProcess");
-        List<Task> tasks = taskService.createTaskQuery().processInstanceId(procInst.getProcessInstanceId()).list();
+        ProcessInstance procInst = runtimeService.startProcessInstanceByKey(
+            "MQServiceTaskWithBoundaryProcess"
+        );
+        List<Task> tasks = taskService
+            .createTaskQuery()
+            .processInstanceId(procInst.getProcessInstanceId())
+            .list();
         assertThat(tasks).isEmpty();
 
         //when boundary is triggered
         runtimeService.signalEventReceived("goPlanB");
 
         //then the exception path is taken
-        tasks = taskService.createTaskQuery().processInstanceId(procInst.getProcessInstanceId()).list();
-        assertThat(tasks).extracting(Task::getName).containsExactly("Execute plan B");
+        tasks =
+            taskService
+                .createTaskQuery()
+                .processInstanceId(procInst.getProcessInstanceId())
+                .list();
+        assertThat(tasks)
+            .extracting(Task::getName)
+            .containsExactly("Execute plan B");
 
         //when the task related to the exception path is executed
         taskService.complete(tasks.get(0).getId());
 
         //the process should finish
-        List<ProcessInstance> processInstances = runtimeService.createProcessInstanceQuery().processInstanceId(procInst.getId()).list();
+        List<ProcessInstance> processInstances = runtimeService
+            .createProcessInstanceQuery()
+            .processInstanceId(procInst.getId())
+            .list();
         assertThat(processInstances).isEmpty();
     }
 
@@ -167,35 +214,54 @@ public class MQServiceTaskIT {
     public void shouldHandleVariableMappings() {
         //given
         ResponseEntity<CloudProcessInstance> processInstanceResponseEntity = processInstanceRestTemplate.startProcess(
-            ProcessPayloadBuilder.start()
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey("connectorVarMapping")
                 .withBusinessKey("businessKey")
-                .build());
+                .build()
+        );
 
-        await().untilAsserted(() -> {
-            //when
-            ResponseEntity<CollectionModel<CloudVariableInstance>> responseEntity = processInstanceRestTemplate.getVariables(processInstanceResponseEntity);
+        await()
+            .untilAsserted(() -> {
+                //when
+                ResponseEntity<CollectionModel<CloudVariableInstance>> responseEntity = processInstanceRestTemplate.getVariables(
+                    processInstanceResponseEntity
+                );
 
-            //then
-            assertThat(responseEntity.getBody()).isNotNull();
-            assertThat(responseEntity.getBody().getContent())
-                .isNotNull()
-                .extracting(CloudVariableInstance::getName,
-                    CloudVariableInstance::getValue)
-                .containsOnly(tuple("name", "outName"), //mapped from connector outputs based on extension mappings
-                    tuple("age", 25),        //mapped from connector outputs based on extension mappings
-                    tuple("input_unmapped_variable_with_matching_name", "inTest"), //kept unchanging because no connector output is updating it
-                    tuple("input_unmapped_variable_with_non_matching_connector_input_name", "inTest"), //kept unchanging because no connector output is updating it
-                    tuple("nickName", "testName"),//kept unchanging because no connector output is updating it
-                    tuple("out_unmapped_variable_matching_name", "default"),//not present in extension mappings, hence not updated although
-                    // the process variable have the same name as the connector output
-                    tuple("output_unmapped_variable_with_non_matching_connector_output_name", "default"),
-                    tuple("outVarFromJsonExpression", "Tower of London"),
-                    tuple("outVarFromListExpression", "Peter"));//kept unchanging because no connector output is updating it
+                //then
+                assertThat(responseEntity.getBody()).isNotNull();
+                assertThat(responseEntity.getBody().getContent())
+                    .isNotNull()
+                    .extracting(
+                        CloudVariableInstance::getName,
+                        CloudVariableInstance::getValue
+                    )
+                    .containsOnly(
+                        tuple("name", "outName"), //mapped from connector outputs based on extension mappings
+                        tuple("age", 25), //mapped from connector outputs based on extension mappings
+                        tuple(
+                            "input_unmapped_variable_with_matching_name",
+                            "inTest"
+                        ), //kept unchanging because no connector output is updating it
+                        tuple(
+                            "input_unmapped_variable_with_non_matching_connector_input_name",
+                            "inTest"
+                        ), //kept unchanging because no connector output is updating it
+                        tuple("nickName", "testName"), //kept unchanging because no connector output is updating it
+                        tuple("out_unmapped_variable_matching_name", "default"), //not present in extension mappings, hence not updated although
+                        // the process variable have the same name as the connector output
+                        tuple(
+                            "output_unmapped_variable_with_non_matching_connector_output_name",
+                            "default"
+                        ),
+                        tuple("outVarFromJsonExpression", "Tower of London"),
+                        tuple("outVarFromListExpression", "Peter")
+                    ); //kept unchanging because no connector output is updating it
+            });
 
-        });
-
-        ResponseEntity<PagedModel<CloudTask>> tasks = processInstanceRestTemplate.getTasks(processInstanceResponseEntity);
+        ResponseEntity<PagedModel<CloudTask>> tasks = processInstanceRestTemplate.getTasks(
+            processInstanceResponseEntity
+        );
         assertThat(tasks.getBody()).isNotNull();
         assertThat(tasks.getBody().getContent())
             .extracting(CloudTask::getName)
@@ -206,26 +272,34 @@ public class MQServiceTaskIT {
     public void shouldHandleConstants() {
         //given
         ResponseEntity<CloudProcessInstance> processInstanceResponseEntity = processInstanceRestTemplate.startProcess(
-            ProcessPayloadBuilder.start()
+            ProcessPayloadBuilder
+                .start()
                 .withProcessDefinitionKey("connectorConstants")
                 .withBusinessKey("businessKey")
-                .build());
+                .build()
+        );
 
-        await().untilAsserted(() -> {
-            //when
-            ResponseEntity<CollectionModel<CloudVariableInstance>> responseEntity = processInstanceRestTemplate.getVariables(processInstanceResponseEntity);
+        await()
+            .untilAsserted(() -> {
+                //when
+                ResponseEntity<CollectionModel<CloudVariableInstance>> responseEntity = processInstanceRestTemplate.getVariables(
+                    processInstanceResponseEntity
+                );
 
-            //then
-            assertThat(responseEntity.getBody()).isNotNull();
-            assertThat(responseEntity.getBody().getContent())
-                .isNotNull()
-                .extracting(CloudVariableInstance::getName,
-                    CloudVariableInstance::getValue)
-                .containsOnly(tuple("name", "outName"), //mapped from connector outputs based on extension mappings
-                    tuple("age", 25),
-                    tuple("_constant_value_", "myConstantValue"));
-
-        });
+                //then
+                assertThat(responseEntity.getBody()).isNotNull();
+                assertThat(responseEntity.getBody().getContent())
+                    .isNotNull()
+                    .extracting(
+                        CloudVariableInstance::getName,
+                        CloudVariableInstance::getValue
+                    )
+                    .containsOnly(
+                        tuple("name", "outName"), //mapped from connector outputs based on extension mappings
+                        tuple("age", 25),
+                        tuple("_constant_value_", "myConstantValue")
+                    );
+            });
     }
 
     /**
@@ -237,37 +311,52 @@ public class MQServiceTaskIT {
     public void integrationRequestShouldAlwaysHaveProcessDefinitionVersionSet() {
         //given
         ResponseEntity<CloudProcessInstance> processInstanceResponseEntity = processInstanceRestTemplate.startProcess(
-            ProcessPayloadBuilder.start()
-                .withProcessDefinitionKey("process-f0d643a4-27d7-474f-b71f-4d7f04989843")
+            ProcessPayloadBuilder
+                .start()
+                .withProcessDefinitionKey(
+                    "process-f0d643a4-27d7-474f-b71f-4d7f04989843"
+                )
                 .withBusinessKey("businessKey")
-                .build());
+                .build()
+        );
 
         CloudTask task = getTaskToExecute(processInstanceResponseEntity);
         taskRestTemplate.claim(task);
         taskRestTemplate.complete(task);
 
-        await().untilAsserted(() -> {
-            //when
-            ResponseEntity<CollectionModel<CloudVariableInstance>> responseEntity = processInstanceRestTemplate.getVariables(processInstanceResponseEntity);
+        await()
+            .untilAsserted(() -> {
+                //when
+                ResponseEntity<CollectionModel<CloudVariableInstance>> responseEntity = processInstanceRestTemplate.getVariables(
+                    processInstanceResponseEntity
+                );
 
-            //then
-            assertThat(responseEntity.getBody()).isNotNull();
-            assertThat(responseEntity.getBody().getContent())
-                .isNotNull()
-                .extracting(CloudVariableInstance::getName,
-                    CloudVariableInstance::getValue)
-                .containsOnly(tuple("restResult", "fromConnector"));//kept unchanging because no connector output is updating it
-        });
+                //then
+                assertThat(responseEntity.getBody()).isNotNull();
+                assertThat(responseEntity.getBody().getContent())
+                    .isNotNull()
+                    .extracting(
+                        CloudVariableInstance::getName,
+                        CloudVariableInstance::getValue
+                    )
+                    .containsOnly(tuple("restResult", "fromConnector")); //kept unchanging because no connector output is updating it
+            });
 
-        ResponseEntity<PagedModel<CloudTask>> tasks = processInstanceRestTemplate.getTasks(processInstanceResponseEntity);
+        ResponseEntity<PagedModel<CloudTask>> tasks = processInstanceRestTemplate.getTasks(
+            processInstanceResponseEntity
+        );
         assertThat(tasks.getBody()).isNotNull();
         assertThat(tasks.getBody().getContent())
             .extracting(CloudTask::getName)
             .containsExactly("Result Form Task");
     }
 
-    private CloudTask getTaskToExecute(ResponseEntity<CloudProcessInstance> processInstanceResponseEntity) {
-        ResponseEntity<PagedModel<CloudTask>> availableTasks = processInstanceRestTemplate.getTasks(processInstanceResponseEntity);
+    private CloudTask getTaskToExecute(
+        ResponseEntity<CloudProcessInstance> processInstanceResponseEntity
+    ) {
+        ResponseEntity<PagedModel<CloudTask>> availableTasks = processInstanceRestTemplate.getTasks(
+            processInstanceResponseEntity
+        );
         assertThat(availableTasks).isNotNull();
         assertThat(availableTasks.getBody()).isNotEmpty();
         return availableTasks.getBody().getContent().iterator().next();
@@ -276,49 +365,72 @@ public class MQServiceTaskIT {
     @Test
     public void multiInstance_should_collectSpecifiedVariable_when_dataItemIsSet() {
         //given
-        ResponseEntity<CloudProcessInstance> processInstance = processInstanceRestTemplate
-            .startProcess(ProcessPayloadBuilder
+        ResponseEntity<CloudProcessInstance> processInstance = processInstanceRestTemplate.startProcess(
+            ProcessPayloadBuilder
                 .start()
-                .withProcessDefinitionKey("multi-instance-service-task-result-collection-data-item")
-            .build());
+                .withProcessDefinitionKey(
+                    "multi-instance-service-task-result-collection-data-item"
+                )
+                .build()
+        );
 
-        await().untilAsserted(() -> {
-            //when
-            ResponseEntity<CollectionModel<CloudVariableInstance>> variablesResponse = processInstanceRestTemplate
-                .getVariables(processInstance);
+        await()
+            .untilAsserted(() -> {
+                //when
+                ResponseEntity<CollectionModel<CloudVariableInstance>> variablesResponse = processInstanceRestTemplate.getVariables(
+                    processInstance
+                );
 
-            //then
-            Collection<CloudVariableInstance> variables = variablesResponse.getBody().getContent();
-            assertThat(variables)
-                .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .contains(
-                    tuple("meals",
-                        asList("pizza", "pasta")));
-        });
+                //then
+                Collection<CloudVariableInstance> variables = variablesResponse
+                    .getBody()
+                    .getContent();
+                assertThat(variables)
+                    .extracting(
+                        VariableInstance::getName,
+                        VariableInstance::getValue
+                    )
+                    .contains(tuple("meals", asList("pizza", "pasta")));
+            });
     }
 
     @Test
     public void multiInstance_should_collectAllVariables_when_noDataItem() {
         //given
-        ResponseEntity<CloudProcessInstance> processInstance = processInstanceRestTemplate
-            .startProcess(ProcessPayloadBuilder
+        ResponseEntity<CloudProcessInstance> processInstance = processInstanceRestTemplate.startProcess(
+            ProcessPayloadBuilder
                 .start()
-                .withProcessDefinitionKey("multi-instance-service-task-result-collection-all")
-            .build());
+                .withProcessDefinitionKey(
+                    "multi-instance-service-task-result-collection-all"
+                )
+                .build()
+        );
 
-        await().untilAsserted(() -> {
-            //when
-            ResponseEntity<CollectionModel<CloudVariableInstance>> variablesResponse = processInstanceRestTemplate
-                .getVariables(processInstance);
+        await()
+            .untilAsserted(() -> {
+                //when
+                ResponseEntity<CollectionModel<CloudVariableInstance>> variablesResponse = processInstanceRestTemplate.getVariables(
+                    processInstance
+                );
 
-            //then
-            Collection<CloudVariableInstance> variables = variablesResponse.getBody().getContent();
-            assertThat(variables)
-                .extracting(VariableInstance::getName, VariableInstance::getValue)
-                .contains(tuple("miResult",
-                    asList(
-                        Map.of("meal", "pizza", "size", "small"),
-                        Map.of("meal", "pasta", "size", "medium"))));
-        });
+                //then
+                Collection<CloudVariableInstance> variables = variablesResponse
+                    .getBody()
+                    .getContent();
+                assertThat(variables)
+                    .extracting(
+                        VariableInstance::getName,
+                        VariableInstance::getValue
+                    )
+                    .contains(
+                        tuple(
+                            "miResult",
+                            asList(
+                                Map.of("meal", "pizza", "size", "small"),
+                                Map.of("meal", "pasta", "size", "medium")
+                            )
+                        )
+                    );
+            });
     }
 }

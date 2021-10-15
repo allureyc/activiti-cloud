@@ -27,12 +27,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class ApplicationDeployedEventHandler implements QueryEventHandler {
-    
-    private static final Logger LOGGER = LoggerFactory.getLogger(ApplicationDeployedEventHandler.class);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        ApplicationDeployedEventHandler.class
+    );
 
     private ApplicationRepository applicationRepository;
 
-    public ApplicationDeployedEventHandler(ApplicationRepository applicationRepository) {
+    public ApplicationDeployedEventHandler(
+        ApplicationRepository applicationRepository
+    ) {
         this.applicationRepository = applicationRepository;
     }
 
@@ -40,19 +44,24 @@ public class ApplicationDeployedEventHandler implements QueryEventHandler {
     public void handle(CloudRuntimeEvent<?, ?> event) {
         CloudApplicationDeployedEvent applicationDeployedEvent = (CloudApplicationDeployedEvent) event;
         Deployment deployment = applicationDeployedEvent.getEntity();
-        LOGGER.debug("Handling application deployed event for " + deployment.getId());
-        ApplicationEntity application = new ApplicationEntity(
-                deployment.getId(),
-                applicationDeployedEvent.getAppName(),
-                deployment.getVersion().toString()
+        LOGGER.debug(
+            "Handling application deployed event for " + deployment.getId()
         );
-        
-        if(checkApplicationExist(application)) {
-            LOGGER.debug("Application {} with version {} already exists!",
-                    application.getName(), application.getVersion());
+        ApplicationEntity application = new ApplicationEntity(
+            deployment.getId(),
+            applicationDeployedEvent.getAppName(),
+            deployment.getVersion().toString()
+        );
+
+        if (checkApplicationExist(application)) {
+            LOGGER.debug(
+                "Application {} with version {} already exists!",
+                application.getName(),
+                application.getVersion()
+            );
             return;
         }
-     
+
         applicationRepository.save(application);
     }
 
@@ -60,12 +69,15 @@ public class ApplicationDeployedEventHandler implements QueryEventHandler {
     public String getHandledEvent() {
         return ApplicationEvents.APPLICATION_DEPLOYED.name();
     }
-    
-    private boolean checkApplicationExist (ApplicationEntity application){ 
-        BooleanExpression predicate = QApplicationEntity.applicationEntity.name.eq(application.getName())
-                .and(
-                        QApplicationEntity.applicationEntity.version.eq(application.getVersion())
-                );
+
+    private boolean checkApplicationExist(ApplicationEntity application) {
+        BooleanExpression predicate = QApplicationEntity.applicationEntity.name
+            .eq(application.getName())
+            .and(
+                QApplicationEntity.applicationEntity.version.eq(
+                    application.getVersion()
+                )
+            );
 
         return applicationRepository.exists(predicate);
     }

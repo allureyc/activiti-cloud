@@ -17,7 +17,6 @@ package org.activiti.cloud.services.query.events.handlers;
 
 import java.util.Date;
 import java.util.Optional;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
@@ -30,7 +29,9 @@ public class ProcessResumedEventHandler implements QueryEventHandler {
 
     private ProcessInstanceRepository processInstanceRepository;
 
-    public ProcessResumedEventHandler(ProcessInstanceRepository processInstanceRepository) {
+    public ProcessResumedEventHandler(
+        ProcessInstanceRepository processInstanceRepository
+    ) {
         this.processInstanceRepository = processInstanceRepository;
     }
 
@@ -38,13 +39,24 @@ public class ProcessResumedEventHandler implements QueryEventHandler {
     public void handle(CloudRuntimeEvent<?, ?> event) {
         CloudProcessResumedEvent processResumedEvent = (CloudProcessResumedEvent) event;
         String processInstanceId = processResumedEvent.getEntity().getId();
-        Optional<ProcessInstanceEntity> findResult = processInstanceRepository.findById(processInstanceId);
-        ProcessInstanceEntity processInstanceEntity = findResult.orElseThrow(() -> new QueryException("Unable to find process instance with the given id: " + processInstanceId));
-        processInstanceEntity.setStatus(ProcessInstance.ProcessInstanceStatus.RUNNING);
-        processInstanceEntity.setLastModified(new Date(processResumedEvent.getTimestamp()));
-        
+        Optional<ProcessInstanceEntity> findResult = processInstanceRepository.findById(
+            processInstanceId
+        );
+        ProcessInstanceEntity processInstanceEntity = findResult.orElseThrow(() ->
+            new QueryException(
+                "Unable to find process instance with the given id: " +
+                processInstanceId
+            )
+        );
+        processInstanceEntity.setStatus(
+            ProcessInstance.ProcessInstanceStatus.RUNNING
+        );
+        processInstanceEntity.setLastModified(
+            new Date(processResumedEvent.getTimestamp())
+        );
+
         //All important parameters like processDefinitionKey, businessKey, processDefinitionId etc. are already set by CloudProcessCreatedEvent
- 
+
         processInstanceRepository.save(processInstanceEntity);
     }
 

@@ -17,7 +17,6 @@ package org.activiti.cloud.services.query.events.handlers;
 
 import java.util.Date;
 import java.util.Optional;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
@@ -38,9 +37,13 @@ public class TaskUpdatedEventHandler implements QueryEventHandler {
     public void handle(CloudRuntimeEvent<?, ?> event) {
         CloudTaskUpdatedEvent taskUpdatedEvent = (CloudTaskUpdatedEvent) event;
         Task eventTask = taskUpdatedEvent.getEntity();
-        Optional<TaskEntity> findResult = taskRepository.findById(eventTask.getId());
-        TaskEntity queryTaskEntity = findResult.orElseThrow(
-                () -> new QueryException("Unable to find task with id: " + eventTask.getId())
+        Optional<TaskEntity> findResult = taskRepository.findById(
+            eventTask.getId()
+        );
+        TaskEntity queryTaskEntity = findResult.orElseThrow(() ->
+            new QueryException(
+                "Unable to find task with id: " + eventTask.getId()
+            )
         );
 
         queryTaskEntity.setName(eventTask.getName());
@@ -49,9 +52,11 @@ public class TaskUpdatedEventHandler implements QueryEventHandler {
         queryTaskEntity.setDueDate(eventTask.getDueDate());
         queryTaskEntity.setFormKey(eventTask.getFormKey());
         queryTaskEntity.setParentTaskId(eventTask.getParentTaskId());
-        queryTaskEntity.setLastModified(new Date(taskUpdatedEvent.getTimestamp()));
+        queryTaskEntity.setLastModified(
+            new Date(taskUpdatedEvent.getTimestamp())
+        );
         queryTaskEntity.setStatus(eventTask.getStatus());
-        
+
         taskRepository.save(queryTaskEntity);
     }
 

@@ -17,7 +17,6 @@ package org.activiti.cloud.services.query.events.handlers;
 
 import java.util.Date;
 import java.util.Optional;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
@@ -30,7 +29,9 @@ public class ProcessCompletedEventHandler implements QueryEventHandler {
 
     private ProcessInstanceRepository processInstanceRepository;
 
-    public ProcessCompletedEventHandler(ProcessInstanceRepository processInstanceRepository) {
+    public ProcessCompletedEventHandler(
+        ProcessInstanceRepository processInstanceRepository
+    ) {
         this.processInstanceRepository = processInstanceRepository;
     }
 
@@ -38,15 +39,26 @@ public class ProcessCompletedEventHandler implements QueryEventHandler {
     public void handle(CloudRuntimeEvent<?, ?> event) {
         CloudProcessCompletedEvent completedEvent = (CloudProcessCompletedEvent) event;
         String processInstanceId = completedEvent.getEntity().getId();
-        Optional<ProcessInstanceEntity> findResult = processInstanceRepository.findById(processInstanceId);
+        Optional<ProcessInstanceEntity> findResult = processInstanceRepository.findById(
+            processInstanceId
+        );
         if (findResult.isPresent()) {
             ProcessInstanceEntity processInstanceEntity = findResult.get();
-            processInstanceEntity.setStatus(ProcessInstance.ProcessInstanceStatus.COMPLETED);
-            processInstanceEntity.setLastModified(new Date(completedEvent.getTimestamp()));
-            processInstanceEntity.setCompletedDate(new Date(completedEvent.getTimestamp()));
+            processInstanceEntity.setStatus(
+                ProcessInstance.ProcessInstanceStatus.COMPLETED
+            );
+            processInstanceEntity.setLastModified(
+                new Date(completedEvent.getTimestamp())
+            );
+            processInstanceEntity.setCompletedDate(
+                new Date(completedEvent.getTimestamp())
+            );
             processInstanceRepository.save(processInstanceEntity);
         } else {
-            throw new QueryException("Unable to find process instance with the given id: " + processInstanceId);
+            throw new QueryException(
+                "Unable to find process instance with the given id: " +
+                processInstanceId
+            );
         }
     }
 

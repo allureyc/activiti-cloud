@@ -19,12 +19,13 @@ import org.activiti.api.process.model.IntegrationContext;
 import org.activiti.cloud.api.model.shared.impl.CloudRuntimeEntityImpl;
 import org.activiti.cloud.api.process.model.IntegrationRequest;
 
-public class IntegrationRequestImpl extends CloudRuntimeEntityImpl implements IntegrationRequest {
+public class IntegrationRequestImpl
+    extends CloudRuntimeEntityImpl
+    implements IntegrationRequest {
 
     private IntegrationContext integrationContext;
 
-    public IntegrationRequestImpl() {
-    }
+    public IntegrationRequestImpl() {}
 
     public IntegrationRequestImpl(IntegrationContext integrationContext) {
         this.integrationContext = integrationContext;

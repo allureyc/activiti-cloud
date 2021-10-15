@@ -15,25 +15,22 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
-import org.activiti.api.process.model.BPMNTimer;
-import org.activiti.cloud.api.process.model.events.CloudBPMNTimerEvent;
-import org.activiti.cloud.services.audit.jpa.converters.json.TimerJpaJsonConverter;
-
 import java.util.Objects;
-
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.MappedSuperclass;
+import org.activiti.api.process.model.BPMNTimer;
+import org.activiti.cloud.api.process.model.events.CloudBPMNTimerEvent;
+import org.activiti.cloud.services.audit.jpa.converters.json.TimerJpaJsonConverter;
 
 @MappedSuperclass
 public abstract class TimerAuditEventEntity extends AuditEventEntity {
 
     @Convert(converter = TimerJpaJsonConverter.class)
-    @Column(columnDefinition="text")
+    @Column(columnDefinition = "text")
     private BPMNTimer timer;
 
-    public TimerAuditEventEntity() {
-    }
+    public TimerAuditEventEntity() {}
 
     public TimerAuditEventEntity(CloudBPMNTimerEvent cloudEvent) {
         super(cloudEvent);
@@ -81,11 +78,12 @@ public abstract class TimerAuditEventEntity extends AuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("TimerAuditEventEntity [timer=")
-               .append(timer)
-               .append(", toString()=")
-               .append(super.toString())
-               .append("]");
+        builder
+            .append("TimerAuditEventEntity [timer=")
+            .append(timer)
+            .append(", toString()=")
+            .append(super.toString())
+            .append("]");
         return builder.toString();
     }
 }

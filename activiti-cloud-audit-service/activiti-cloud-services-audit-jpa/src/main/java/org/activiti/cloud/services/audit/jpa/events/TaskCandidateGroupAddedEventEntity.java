@@ -15,32 +15,36 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
+import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Convert;
+import javax.persistence.DiscriminatorValue;
+import javax.persistence.Entity;
 import org.activiti.api.task.model.TaskCandidateGroup;
 import org.activiti.api.task.model.impl.TaskCandidateGroupImpl;
 import org.activiti.cloud.api.task.model.events.CloudTaskCandidateGroupAddedEvent;
 import org.activiti.cloud.services.audit.jpa.converters.json.TaskCandidateGroupJpaJsonConverter;
 
-import java.util.Objects;
-
-import javax.persistence.Column;
-import javax.persistence.Convert;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-
-@Entity(name = TaskCandidateGroupAddedEventEntity.TASK_CANDIDATE_GROUP_ADDED_EVENT)
-@DiscriminatorValue(value = TaskCandidateGroupAddedEventEntity.TASK_CANDIDATE_GROUP_ADDED_EVENT)
+@Entity(
+    name = TaskCandidateGroupAddedEventEntity.TASK_CANDIDATE_GROUP_ADDED_EVENT
+)
+@DiscriminatorValue(
+    value = TaskCandidateGroupAddedEventEntity.TASK_CANDIDATE_GROUP_ADDED_EVENT
+)
 public class TaskCandidateGroupAddedEventEntity extends AuditEventEntity {
 
-    protected static final String TASK_CANDIDATE_GROUP_ADDED_EVENT = "TaskCandidateGroupAddedEvent";
+    protected static final String TASK_CANDIDATE_GROUP_ADDED_EVENT =
+        "TaskCandidateGroupAddedEvent";
 
     @Convert(converter = TaskCandidateGroupJpaJsonConverter.class)
     @Column(columnDefinition = "text")
     private TaskCandidateGroupImpl candidateGroup;
 
-    public TaskCandidateGroupAddedEventEntity() {
-    }
+    public TaskCandidateGroupAddedEventEntity() {}
 
-    public TaskCandidateGroupAddedEventEntity(CloudTaskCandidateGroupAddedEvent cloudEvent) {
+    public TaskCandidateGroupAddedEventEntity(
+        CloudTaskCandidateGroupAddedEvent cloudEvent
+    ) {
         super(cloudEvent);
         setCandidateGroup(cloudEvent.getEntity());
     }
@@ -50,7 +54,11 @@ public class TaskCandidateGroupAddedEventEntity extends AuditEventEntity {
     }
 
     public void setCandidateGroup(TaskCandidateGroup candidateGroup) {
-        this.candidateGroup = new TaskCandidateGroupImpl(candidateGroup.getGroupId(),candidateGroup.getTaskId());
+        this.candidateGroup =
+            new TaskCandidateGroupImpl(
+                candidateGroup.getGroupId(),
+                candidateGroup.getTaskId()
+            );
     }
 
     @Override
@@ -79,12 +87,12 @@ public class TaskCandidateGroupAddedEventEntity extends AuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("TaskCandidateGroupAddedEventEntity [candidateGroup=")
-               .append(candidateGroup)
-               .append(", toString()=")
-               .append(super.toString())
-               .append("]");
+        builder
+            .append("TaskCandidateGroupAddedEventEntity [candidateGroup=")
+            .append(candidateGroup)
+            .append(", toString()=")
+            .append(super.toString())
+            .append("]");
         return builder.toString();
     }
-
 }

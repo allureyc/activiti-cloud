@@ -16,7 +16,6 @@
 package org.activiti.cloud.services.query.events.handlers;
 
 import java.util.Optional;
-
 import org.activiti.api.task.model.events.TaskCandidateUserEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
 import org.activiti.cloud.api.task.model.events.CloudTaskCandidateUserRemovedEvent;
@@ -29,12 +28,16 @@ import org.slf4j.LoggerFactory;
 
 public class TaskCandidateUserRemovedEventHandler implements QueryEventHandler {
 
-    private static Logger LOGGER = LoggerFactory.getLogger(TaskCandidateUserRemovedEventHandler.class);
+    private static Logger LOGGER = LoggerFactory.getLogger(
+        TaskCandidateUserRemovedEventHandler.class
+    );
     private final TaskRepository taskRepository;
     private final TaskCandidateUserRepository taskCandidateUserRepository;
 
-    public TaskCandidateUserRemovedEventHandler(TaskRepository taskRepository,
-                                                TaskCandidateUserRepository taskCandidateUserRepository) {
+    public TaskCandidateUserRemovedEventHandler(
+        TaskRepository taskRepository,
+        TaskCandidateUserRepository taskCandidateUserRepository
+    ) {
         this.taskRepository = taskRepository;
         this.taskCandidateUserRepository = taskCandidateUserRepository;
     }
@@ -44,19 +47,24 @@ public class TaskCandidateUserRemovedEventHandler implements QueryEventHandler {
         CloudTaskCandidateUserRemovedEvent taskCandidateUserRemovedEvent = (CloudTaskCandidateUserRemovedEvent) event;
         String taskId = taskCandidateUserRemovedEvent.getEntity().getTaskId();
         Optional<TaskEntity> findResult = taskRepository.findById(taskId);
-        
+
         // if a task was cancelled / completed do not handle this event
-        if(findResult.isPresent() && !findResult.get().isInFinalState()) {
+        if (findResult.isPresent() && !findResult.get().isInFinalState()) {
             org.activiti.api.task.model.TaskCandidateUser taskCandidateUser = taskCandidateUserRemovedEvent.getEntity();
-            
+
             // Persist into database
             try {
-                taskCandidateUserRepository.delete(new TaskCandidateUser(taskId,
-                                                                         taskCandidateUser.getUserId()));
+                taskCandidateUserRepository.delete(
+                    new TaskCandidateUser(taskId, taskCandidateUser.getUserId())
+                );
             } catch (Exception cause) {
-                LOGGER.debug("Error handling TaskCandidateUserRemovedEvent[" + event + "]",
-                             cause);
-            }            
+                LOGGER.debug(
+                    "Error handling TaskCandidateUserRemovedEvent[" +
+                    event +
+                    "]",
+                    cause
+                );
+            }
         }
     }
 

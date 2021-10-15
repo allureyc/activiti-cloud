@@ -16,14 +16,15 @@
 package org.activiti.cloud.modeling.api.impl;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 import org.activiti.cloud.modeling.api.Model;
 import org.activiti.cloud.modeling.api.process.ModelScope;
 import org.activiti.cloud.services.auditable.AbstractAuditable;
@@ -34,7 +35,9 @@ import org.activiti.cloud.services.auditable.AbstractAuditable;
 @ApiModel("Model")
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(NON_NULL)
-public class ModelImpl extends AbstractAuditable<String> implements Model<ProjectImpl, String> {
+public class ModelImpl
+    extends AbstractAuditable<String>
+    implements Model<ProjectImpl, String> {
 
     @ApiModelProperty(readOnly = true)
     private String id;
@@ -48,10 +51,18 @@ public class ModelImpl extends AbstractAuditable<String> implements Model<Projec
     @ApiModelProperty(value = "The version of the model", readOnly = true)
     private String version;
 
-    @ApiModelProperty(value = "The content type of the model", readOnly = true, hidden = true)
+    @ApiModelProperty(
+        value = "The content type of the model",
+        readOnly = true,
+        hidden = true
+    )
     private String contentType;
 
-    @ApiModelProperty(value = "The content of the model", readOnly = true, hidden = true)
+    @ApiModelProperty(
+        value = "The content of the model",
+        readOnly = true,
+        hidden = true
+    )
     private byte[] content;
 
     @ApiModelProperty(hidden = true)
@@ -59,21 +70,20 @@ public class ModelImpl extends AbstractAuditable<String> implements Model<Projec
     private Set<ProjectImpl> projects = new HashSet<>();
 
     @ApiModelProperty(value = "The extensions of the model", readOnly = true)
-    private Map<String,Object> extensions;
+    private Map<String, Object> extensions;
 
     @ApiModelProperty(value = "The template of the model", readOnly = true)
     private String template;
 
-    @ApiModelProperty(value = "The scope of the model. They can be shared between projects if it's scope is GLOBAL", readOnly = true)
+    @ApiModelProperty(
+        value = "The scope of the model. They can be shared between projects if it's scope is GLOBAL",
+        readOnly = true
+    )
     private ModelScope scope;
 
-    public ModelImpl() {
+    public ModelImpl() {}
 
-    }
-
-    public ModelImpl(String id,
-                     String name,
-                     String type) {
+    public ModelImpl(String id, String name, String type) {
         this.id = id;
         this.name = name;
         this.type = type;
@@ -132,7 +142,7 @@ public class ModelImpl extends AbstractAuditable<String> implements Model<Projec
     }
 
     @Override
-    public void clearProjects(){
+    public void clearProjects() {
         projects.clear();
     }
 
@@ -166,12 +176,12 @@ public class ModelImpl extends AbstractAuditable<String> implements Model<Projec
     }
 
     @Override
-    public Map<String,Object> getExtensions() {
+    public Map<String, Object> getExtensions() {
         return extensions;
     }
 
     @Override
-    public void setExtensions(Map<String,Object> extensions) {
+    public void setExtensions(Map<String, Object> extensions) {
         this.extensions = extensions;
     }
 

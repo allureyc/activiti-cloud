@@ -15,20 +15,18 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
-import org.activiti.cloud.api.process.model.events.CloudBPMNMessageSentEvent;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import org.activiti.cloud.api.process.model.events.CloudBPMNMessageSentEvent;
 
 @Entity(name = MessageSentAuditEventEntity.MESSAGE_SENT_EVENT)
 @DiscriminatorValue(value = MessageSentAuditEventEntity.MESSAGE_SENT_EVENT)
 public class MessageSentAuditEventEntity extends MessageAuditEventEntity {
 
     protected static final String MESSAGE_SENT_EVENT = "MessageSentEvent";
-    
-    public MessageSentAuditEventEntity() {
-    }
-    
+
+    public MessageSentAuditEventEntity() {}
+
     public MessageSentAuditEventEntity(CloudBPMNMessageSentEvent cloudEvent) {
         super(cloudEvent);
     }
@@ -57,5 +55,5 @@ public class MessageSentAuditEventEntity extends MessageAuditEventEntity {
         StringBuilder builder = new StringBuilder();
         builder.append("MessageSentAuditEventEntity []");
         return builder.toString();
-    }    
+    }
 }

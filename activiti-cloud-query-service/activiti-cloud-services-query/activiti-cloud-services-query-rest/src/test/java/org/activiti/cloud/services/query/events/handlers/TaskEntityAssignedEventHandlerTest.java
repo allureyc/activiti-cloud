@@ -15,23 +15,6 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
-
-import org.activiti.api.task.model.Task;
-import org.activiti.api.task.model.events.TaskRuntimeEvent;
-import org.activiti.cloud.api.task.model.events.CloudTaskAssignedEvent;
-import org.activiti.cloud.api.task.model.impl.events.CloudTaskAssignedEventImpl;
-import org.activiti.cloud.services.query.app.repository.TaskRepository;
-import org.activiti.cloud.services.query.model.QueryException;
-import org.activiti.cloud.services.query.model.TaskEntity;
-import org.activiti.api.task.model.impl.TaskImpl;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
 import static org.activiti.cloud.services.query.events.handlers.TaskBuilder.aTask;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -39,6 +22,22 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
+
+import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.events.TaskRuntimeEvent;
+import org.activiti.api.task.model.impl.TaskImpl;
+import org.activiti.cloud.api.task.model.events.CloudTaskAssignedEvent;
+import org.activiti.cloud.api.task.model.impl.events.CloudTaskAssignedEventImpl;
+import org.activiti.cloud.services.query.app.repository.TaskRepository;
+import org.activiti.cloud.services.query.model.QueryException;
+import org.activiti.cloud.services.query.model.TaskEntity;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 
 public class TaskEntityAssignedEventHandlerTest {
 
@@ -60,11 +59,12 @@ public class TaskEntityAssignedEventHandlerTest {
 
         String taskId = event.getEntity().getId();
         TaskEntity taskEntity = aTask()
-                .withId(taskId)
-                .withAssignee("previousUser")
-                .build();
+            .withId(taskId)
+            .withAssignee("previousUser")
+            .build();
 
-        given(taskRepository.findById(taskId)).willReturn(Optional.of(taskEntity));
+        given(taskRepository.findById(taskId))
+            .willReturn(Optional.of(taskEntity));
 
         //when
         handler.handle(event);
@@ -77,9 +77,11 @@ public class TaskEntityAssignedEventHandlerTest {
     }
 
     private CloudTaskAssignedEvent buildTaskAssignedEvent() {
-        TaskImpl task = new TaskImpl(UUID.randomUUID().toString(),
-                                     "task",
-                                     Task.TaskStatus.ASSIGNED);
+        TaskImpl task = new TaskImpl(
+            UUID.randomUUID().toString(),
+            "task",
+            Task.TaskStatus.ASSIGNED
+        );
         task.setAssignee("user");
         return new CloudTaskAssignedEventImpl(task);
     }
@@ -105,6 +107,7 @@ public class TaskEntityAssignedEventHandlerTest {
         String handledEvent = handler.getHandledEvent();
 
         //then
-        assertThat(handledEvent).isEqualTo(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED.name());
+        assertThat(handledEvent)
+            .isEqualTo(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED.name());
     }
 }

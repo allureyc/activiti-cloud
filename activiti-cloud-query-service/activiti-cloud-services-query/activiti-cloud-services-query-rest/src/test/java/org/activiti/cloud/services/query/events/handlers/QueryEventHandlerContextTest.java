@@ -15,8 +15,13 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.Collections;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
 
+import java.util.Collections;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.cloud.api.task.model.events.CloudTaskCompletedEvent;
 import org.activiti.cloud.api.task.model.events.CloudTaskCreatedEvent;
@@ -25,12 +30,6 @@ import org.activiti.cloud.api.task.model.impl.events.CloudTaskCreatedEventImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 public class QueryEventHandlerContextTest {
 
@@ -42,7 +41,9 @@ public class QueryEventHandlerContextTest {
     @BeforeEach
     public void setUp() {
         initMocks(this);
-        doReturn(TaskRuntimeEvent.TaskEvents.TASK_CREATED.name()).when(handler).getHandledEvent();
+        doReturn(TaskRuntimeEvent.TaskEvents.TASK_CREATED.name())
+            .when(handler)
+            .getHandledEvent();
         context = new QueryEventHandlerContext(Collections.singleton(handler));
     }
 

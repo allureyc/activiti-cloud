@@ -36,10 +36,14 @@ public class AuditSwaggerConfig {
             .title(String.format("%s ReST API", buildProperties.getName()))
             .description(buildProperties.get("description"))
             .version(buildProperties.getVersion())
-            .license(String.format("© %s-%s %s. All rights reserved",
-                buildProperties.get("inceptionYear"),
-                buildProperties.get("year"),
-                buildProperties.get("organization.name")))
+            .license(
+                String.format(
+                    "© %s-%s %s. All rights reserved",
+                    buildProperties.get("inceptionYear"),
+                    buildProperties.get("year"),
+                    buildProperties.get("organization.name")
+                )
+            )
             .termsOfServiceUrl(buildProperties.get("organization.url"))
             .build();
     }
@@ -47,12 +51,13 @@ public class AuditSwaggerConfig {
     @Bean
     @ConditionalOnMissingBean
     public Predicate<RequestHandler> apiSelector() {
-        return RequestHandlerSelectors.basePackage("org.activiti.cloud.services.audit");
+        return RequestHandlerSelectors.basePackage(
+            "org.activiti.cloud.services.audit"
+        );
     }
 
     @Bean
     public DocketCustomizer PayloadsDocketCustomizer() {
         return new PayloadsDocketCustomizer();
     }
-
 }

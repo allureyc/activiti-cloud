@@ -24,7 +24,7 @@ import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
 
 /**
- * Overrides default SignalPayloadEventListener implementation to 
+ * Overrides default SignalPayloadEventListener implementation to
  * broadcast signals into Runtime Bundle instances via Cloud Stream
  */
 public class SignalSender implements SignalPayloadEventListener {
@@ -37,7 +37,9 @@ public class SignalSender implements SignalPayloadEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void sendSignal(SignalPayload signalPayload) {
-        Message<SignalPayload> message = MessageBuilder.withPayload(signalPayload).build();
+        Message<SignalPayload> message = MessageBuilder
+            .withPayload(signalPayload)
+            .build();
         resolver.resolveDestination("signalEvent").send(message);
     }
 }

@@ -17,12 +17,10 @@ package org.activiti.cloud.services.query.model;
 
 import java.util.Date;
 import java.util.Objects;
-
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
-
 import org.activiti.cloud.api.process.model.CloudBPMNActivity.BPMNActivityStatus;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -73,18 +71,22 @@ public abstract class BaseBPMNActivityEntity extends ActivitiEntityMetadata {
     /** The associated business key of the activity as in the process instance */
     private String businessKey;
 
-    public BaseBPMNActivityEntity() { }
+    public BaseBPMNActivityEntity() {}
 
-    public BaseBPMNActivityEntity(String serviceName,
-                              String serviceFullName,
-                              String serviceVersion,
-                              String appName,
-                              String appVersion) {
-        super(serviceName,
-              serviceFullName,
-              serviceVersion,
-              appName,
-              appVersion);
+    public BaseBPMNActivityEntity(
+        String serviceName,
+        String serviceFullName,
+        String serviceVersion,
+        String appName,
+        String appVersion
+    ) {
+        super(
+            serviceName,
+            serviceFullName,
+            serviceVersion,
+            appName,
+            appVersion
+        );
     }
 
     public String getId() {
@@ -93,15 +95,15 @@ public abstract class BaseBPMNActivityEntity extends ActivitiEntityMetadata {
 
     public String getElementId() {
         return elementId;
-    };
+    }
 
     public String getActivityName() {
         return activityName;
-    };
+    }
 
     public String getActivityType() {
         return activityType;
-    };
+    }
 
     public String getProcessDefinitionId() {
         return processDefinitionId;
@@ -203,20 +205,25 @@ public abstract class BaseBPMNActivityEntity extends ActivitiEntityMetadata {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + Objects.hash(activityName,
-                                               activityType,
-                                               businessKey,
-                                               cancelledDate,
-                                               completedDate,
-                                               elementId,
-                                               id,
-                                               processDefinitionId,
-                                               processDefinitionKey,
-                                               processDefinitionVersion,
-                                               processInstanceId,
-                                               executionId,
-                                               startedDate,
-                                               status);
+        result =
+            prime *
+            result +
+            Objects.hash(
+                activityName,
+                activityType,
+                businessKey,
+                cancelledDate,
+                completedDate,
+                elementId,
+                id,
+                processDefinitionId,
+                processDefinitionKey,
+                processDefinitionVersion,
+                processInstanceId,
+                executionId,
+                startedDate,
+                status
+            );
         return result;
     }
 
@@ -232,58 +239,63 @@ public abstract class BaseBPMNActivityEntity extends ActivitiEntityMetadata {
             return false;
         }
         BaseBPMNActivityEntity other = (BaseBPMNActivityEntity) obj;
-        return Objects.equals(activityName, other.activityName) &&
-               Objects.equals(activityType, other.activityType) &&
-               Objects.equals(businessKey, other.businessKey) &&
-               Objects.equals(cancelledDate, other.cancelledDate) &&
-               Objects.equals(completedDate, other.completedDate) &&
-               Objects.equals(elementId, other.elementId) &&
-               Objects.equals(id, other.id) &&
-               Objects.equals(processDefinitionId, other.processDefinitionId) &&
-               Objects.equals(processDefinitionKey, other.processDefinitionKey) &&
-               Objects.equals(processDefinitionVersion, other.processDefinitionVersion) &&
-               Objects.equals(processInstanceId, other.processInstanceId) &&
-               Objects.equals(executionId, other.executionId) &&
-               Objects.equals(startedDate, other.startedDate) &&
-               status == other.status;
+        return (
+            Objects.equals(activityName, other.activityName) &&
+            Objects.equals(activityType, other.activityType) &&
+            Objects.equals(businessKey, other.businessKey) &&
+            Objects.equals(cancelledDate, other.cancelledDate) &&
+            Objects.equals(completedDate, other.completedDate) &&
+            Objects.equals(elementId, other.elementId) &&
+            Objects.equals(id, other.id) &&
+            Objects.equals(processDefinitionId, other.processDefinitionId) &&
+            Objects.equals(processDefinitionKey, other.processDefinitionKey) &&
+            Objects.equals(
+                processDefinitionVersion,
+                other.processDefinitionVersion
+            ) &&
+            Objects.equals(processInstanceId, other.processInstanceId) &&
+            Objects.equals(executionId, other.executionId) &&
+            Objects.equals(startedDate, other.startedDate) &&
+            status == other.status
+        );
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("BPMNActivityEntity [id=")
-               .append(id)
-               .append(", elementId=")
-               .append(elementId)
-               .append(", activityName=")
-               .append(activityName)
-               .append(", activityType=")
-               .append(activityType)
-               .append(", processInstanceId=")
-               .append(processInstanceId)
-               .append(", executionId=")
-               .append(executionId)
-               .append(", processDefinitionId=")
-               .append(processDefinitionId)
-               .append(", status=")
-               .append(status)
-               .append(", startedDate=")
-               .append(startedDate)
-               .append(", completedDate=")
-               .append(completedDate)
-               .append(", cancelledDate=")
-               .append(cancelledDate)
-               .append(", processDefinitionKey=")
-               .append(processDefinitionKey)
-               .append(", processDefinitionVersion=")
-               .append(processDefinitionVersion)
-               .append(", businessKey=")
-               .append(businessKey)
-               .append(", toString()=")
-               .append(super.toString())
-               .append("]");
+        builder
+            .append("BPMNActivityEntity [id=")
+            .append(id)
+            .append(", elementId=")
+            .append(elementId)
+            .append(", activityName=")
+            .append(activityName)
+            .append(", activityType=")
+            .append(activityType)
+            .append(", processInstanceId=")
+            .append(processInstanceId)
+            .append(", executionId=")
+            .append(executionId)
+            .append(", processDefinitionId=")
+            .append(processDefinitionId)
+            .append(", status=")
+            .append(status)
+            .append(", startedDate=")
+            .append(startedDate)
+            .append(", completedDate=")
+            .append(completedDate)
+            .append(", cancelledDate=")
+            .append(cancelledDate)
+            .append(", processDefinitionKey=")
+            .append(processDefinitionKey)
+            .append(", processDefinitionVersion=")
+            .append(processDefinitionVersion)
+            .append(", businessKey=")
+            .append(businessKey)
+            .append(", toString()=")
+            .append(super.toString())
+            .append("]");
 
         return builder.toString();
     }
-
 }

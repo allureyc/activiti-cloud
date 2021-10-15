@@ -57,7 +57,7 @@ public class CloudConnectorsAutoConfigurationIT {
     private RuntimeBundleProperties runtimeBundleProperties;
 
     @MockBean(name = "auditProducer")
-    private  MessageChannel auditProducer;
+    private MessageChannel auditProducer;
 
     @MockBean
     private ApplicationEventPublisher eventPublisher;
@@ -73,7 +73,6 @@ public class CloudConnectorsAutoConfigurationIT {
 
     @MockBean
     private CloudProcessDeployedProducer processDeployedProducer;
-
 
     @Test
     public void shouldProvideMQServiceTaskBehaviorBean() {
@@ -108,6 +107,5 @@ public class CloudConnectorsAutoConfigurationIT {
         public ProcessSecurityPoliciesManager processSecurityPoliciesManager() {
             return mock(ProcessSecurityPoliciesManager.class);
         }
-
     }
 }

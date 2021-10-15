@@ -15,21 +15,25 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
-import org.activiti.cloud.api.process.model.events.CloudBPMNActivityStartedEvent;
-
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import org.activiti.cloud.api.process.model.events.CloudBPMNActivityStartedEvent;
 
 @Entity(name = ActivityStartedAuditEventEntity.ACTIVITY_STARTED_EVENT)
-@DiscriminatorValue(value = ActivityStartedAuditEventEntity.ACTIVITY_STARTED_EVENT)
-public class ActivityStartedAuditEventEntity extends BPMNActivityAuditEventEntity {
+@DiscriminatorValue(
+    value = ActivityStartedAuditEventEntity.ACTIVITY_STARTED_EVENT
+)
+public class ActivityStartedAuditEventEntity
+    extends BPMNActivityAuditEventEntity {
 
-    protected static final String ACTIVITY_STARTED_EVENT = "ActivityStartedEvent";
+    protected static final String ACTIVITY_STARTED_EVENT =
+        "ActivityStartedEvent";
 
-    public ActivityStartedAuditEventEntity() {
-    }
-    
-    public ActivityStartedAuditEventEntity(CloudBPMNActivityStartedEvent cloudEvent) {
+    public ActivityStartedAuditEventEntity() {}
+
+    public ActivityStartedAuditEventEntity(
+        CloudBPMNActivityStartedEvent cloudEvent
+    ) {
         super(cloudEvent);
     }
 
@@ -55,7 +59,10 @@ public class ActivityStartedAuditEventEntity extends BPMNActivityAuditEventEntit
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ActivityStartedAuditEventEntity [toString()=").append(super.toString()).append("]");
+        builder
+            .append("ActivityStartedAuditEventEntity [toString()=")
+            .append(super.toString())
+            .append("]");
         return builder.toString();
     }
 }

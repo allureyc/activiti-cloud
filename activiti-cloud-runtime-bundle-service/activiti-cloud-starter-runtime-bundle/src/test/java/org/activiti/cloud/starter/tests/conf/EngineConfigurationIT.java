@@ -15,6 +15,8 @@
  */
 package org.activiti.cloud.starter.tests.conf;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.activiti.cloud.services.test.containers.KeycloakContainerApplicationInitializer;
 import org.activiti.cloud.services.test.containers.RabbitMQContainerApplicationInitializer;
 import org.activiti.cloud.starter.rb.behavior.CloudActivityBehaviorFactory;
@@ -28,12 +30,17 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
-                properties = {"activiti.cloud.messaging.destination-separator=."})
+@SpringBootTest(
+    webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
+    properties = { "activiti.cloud.messaging.destination-separator=." }
+)
 @DirtiesContext
-@ContextConfiguration(initializers = { RabbitMQContainerApplicationInitializer.class, KeycloakContainerApplicationInitializer.class})
+@ContextConfiguration(
+    initializers = {
+        RabbitMQContainerApplicationInitializer.class,
+        KeycloakContainerApplicationInitializer.class,
+    }
+)
 public class EngineConfigurationIT {
 
     @Autowired
@@ -56,7 +63,9 @@ public class EngineConfigurationIT {
     @Test
     public void shouldHaveRequiredGroupsSetForAuditProducer() {
         //when
-        assertProperty("spring.cloud.stream.bindings.auditProducer.producer.required-groups")
+        assertProperty(
+            "spring.cloud.stream.bindings.auditProducer.producer.required-groups"
+        )
             .as("should have required groups set for audit producer")
             .isEqualTo("query,audit");
 
@@ -68,35 +77,67 @@ public class EngineConfigurationIT {
     @Test
     public void shouldHaveChannelBindingsSetForMessageEvents() {
         //when
-        assertProperty("spring.cloud.stream.bindings.messageEvents.destination").isEqualTo("messageEvents.activiti-app");
-        assertProperty("spring.cloud.stream.bindings.messageEvents.producer.required-groups").isEqualTo("messages");
+        assertProperty("spring.cloud.stream.bindings.messageEvents.destination")
+            .isEqualTo("messageEvents.activiti-app");
+        assertProperty(
+            "spring.cloud.stream.bindings.messageEvents.producer.required-groups"
+        )
+            .isEqualTo("messages");
     }
 
     @Test
     public void shouldHaveChannelBindingsSetForCommandEndpoint() {
         //when
-        assertProperty("spring.cloud.stream.bindings.commandConsumer.destination").isEqualTo("commandConsumer.activiti-app");
-        assertProperty("spring.cloud.stream.bindings.commandConsumer.group").isEqualTo("my-activiti-rb-app");
-        assertProperty("spring.cloud.stream.bindings.commandResults.destination").isEqualTo("commandResults.activiti-app");
-
+        assertProperty(
+            "spring.cloud.stream.bindings.commandConsumer.destination"
+        )
+            .isEqualTo("commandConsumer.activiti-app");
+        assertProperty("spring.cloud.stream.bindings.commandConsumer.group")
+            .isEqualTo("my-activiti-rb-app");
+        assertProperty(
+            "spring.cloud.stream.bindings.commandResults.destination"
+        )
+            .isEqualTo("commandResults.activiti-app");
     }
 
     @Test
     public void shouldHaveChannelBindingsSetForSignalEvents() {
         //when
-        assertProperty("spring.cloud.stream.bindings.signalProducer.destination").isEqualTo("signalEvent");
-        assertProperty("spring.cloud.stream.bindings.signalProducer.producer.required-groups").isEqualTo("my-activiti-rb-app");
-        assertProperty("spring.cloud.stream.bindings.signalConsumer.destination").isEqualTo("signalEvent");
-        assertProperty("spring.cloud.stream.bindings.signalConsumer.group").isEqualTo("my-activiti-rb-app");
+        assertProperty(
+            "spring.cloud.stream.bindings.signalProducer.destination"
+        )
+            .isEqualTo("signalEvent");
+        assertProperty(
+            "spring.cloud.stream.bindings.signalProducer.producer.required-groups"
+        )
+            .isEqualTo("my-activiti-rb-app");
+        assertProperty(
+            "spring.cloud.stream.bindings.signalConsumer.destination"
+        )
+            .isEqualTo("signalEvent");
+        assertProperty("spring.cloud.stream.bindings.signalConsumer.group")
+            .isEqualTo("my-activiti-rb-app");
     }
 
     @Test
     public void shouldHaveChannelBindingsSetForCloudConnectors() {
         //when
-        assertProperty("spring.cloud.stream.bindings.integrationResultsConsumer.destination").isEqualTo("integrationResult.my-activiti-rb-app");
-        assertProperty("spring.cloud.stream.bindings.integrationResultsConsumer.group").isEqualTo("my-activiti-rb-app");
-        assertProperty("spring.cloud.stream.bindings.integrationErrorsConsumer.destination").isEqualTo("integrationError.my-activiti-rb-app");
-        assertProperty("spring.cloud.stream.bindings.integrationErrorsConsumer.group").isEqualTo("my-activiti-rb-app");
+        assertProperty(
+            "spring.cloud.stream.bindings.integrationResultsConsumer.destination"
+        )
+            .isEqualTo("integrationResult.my-activiti-rb-app");
+        assertProperty(
+            "spring.cloud.stream.bindings.integrationResultsConsumer.group"
+        )
+            .isEqualTo("my-activiti-rb-app");
+        assertProperty(
+            "spring.cloud.stream.bindings.integrationErrorsConsumer.destination"
+        )
+            .isEqualTo("integrationError.my-activiti-rb-app");
+        assertProperty(
+            "spring.cloud.stream.bindings.integrationErrorsConsumer.group"
+        )
+            .isEqualTo("my-activiti-rb-app");
     }
 
     private AbstractStringAssert<?> assertProperty(String name) {
@@ -104,7 +145,6 @@ public class EngineConfigurationIT {
     }
 
     private String getProperty(String name) {
-        return applicationContext.getEnvironment()
-                                 .getProperty(name);
+        return applicationContext.getEnvironment().getProperty(name);
     }
 }

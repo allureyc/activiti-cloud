@@ -15,30 +15,33 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
-import org.activiti.cloud.api.process.model.events.CloudBPMNActivityCancelledEvent;
-
 import java.util.Objects;
-
+import java.util.Objects;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-import java.util.Objects;
+import org.activiti.cloud.api.process.model.events.CloudBPMNActivityCancelledEvent;
 
 @Entity(name = ActivityCancelledAuditEventEntity.ACTIVITY_CANCELLED_EVENT)
-@DiscriminatorValue(value = ActivityCancelledAuditEventEntity.ACTIVITY_CANCELLED_EVENT)
-public class ActivityCancelledAuditEventEntity extends BPMNActivityAuditEventEntity {
+@DiscriminatorValue(
+    value = ActivityCancelledAuditEventEntity.ACTIVITY_CANCELLED_EVENT
+)
+public class ActivityCancelledAuditEventEntity
+    extends BPMNActivityAuditEventEntity {
 
-    protected static final String ACTIVITY_CANCELLED_EVENT = "ActivityCancelledEvent";
+    protected static final String ACTIVITY_CANCELLED_EVENT =
+        "ActivityCancelledEvent";
 
     private String cause;
 
-    public ActivityCancelledAuditEventEntity() {
-    }
+    public ActivityCancelledAuditEventEntity() {}
 
-    public ActivityCancelledAuditEventEntity(CloudBPMNActivityCancelledEvent cloudEvent) {
+    public ActivityCancelledAuditEventEntity(
+        CloudBPMNActivityCancelledEvent cloudEvent
+    ) {
         super(cloudEvent);
         this.cause = cloudEvent.getCause();
     }
-    
+
     public String getCause() {
         return cause;
     }
@@ -69,11 +72,12 @@ public class ActivityCancelledAuditEventEntity extends BPMNActivityAuditEventEnt
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ActivityCancelledAuditEventEntity [cause=")
-               .append(cause)
-               .append(", toString()=")
-               .append(super.toString())
-               .append("]");
+        builder
+            .append("ActivityCancelledAuditEventEntity [cause=")
+            .append(cause)
+            .append(", toString()=")
+            .append(super.toString())
+            .append("]");
         return builder.toString();
     }
 }

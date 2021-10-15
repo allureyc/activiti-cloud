@@ -24,18 +24,25 @@ public class BroadcastSignalEventHandler {
 
     private final RuntimeService runtimeService;
 
-    public BroadcastSignalEventHandler(BinderAwareChannelResolver resolver,
-                                      RuntimeService runtimeService) {
+    public BroadcastSignalEventHandler(
+        BinderAwareChannelResolver resolver,
+        RuntimeService runtimeService
+    ) {
         this.runtimeService = runtimeService;
     }
 
     @StreamListener(ProcessEngineSignalChannels.SIGNAL_CONSUMER)
     public void receive(SignalPayload signalPayload) {
-        if ((signalPayload.getVariables() == null) || (signalPayload.getVariables().isEmpty())) {
+        if (
+            (signalPayload.getVariables() == null) ||
+            (signalPayload.getVariables().isEmpty())
+        ) {
             runtimeService.signalEventReceived(signalPayload.getName());
         } else {
-            runtimeService.signalEventReceived(signalPayload.getName(),
-                                               signalPayload.getVariables());
+            runtimeService.signalEventReceived(
+                signalPayload.getName(),
+                signalPayload.getVariables()
+            );
         }
     }
 }

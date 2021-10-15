@@ -17,7 +17,6 @@ package org.activiti.cloud.services.query.events.handlers;
 
 import java.util.Date;
 import java.util.Optional;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
@@ -38,16 +37,26 @@ public class TaskAssignedEventHandler implements QueryEventHandler {
     public void handle(CloudRuntimeEvent<?, ?> event) {
         CloudTaskAssignedEvent taskAssignedEvent = (CloudTaskAssignedEvent) event;
         Task eventTask = taskAssignedEvent.getEntity();
-        Optional<TaskEntity> findResult = taskRepository.findById(eventTask.getId());
-        TaskEntity queryTaskEntity = findResult.orElseThrow(
-                () -> new QueryException("Unable to find task with id: " + eventTask.getId())
+        Optional<TaskEntity> findResult = taskRepository.findById(
+            eventTask.getId()
+        );
+        TaskEntity queryTaskEntity = findResult.orElseThrow(() ->
+            new QueryException(
+                "Unable to find task with id: " + eventTask.getId()
+            )
         );
         queryTaskEntity.setAssignee(eventTask.getAssignee());
         queryTaskEntity.setStatus(Task.TaskStatus.ASSIGNED);
-        queryTaskEntity.setLastModified(new Date(taskAssignedEvent.getTimestamp()));
+        queryTaskEntity.setLastModified(
+            new Date(taskAssignedEvent.getTimestamp())
+        );
         queryTaskEntity.setServiceName(taskAssignedEvent.getServiceName());
-        queryTaskEntity.setServiceFullName(taskAssignedEvent.getServiceFullName());
-        queryTaskEntity.setServiceVersion(taskAssignedEvent.getServiceVersion());
+        queryTaskEntity.setServiceFullName(
+            taskAssignedEvent.getServiceFullName()
+        );
+        queryTaskEntity.setServiceVersion(
+            taskAssignedEvent.getServiceVersion()
+        );
         queryTaskEntity.setAppName(taskAssignedEvent.getAppName());
         queryTaskEntity.setAppVersion(taskAssignedEvent.getAppVersion());
         queryTaskEntity.setOwner(eventTask.getOwner());

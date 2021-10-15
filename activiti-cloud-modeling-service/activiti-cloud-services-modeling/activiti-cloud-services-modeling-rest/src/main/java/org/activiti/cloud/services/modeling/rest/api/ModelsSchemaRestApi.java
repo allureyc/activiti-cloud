@@ -16,6 +16,7 @@
 package org.activiti.cloud.services.modeling.rest.api;
 
 import static org.activiti.cloud.services.modeling.rest.api.ModelRestApi.MODELS;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.http.MediaType;
@@ -32,12 +33,14 @@ import org.springframework.web.bind.annotation.RestController;
 @Api(tags = MODELS)
 @RequestMapping(value = "/v1/schemas")
 public interface ModelsSchemaRestApi {
-
     @ApiOperation(
         tags = MODELS,
         value = "Get validation schema for model type",
         notes = "Get the content of the schema used to validate the given model type."
     )
-    @GetMapping(value = "/{modelType}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(
+        value = "/{modelType}",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
     ResponseEntity<String> getSchema(@PathVariable String modelType);
 }

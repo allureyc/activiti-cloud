@@ -23,19 +23,30 @@ public class ProcessVariableUpdateEventHandler {
 
     private final ProcessVariableUpdater variableUpdater;
 
-    public ProcessVariableUpdateEventHandler(ProcessVariableUpdater variableUpdater) {
+    public ProcessVariableUpdateEventHandler(
+        ProcessVariableUpdater variableUpdater
+    ) {
         this.variableUpdater = variableUpdater;
     }
 
     public void handle(ProcessVariableEntity updatedVariableEntity) {
         String variableName = updatedVariableEntity.getName();
         String processInstanceId = updatedVariableEntity.getProcessInstanceId();
-        BooleanExpression predicate = QProcessVariableEntity.processVariableEntity.name.eq(variableName)
-                .and(
-                        QProcessVariableEntity.processVariableEntity.processInstanceId.eq(processInstanceId)
-                );
-        variableUpdater.update(updatedVariableEntity,
-                               predicate,
-                               "Unable to find variable named '" + variableName + "' for process instance '" + processInstanceId + "'");
+        BooleanExpression predicate = QProcessVariableEntity.processVariableEntity.name
+            .eq(variableName)
+            .and(
+                QProcessVariableEntity.processVariableEntity.processInstanceId.eq(
+                    processInstanceId
+                )
+            );
+        variableUpdater.update(
+            updatedVariableEntity,
+            predicate,
+            "Unable to find variable named '" +
+            variableName +
+            "' for process instance '" +
+            processInstanceId +
+            "'"
+        );
     }
 }
