@@ -15,6 +15,9 @@
  */
 package org.activiti.cloud.services.query.app.repository;
 
+import com.querydsl.core.types.Predicate;
+import com.querydsl.jpa.JPQLQuery;
+
 import org.activiti.cloud.services.query.model.QTaskEntity;
 import org.activiti.cloud.services.query.model.QTaskVariableEntity;
 import org.activiti.cloud.services.query.model.TaskEntity;
@@ -25,20 +28,16 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 import org.springframework.data.repository.support.PageableExecutionUtils;
 import org.springframework.util.Assert;
 
-import com.querydsl.core.types.Predicate;
-import com.querydsl.jpa.JPQLQuery;
-
-public class CustomizedTaskRepositoryImpl extends QuerydslRepositorySupport implements CustomizedTaskRepository {
+public class CustomizedTaskRepositoryImpl extends QuerydslRepositorySupport
+        implements CustomizedTaskRepository {
 
     public CustomizedTaskRepositoryImpl() {
         super(TaskEntity.class);
     }
 
     @Override
-    public Page<TaskEntity> findByVariableNameAndValue(String name,
-                                                       VariableValue<?> value,
-                                                       Predicate predicate,
-                                                       Pageable pageable) {
+    public Page<TaskEntity> findByVariableNameAndValue(
+            String name, VariableValue<?> value, Predicate predicate, Pageable pageable) {
         Assert.notNull(name, "name must not be null!");
         Assert.notNull(value, "value must not be null!");
         Assert.notNull(predicate, "Predicate must not be null!");
@@ -47,17 +46,18 @@ public class CustomizedTaskRepositoryImpl extends QuerydslRepositorySupport impl
         QTaskEntity taskEntity = QTaskEntity.taskEntity;
         QTaskVariableEntity variableEntity = QTaskVariableEntity.taskVariableEntity;
 
-        Predicate condition = variableEntity.name.eq(name)
-                .and(variableEntity.value.eq(value));
+        Predicate condition = variableEntity.name.eq(name).and(variableEntity.value.eq(value));
 
-        JPQLQuery<TaskEntity> from = from(taskEntity).innerJoin(taskEntity.variables, variableEntity).on(condition)
-                                                     .where(predicate);
+        JPQLQuery<TaskEntity> from =
+                from(taskEntity)
+                        .innerJoin(taskEntity.variables, variableEntity)
+                        .on(condition)
+                        .where(predicate);
 
         final JPQLQuery<?> countQuery = from.select(taskEntity.count());
 
         JPQLQuery<TaskEntity> tasks = from.select(taskEntity);
 
         return PageableExecutionUtils.getPage(tasks.fetch(), pageable, countQuery::fetchCount);
-   }
-
+    }
 }

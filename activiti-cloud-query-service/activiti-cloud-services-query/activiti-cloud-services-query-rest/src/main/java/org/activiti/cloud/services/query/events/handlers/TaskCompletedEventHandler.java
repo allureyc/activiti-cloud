@@ -15,9 +15,6 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.Date;
-import java.util.Optional;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
@@ -25,6 +22,9 @@ import org.activiti.cloud.api.task.model.events.CloudTaskCompletedEvent;
 import org.activiti.cloud.services.query.app.repository.TaskRepository;
 import org.activiti.cloud.services.query.model.QueryException;
 import org.activiti.cloud.services.query.model.TaskEntity;
+
+import java.util.Date;
+import java.util.Optional;
 
 public class TaskCompletedEventHandler implements QueryEventHandler {
 
@@ -39,17 +39,22 @@ public class TaskCompletedEventHandler implements QueryEventHandler {
         CloudTaskCompletedEvent taskCompletedEvent = (CloudTaskCompletedEvent) event;
         Task eventTask = taskCompletedEvent.getEntity();
         Optional<TaskEntity> findResult = taskRepository.findById(eventTask.getId());
-        TaskEntity queryTaskEntity = findResult.orElseThrow(
-                () -> new QueryException("Unable to find task with id: " + eventTask.getId())
-        );
+        TaskEntity queryTaskEntity =
+                findResult.orElseThrow(
+                        () ->
+                                new QueryException(
+                                        "Unable to find task with id: " + eventTask.getId()));
 
         queryTaskEntity.setStatus(eventTask.getStatus());
         queryTaskEntity.setLastModified(new Date(taskCompletedEvent.getTimestamp()));
-        queryTaskEntity.setCompletedDate(new Date (taskCompletedEvent.getTimestamp()));
+        queryTaskEntity.setCompletedDate(new Date(taskCompletedEvent.getTimestamp()));
         queryTaskEntity.setCompletedBy(taskCompletedEvent.getEntity().getCompletedBy());
 
-        if (queryTaskEntity.getCompletedDate() != null && queryTaskEntity.getCreatedDate() != null) {
-            queryTaskEntity.setDuration(queryTaskEntity.getCompletedDate().getTime() - queryTaskEntity.getCreatedDate().getTime());
+        if (queryTaskEntity.getCompletedDate() != null
+                && queryTaskEntity.getCreatedDate() != null) {
+            queryTaskEntity.setDuration(
+                    queryTaskEntity.getCompletedDate().getTime()
+                            - queryTaskEntity.getCreatedDate().getTime());
         }
 
         taskRepository.save(queryTaskEntity);

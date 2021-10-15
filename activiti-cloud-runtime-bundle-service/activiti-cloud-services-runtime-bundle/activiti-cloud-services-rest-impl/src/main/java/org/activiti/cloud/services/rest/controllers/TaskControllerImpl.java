@@ -46,8 +46,8 @@ import org.activiti.cloud.services.rest.api.TaskController;
 import org.activiti.cloud.services.rest.assemblers.TaskRepresentationModelAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.PagedModel;
 import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,10 +64,11 @@ public class TaskControllerImpl implements TaskController {
     private final TaskRuntime taskRuntime;
 
     @Autowired
-    public TaskControllerImpl(TaskRepresentationModelAssembler taskRepresentationModelAssembler,
-                              AlfrescoPagedModelAssembler<Task> pagedCollectionModelAssembler,
-                              SpringPageConverter pageConverter,
-                              TaskRuntime taskRuntime) {
+    public TaskControllerImpl(
+            TaskRepresentationModelAssembler taskRepresentationModelAssembler,
+            AlfrescoPagedModelAssembler<Task> pagedCollectionModelAssembler,
+            SpringPageConverter pageConverter,
+            TaskRuntime taskRuntime) {
         this.taskRepresentationModelAssembler = taskRepresentationModelAssembler;
         this.pagedCollectionModelAssembler = pagedCollectionModelAssembler;
         this.pageConverter = pageConverter;
@@ -77,10 +78,10 @@ public class TaskControllerImpl implements TaskController {
     @Override
     public PagedModel<EntityModel<CloudTask>> getTasks(Pageable pageable) {
         Page<Task> taskPage = taskRuntime.tasks(pageConverter.toAPIPageable(pageable));
-        return pagedCollectionModelAssembler.toModel(pageable,
-                                                  pageConverter.toSpringPage(pageable,
-                                                                             taskPage),
-                                                  taskRepresentationModelAssembler);
+        return pagedCollectionModelAssembler.toModel(
+                pageable,
+                pageConverter.toSpringPage(pageable, taskPage),
+                taskRepresentationModelAssembler);
     }
 
     @Override
@@ -92,29 +93,22 @@ public class TaskControllerImpl implements TaskController {
     @Override
     public EntityModel<CloudTask> claimTask(@PathVariable String taskId) {
         return taskRepresentationModelAssembler.toModel(
-                taskRuntime.claim(
-                        TaskPayloadBuilder.claim()
-                                .withTaskId(taskId)
-                                .build()));
+                taskRuntime.claim(TaskPayloadBuilder.claim().withTaskId(taskId).build()));
     }
 
     @Override
     public EntityModel<CloudTask> releaseTask(@PathVariable String taskId) {
 
-        return taskRepresentationModelAssembler.toModel(taskRuntime.release(TaskPayloadBuilder
-                                                                            .release()
-                                                                            .withTaskId(taskId)
-                                                                            .build()));
+        return taskRepresentationModelAssembler.toModel(
+                taskRuntime.release(TaskPayloadBuilder.release().withTaskId(taskId).build()));
     }
 
     @Override
-    public EntityModel<CloudTask> completeTask(@PathVariable String taskId,
-                                     @RequestBody(required = false) CompleteTaskPayload completeTaskPayload) {
+    public EntityModel<CloudTask> completeTask(
+            @PathVariable String taskId,
+            @RequestBody(required = false) CompleteTaskPayload completeTaskPayload) {
         if (completeTaskPayload == null) {
-            completeTaskPayload = TaskPayloadBuilder
-                    .complete()
-                    .withTaskId(taskId)
-                    .build();
+            completeTaskPayload = TaskPayloadBuilder.complete().withTaskId(taskId).build();
         } else {
             completeTaskPayload.setTaskId(taskId);
         }
@@ -125,10 +119,7 @@ public class TaskControllerImpl implements TaskController {
 
     @Override
     public EntityModel<CloudTask> deleteTask(@PathVariable String taskId) {
-        Task task = taskRuntime.delete(TaskPayloadBuilder
-                                                                .delete()
-                                                                .withTaskId(taskId)
-                                                                .build());
+        Task task = taskRuntime.delete(TaskPayloadBuilder.delete().withTaskId(taskId).build());
         return taskRepresentationModelAssembler.toModel(task);
     }
 
@@ -138,8 +129,8 @@ public class TaskControllerImpl implements TaskController {
     }
 
     @Override
-    public EntityModel<CloudTask> updateTask(@PathVariable String taskId,
-                                   @RequestBody UpdateTaskPayload updateTaskPayload) {
+    public EntityModel<CloudTask> updateTask(
+            @PathVariable String taskId, @RequestBody UpdateTaskPayload updateTaskPayload) {
         if (updateTaskPayload != null) {
             updateTaskPayload.setTaskId(taskId);
         }
@@ -147,24 +138,22 @@ public class TaskControllerImpl implements TaskController {
     }
 
     @Override
-    public PagedModel<EntityModel<CloudTask>> getSubtasks(Pageable pageable,
-                                                    @PathVariable String taskId) {
-        Page<Task> taskPage = taskRuntime
-                .tasks(pageConverter.toAPIPageable(pageable),
-                       TaskPayloadBuilder
-                               .tasks()
-                               .withParentTaskId(taskId)
-                               .build());
+    public PagedModel<EntityModel<CloudTask>> getSubtasks(
+            Pageable pageable, @PathVariable String taskId) {
+        Page<Task> taskPage =
+                taskRuntime.tasks(
+                        pageConverter.toAPIPageable(pageable),
+                        TaskPayloadBuilder.tasks().withParentTaskId(taskId).build());
 
-        return pagedCollectionModelAssembler.toModel(pageable,
-                                                  pageConverter.toSpringPage(pageable,
-                                                                             taskPage),
-                                                  taskRepresentationModelAssembler);
+        return pagedCollectionModelAssembler.toModel(
+                pageable,
+                pageConverter.toSpringPage(pageable, taskPage),
+                taskRepresentationModelAssembler);
     }
 
     @Override
-    public void saveTask(@PathVariable String taskId,
-                         @RequestBody SaveTaskPayload saveTaskPayload) {
+    public void saveTask(
+            @PathVariable String taskId, @RequestBody SaveTaskPayload saveTaskPayload) {
         if (saveTaskPayload != null) {
             saveTaskPayload.setTaskId(taskId);
         }
@@ -173,9 +162,9 @@ public class TaskControllerImpl implements TaskController {
     }
 
     @Override
-    public EntityModel<CloudTask> assign(@PathVariable String taskId,
-                                         @RequestBody AssignTaskPayload assignTaskPayload) {
-        if (assignTaskPayload!=null) {
+    public EntityModel<CloudTask> assign(
+            @PathVariable String taskId, @RequestBody AssignTaskPayload assignTaskPayload) {
+        if (assignTaskPayload != null) {
             assignTaskPayload.setTaskId(taskId);
         }
 

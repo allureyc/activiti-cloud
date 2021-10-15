@@ -26,8 +26,7 @@ public class VariableCreatedEventEntity extends VariableAuditEventEntity {
 
     protected static final String VARIABLE_CREATED_EVENT = "VariableCreatedEvent";
 
-    public VariableCreatedEventEntity() {
-    }
+    public VariableCreatedEventEntity() {}
 
     public VariableCreatedEventEntity(CloudVariableCreatedEvent cloudEvent) {
         super(cloudEvent);
@@ -55,7 +54,9 @@ public class VariableCreatedEventEntity extends VariableAuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("VariableCreatedEventEntity [toString()=").append(super.toString()).append("]");
+        builder.append("VariableCreatedEventEntity [toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
     }
 }

@@ -15,6 +15,11 @@
  */
 package org.activiti.cloud.services.audit.jpa.streams;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
 import org.activiti.cloud.api.model.shared.impl.events.CloudRuntimeEventImpl;
@@ -22,7 +27,6 @@ import org.activiti.cloud.services.audit.api.converters.APIEventToEntityConverte
 import org.activiti.cloud.services.audit.api.converters.EventToEntityConverter;
 import org.activiti.cloud.services.audit.jpa.events.AuditEventEntity;
 import org.activiti.cloud.services.audit.jpa.repository.EventsRepository;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -31,21 +35,13 @@ import org.mockito.Mock;
 import java.util.HashMap;
 import java.util.UUID;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 public class AuditConsumerChannelHandlerImplTest {
 
-    @InjectMocks
-    private AuditConsumerChannelHandlerImpl handler;
+    @InjectMocks private AuditConsumerChannelHandlerImpl handler;
 
-    @Mock
-    private EventsRepository eventsRepository;
+    @Mock private EventsRepository eventsRepository;
 
-    @Mock
-    private APIEventToEntityConverters converters;
+    @Mock private APIEventToEntityConverters converters;
 
     @BeforeEach
     public void setUp() {
@@ -54,43 +50,55 @@ public class AuditConsumerChannelHandlerImplTest {
 
     @Test
     public void receiveEventShouldStoreEntity() {
-        //given
+        // given
         CloudRuntimeEvent cloudRuntimeEvent = mock(CloudRuntimeEventImpl.class);
-        when(cloudRuntimeEvent.getEventType()).thenReturn(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED);
+        when(cloudRuntimeEvent.getEventType())
+                .thenReturn(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED);
         EventToEntityConverter converter = mock(EventToEntityConverter.class);
-        when(converters.getConverterByEventTypeName(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED.name())).thenReturn(converter);
+        when(converters.getConverterByEventTypeName(
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED.name()))
+                .thenReturn(converter);
         AuditEventEntity entity = mock(AuditEventEntity.class);
         when(converter.convertToEntity(cloudRuntimeEvent)).thenReturn(entity);
 
         CloudRuntimeEvent[] events = {cloudRuntimeEvent};
 
-        //when
-        handler.receiveCloudRuntimeEvent(new HashMap<String,Object>(){{put("id", UUID.randomUUID());}}, events);
+        // when
+        handler.receiveCloudRuntimeEvent(
+                new HashMap<String, Object>() {
+                    {
+                        put("id", UUID.randomUUID());
+                    }
+                },
+                events);
 
-        //then
+        // then
         verify(eventsRepository).save(entity);
     }
 
     @Test
-    public void messageIdShouldBeSet(){
-        //given
+    public void messageIdShouldBeSet() {
+        // given
         CloudRuntimeEvent cloudRuntimeEvent = mock(CloudRuntimeEventImpl.class);
-        when(cloudRuntimeEvent.getEventType()).thenReturn(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED);
+        when(cloudRuntimeEvent.getEventType())
+                .thenReturn(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED);
         EventToEntityConverter converter = mock(EventToEntityConverter.class);
-        when(converters.getConverterByEventTypeName(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED.name())).thenReturn(converter);
+        when(converters.getConverterByEventTypeName(
+                        ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED.name()))
+                .thenReturn(converter);
         AuditEventEntity entity = mock(AuditEventEntity.class);
         when(converter.convertToEntity(cloudRuntimeEvent)).thenReturn(entity);
 
         CloudRuntimeEvent[] events = {cloudRuntimeEvent};
 
-        HashMap <String,Object> headers = new HashMap<>();
+        HashMap<String, Object> headers = new HashMap<>();
         headers.put("id", UUID.randomUUID());
 
-        //when
+        // when
         handler.receiveCloudRuntimeEvent(headers, events);
 
-        //then
-        verify((CloudRuntimeEventImpl)cloudRuntimeEvent).setMessageId(headers.get("id").toString());
+        // then
+        verify((CloudRuntimeEventImpl) cloudRuntimeEvent)
+                .setMessageId(headers.get("id").toString());
     }
-
 }

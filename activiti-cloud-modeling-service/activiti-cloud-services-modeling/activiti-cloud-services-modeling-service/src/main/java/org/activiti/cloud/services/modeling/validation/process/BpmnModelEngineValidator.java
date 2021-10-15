@@ -35,16 +35,16 @@ public class BpmnModelEngineValidator implements BpmnModelValidator {
     }
 
     @Override
-    public Stream<ModelValidationError> validate(BpmnModel bpmnModel,
-                                                 ValidationContext validationContext) {
-        return processValidator.validate(bpmnModel)
-                .stream()
-                .map(this::toModelValidationError);
+    public Stream<ModelValidationError> validate(
+            BpmnModel bpmnModel, ValidationContext validationContext) {
+        return processValidator.validate(bpmnModel).stream().map(this::toModelValidationError);
     }
 
     private ModelValidationError toModelValidationError(ValidationError validationError) {
-        return new ModelValidationError(validationError.getProblem(),
-            validationError.getDefaultDescription(), validationError.getValidatorSetName(),
-            validationError.isWarning());
+        return new ModelValidationError(
+                validationError.getProblem(),
+                validationError.getDefaultDescription(),
+                validationError.getValidatorSetName(),
+                validationError.isWarning());
     }
 }

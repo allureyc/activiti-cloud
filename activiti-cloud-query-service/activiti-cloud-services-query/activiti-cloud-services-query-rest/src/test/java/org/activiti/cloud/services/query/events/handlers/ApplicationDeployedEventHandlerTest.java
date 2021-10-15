@@ -22,10 +22,9 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.UUID;
 import org.activiti.api.process.model.events.ApplicationEvent;
-import org.activiti.cloud.api.process.model.impl.events.CloudApplicationDeployedEventImpl;
 import org.activiti.api.runtime.model.impl.DeploymentImpl;
+import org.activiti.cloud.api.process.model.impl.events.CloudApplicationDeployedEventImpl;
 import org.activiti.cloud.services.query.app.repository.ApplicationRepository;
 import org.activiti.cloud.services.query.model.ApplicationEntity;
 import org.assertj.core.api.Assertions;
@@ -35,39 +34,39 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.UUID;
+
 public class ApplicationDeployedEventHandlerTest {
 
-    private static final String APPLICATION_DEPLOYMENT_NAME= "SpringAutoDeployment";
+    private static final String APPLICATION_DEPLOYMENT_NAME = "SpringAutoDeployment";
 
-    @InjectMocks
-    private ApplicationDeployedEventHandler handler;
+    @InjectMocks private ApplicationDeployedEventHandler handler;
 
-    @Mock
-    private ApplicationRepository applicationRepository;
+    @Mock private ApplicationRepository applicationRepository;
 
     @BeforeEach
     public void setUp() {
         initMocks(this);
     }
-    
+
     @Test
     public void handleShouldStoreApplication() {
-        //given
+        // given
         DeploymentImpl deployment = new DeploymentImpl();
         deployment.setId(UUID.randomUUID().toString());
         deployment.setName(APPLICATION_DEPLOYMENT_NAME);
         deployment.setVersion(2);
 
-        CloudApplicationDeployedEventImpl applicationDeployedEvent = new CloudApplicationDeployedEventImpl(
-                deployment);
+        CloudApplicationDeployedEventImpl applicationDeployedEvent =
+                new CloudApplicationDeployedEventImpl(deployment);
         applicationDeployedEvent.setAppName("ApplicationEventName");
 
-        //when
+        // when
         handler.handle(applicationDeployedEvent);
 
-        //then
-        ArgumentCaptor<ApplicationEntity> applicationCaptor = ArgumentCaptor
-                .forClass(ApplicationEntity.class);
+        // then
+        ArgumentCaptor<ApplicationEntity> applicationCaptor =
+                ArgumentCaptor.forClass(ApplicationEntity.class);
 
         verify(applicationRepository).save(applicationCaptor.capture());
         ApplicationEntity application = applicationCaptor.getValue();
@@ -79,21 +78,21 @@ public class ApplicationDeployedEventHandlerTest {
 
     @Test
     public void handleShouldNotStoreApplicationWhenAlreadyExist() {
-        //given
+        // given
         DeploymentImpl deployment = new DeploymentImpl();
         deployment.setId(UUID.randomUUID().toString());
         deployment.setName(APPLICATION_DEPLOYMENT_NAME);
         deployment.setVersion(2);
 
-        CloudApplicationDeployedEventImpl applicationDeployedFirstEvent = new CloudApplicationDeployedEventImpl(
-                deployment);
+        CloudApplicationDeployedEventImpl applicationDeployedFirstEvent =
+                new CloudApplicationDeployedEventImpl(deployment);
         applicationDeployedFirstEvent.setAppName("ApplicationEventName");
         given(applicationRepository.exists(any())).willReturn(true);
 
-        //when
+        // when
         handler.handle(applicationDeployedFirstEvent);
 
-        //then
+        // then
         verify(applicationRepository, never()).save(any());
     }
 
@@ -103,5 +102,5 @@ public class ApplicationDeployedEventHandlerTest {
 
         Assertions.assertThat(handledEvent)
                 .isEqualTo(ApplicationEvent.ApplicationEvents.APPLICATION_DEPLOYED.name());
-    } 
+    }
 }

@@ -37,8 +37,7 @@ public class TaskCandidateGroupAddedEventEntity extends AuditEventEntity {
     @Column(columnDefinition = "text")
     private TaskCandidateGroupImpl candidateGroup;
 
-    public TaskCandidateGroupAddedEventEntity() {
-    }
+    public TaskCandidateGroupAddedEventEntity() {}
 
     public TaskCandidateGroupAddedEventEntity(CloudTaskCandidateGroupAddedEvent cloudEvent) {
         super(cloudEvent);
@@ -50,7 +49,8 @@ public class TaskCandidateGroupAddedEventEntity extends AuditEventEntity {
     }
 
     public void setCandidateGroup(TaskCandidateGroup candidateGroup) {
-        this.candidateGroup = new TaskCandidateGroupImpl(candidateGroup.getGroupId(),candidateGroup.getTaskId());
+        this.candidateGroup =
+                new TaskCandidateGroupImpl(candidateGroup.getGroupId(), candidateGroup.getTaskId());
     }
 
     @Override
@@ -80,11 +80,10 @@ public class TaskCandidateGroupAddedEventEntity extends AuditEventEntity {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("TaskCandidateGroupAddedEventEntity [candidateGroup=")
-               .append(candidateGroup)
-               .append(", toString()=")
-               .append(super.toString())
-               .append("]");
+                .append(candidateGroup)
+                .append(", toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
     }
-
 }

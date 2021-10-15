@@ -17,7 +17,7 @@
 package org.activiti.cloud.services.query.rest;
 
 import com.querydsl.core.types.Predicate;
-import java.util.List;
+
 import org.activiti.cloud.alfresco.data.domain.AlfrescoPagedModelAssembler;
 import org.activiti.cloud.api.task.model.QueryCloudTask;
 import org.activiti.cloud.services.query.app.repository.TaskRepository;
@@ -30,6 +30,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 
+import java.util.List;
+
 public class TaskControllerHelper {
 
     private final TaskRepository taskRepository;
@@ -38,33 +40,36 @@ public class TaskControllerHelper {
     private final TaskRepresentationModelAssembler taskRepresentationModelAssembler;
 
     public TaskControllerHelper(
-        TaskRepository taskRepository,
-        AlfrescoPagedModelAssembler<TaskEntity> pagedCollectionModelAssembler,
-        QueryDslPredicateAggregator predicateAggregator,
-        TaskRepresentationModelAssembler taskRepresentationModelAssembler) {
+            TaskRepository taskRepository,
+            AlfrescoPagedModelAssembler<TaskEntity> pagedCollectionModelAssembler,
+            QueryDslPredicateAggregator predicateAggregator,
+            TaskRepresentationModelAssembler taskRepresentationModelAssembler) {
         this.taskRepository = taskRepository;
         this.pagedCollectionModelAssembler = pagedCollectionModelAssembler;
         this.predicateAggregator = predicateAggregator;
         this.taskRepresentationModelAssembler = taskRepresentationModelAssembler;
     }
 
-    public PagedModel<EntityModel<QueryCloudTask>> findAll(Predicate predicate,
-        VariableSearch variableSearch, Pageable pageable, List<QueryDslPredicateFilter> filters) {
+    public PagedModel<EntityModel<QueryCloudTask>> findAll(
+            Predicate predicate,
+            VariableSearch variableSearch,
+            Pageable pageable,
+            List<QueryDslPredicateFilter> filters) {
         Predicate extendedPredicate = predicateAggregator.applyFilters(predicate, filters);
 
         Page<TaskEntity> page;
         if (variableSearch.isSet()) {
-            page = taskRepository
-                .findByVariableNameAndValue(variableSearch.getName(), variableSearch.getValue(),
-                    extendedPredicate,
-                    pageable);
+            page =
+                    taskRepository.findByVariableNameAndValue(
+                            variableSearch.getName(),
+                            variableSearch.getValue(),
+                            extendedPredicate,
+                            pageable);
         } else {
             page = taskRepository.findAll(extendedPredicate, pageable);
         }
 
-        return pagedCollectionModelAssembler.toModel(pageable,
-            page,
-            taskRepresentationModelAssembler);
+        return pagedCollectionModelAssembler.toModel(
+                pageable, page, taskRepresentationModelAssembler);
     }
-
 }

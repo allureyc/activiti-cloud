@@ -15,8 +15,6 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.Date;
-
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
@@ -24,6 +22,8 @@ import org.activiti.cloud.api.process.model.events.CloudProcessUpdatedEvent;
 import org.activiti.cloud.services.query.app.repository.ProcessInstanceRepository;
 import org.activiti.cloud.services.query.model.ProcessInstanceEntity;
 import org.activiti.cloud.services.query.model.QueryException;
+
+import java.util.Date;
 
 public class ProcessUpdatedEventHandler implements QueryEventHandler {
 
@@ -36,14 +36,19 @@ public class ProcessUpdatedEventHandler implements QueryEventHandler {
     @Override
     public void handle(CloudRuntimeEvent<?, ?> event) {
         CloudProcessUpdatedEvent updatedEvent = (CloudProcessUpdatedEvent) event;
-        
+
         ProcessInstance eventProcessInstance = updatedEvent.getEntity();
 
-        ProcessInstanceEntity processInstanceEntity = processInstanceRepository.findById(eventProcessInstance.getId())
-                .orElseThrow(
-                        () -> new QueryException("Unable to find process instance with the given id: " + eventProcessInstance.getId())
-                );
-                
+        ProcessInstanceEntity processInstanceEntity =
+                processInstanceRepository
+                        .findById(eventProcessInstance.getId())
+                        .orElseThrow(
+                                () ->
+                                        new QueryException(
+                                                "Unable to find process instance with the given id:"
+                                                        + " "
+                                                        + eventProcessInstance.getId()));
+
         processInstanceEntity.setBusinessKey(eventProcessInstance.getBusinessKey());
         processInstanceEntity.setName(eventProcessInstance.getName());
         processInstanceEntity.setLastModified(new Date(updatedEvent.getTimestamp()));

@@ -24,45 +24,54 @@ import org.activiti.cloud.services.query.model.ServiceTaskEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.persistence.EntityManager;
 import java.util.Optional;
+
+import javax.persistence.EntityManager;
 
 public abstract class BaseIntegrationEventHandler {
 
-    private final static Logger logger = LoggerFactory.getLogger(BaseIntegrationEventHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(BaseIntegrationEventHandler.class);
 
     protected final IntegrationContextRepository integrationContextRepository;
     protected final ServiceTaskRepository serviceTaskRepository;
     protected final EntityManager entityManager;
 
-    public BaseIntegrationEventHandler(IntegrationContextRepository integrationContextRepository,
-                                       ServiceTaskRepository serviceTaskRepository,
-                                       EntityManager entityManager) {
+    public BaseIntegrationEventHandler(
+            IntegrationContextRepository integrationContextRepository,
+            ServiceTaskRepository serviceTaskRepository,
+            EntityManager entityManager) {
         this.integrationContextRepository = integrationContextRepository;
         this.serviceTaskRepository = serviceTaskRepository;
         this.entityManager = entityManager;
     }
 
-    protected Optional<IntegrationContextEntity> findOrCreateIntegrationContextEntity(CloudIntegrationEvent event) {
+    protected Optional<IntegrationContextEntity> findOrCreateIntegrationContextEntity(
+            CloudIntegrationEvent event) {
 
         IntegrationContext integrationContext = event.getEntity();
 
-        IntegrationContextEntity entity = integrationContextRepository.findByProcessInstanceIdAndClientIdAndExecutionId(integrationContext.getProcessInstanceId(),
-                                                                                                                        integrationContext.getClientId(),
-                                                                                                                        integrationContext.getExecutionId());
+        IntegrationContextEntity entity =
+                integrationContextRepository.findByProcessInstanceIdAndClientIdAndExecutionId(
+                        integrationContext.getProcessInstanceId(),
+                        integrationContext.getClientId(),
+                        integrationContext.getExecutionId());
         // Let's create entity if does not exists
-        if(entity == null) {
-            ServiceTaskEntity serviceTaskEntity = serviceTaskRepository.findByProcessInstanceIdAndElementIdAndExecutionId(integrationContext.getProcessInstanceId(),
-                                                                                                                             integrationContext.getClientId(),
-                                                                                                                             integrationContext.getExecutionId());
+        if (entity == null) {
+            ServiceTaskEntity serviceTaskEntity =
+                    serviceTaskRepository.findByProcessInstanceIdAndElementIdAndExecutionId(
+                            integrationContext.getProcessInstanceId(),
+                            integrationContext.getClientId(),
+                            integrationContext.getExecutionId());
             if (serviceTaskEntity != null) {
                 logger.debug("Found BPMNActivityEntity: {}", serviceTaskEntity);
 
-                entity = new IntegrationContextEntity(event.getServiceName(),
-                                                      event.getServiceFullName(),
-                                                      event.getServiceVersion(),
-                                                      event.getAppName(),
-                                                      event.getAppVersion());
+                entity =
+                        new IntegrationContextEntity(
+                                event.getServiceName(),
+                                event.getServiceFullName(),
+                                event.getServiceVersion(),
+                                event.getAppName(),
+                                event.getAppVersion());
                 // Let use event id to persist integration context
                 entity.setId(serviceTaskEntity.getId());
                 entity.setClientId(integrationContext.getClientId());
@@ -74,17 +83,19 @@ public abstract class BaseIntegrationEventHandler {
                 entity.setRootProcessInstanceId(integrationContext.getRootProcessInstanceId());
                 entity.setExecutionId(integrationContext.getExecutionId());
                 entity.setProcessDefinitionKey(integrationContext.getProcessDefinitionKey());
-                entity.setProcessDefinitionVersion(integrationContext.getProcessDefinitionVersion());
+                entity.setProcessDefinitionVersion(
+                        integrationContext.getProcessDefinitionVersion());
                 entity.setBusinessKey(integrationContext.getBusinessKey());
                 entity.setServiceTask(serviceTaskEntity);
 
                 entityManager.persist(entity);
             } else {
-                logger.error("Cannot find BPMNActivityEntity for integrationContext: {}", integrationContext);
+                logger.error(
+                        "Cannot find BPMNActivityEntity for integrationContext: {}",
+                        integrationContext);
             }
         }
 
         return Optional.ofNullable(entity);
     }
-
 }

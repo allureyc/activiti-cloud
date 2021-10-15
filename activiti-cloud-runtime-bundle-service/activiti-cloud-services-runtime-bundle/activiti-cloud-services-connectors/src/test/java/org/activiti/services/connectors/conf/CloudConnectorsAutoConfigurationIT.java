@@ -44,36 +44,26 @@ import org.springframework.messaging.MessageChannel;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class CloudConnectorsAutoConfigurationIT {
 
-    @Autowired
-    private MQServiceTaskBehavior behavior;
+    @Autowired private MQServiceTaskBehavior behavior;
 
-    @MockBean
-    private IntegrationContextManager integrationContextManager;
+    @MockBean private IntegrationContextManager integrationContextManager;
 
-    @MockBean
-    private IntegrationContextService integrationContextService;
+    @MockBean private IntegrationContextService integrationContextService;
 
-    @MockBean
-    private RuntimeBundleProperties runtimeBundleProperties;
+    @MockBean private RuntimeBundleProperties runtimeBundleProperties;
 
     @MockBean(name = "auditProducer")
-    private  MessageChannel auditProducer;
+    private MessageChannel auditProducer;
 
-    @MockBean
-    private ApplicationEventPublisher eventPublisher;
+    @MockBean private ApplicationEventPublisher eventPublisher;
 
-    @MockBean
-    private ProcessEngineChannels processEngineChannels;
+    @MockBean private ProcessEngineChannels processEngineChannels;
 
-    @MockBean
-    private TaskService taskService;
+    @MockBean private TaskService taskService;
 
-    @MockBean
-    private ManagementService managementService;
+    @MockBean private ManagementService managementService;
 
-    @MockBean
-    private CloudProcessDeployedProducer processDeployedProducer;
-
+    @MockBean private CloudProcessDeployedProducer processDeployedProducer;
 
     @Test
     public void shouldProvideMQServiceTaskBehaviorBean() {
@@ -108,6 +98,5 @@ public class CloudConnectorsAutoConfigurationIT {
         public ProcessSecurityPoliciesManager processSecurityPoliciesManager() {
             return mock(ProcessSecurityPoliciesManager.class);
         }
-
     }
 }

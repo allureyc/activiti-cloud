@@ -26,8 +26,7 @@ public class ActivityCompletedAuditEventEntity extends BPMNActivityAuditEventEnt
 
     protected static final String ACTIVITY_COMPLETED_EVENT = "ActivityCompletedEvent";
 
-    public ActivityCompletedAuditEventEntity() {
-    }
+    public ActivityCompletedAuditEventEntity() {}
 
     public ActivityCompletedAuditEventEntity(CloudBPMNActivityCompletedEvent cloudEvent) {
         super(cloudEvent);
@@ -55,7 +54,9 @@ public class ActivityCompletedAuditEventEntity extends BPMNActivityAuditEventEnt
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ActivityCompletedAuditEventEntity [toString()=").append(super.toString()).append("]");
+        builder.append("ActivityCompletedAuditEventEntity [toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
-    } 
+    }
 }

@@ -15,7 +15,9 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.UUID;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.activiti.api.process.model.ProcessInstance;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
@@ -31,17 +33,13 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
+import java.util.UUID;
 
 public class ProcessCreatedEventHandlerTest {
 
-    @InjectMocks
-    private ProcessCreatedEventHandler handler;
+    @InjectMocks private ProcessCreatedEventHandler handler;
 
-    @Mock
-    private ProcessInstanceRepository processInstanceRepository;
+    @Mock private ProcessInstanceRepository processInstanceRepository;
 
     @BeforeEach
     public void setUp() {
@@ -50,13 +48,14 @@ public class ProcessCreatedEventHandlerTest {
 
     @Test
     public void handleShouldUpdateCurrentProcessInstanceStateToCreated() {
-        //given
+        // given
         CloudProcessCreatedEvent event = buildProcessCreatedEvent();
 
-        //when
+        // when
         handler.handle(event);
 
-        ArgumentCaptor<ProcessInstanceEntity> argumentCaptor = ArgumentCaptor.forClass(ProcessInstanceEntity.class);
+        ArgumentCaptor<ProcessInstanceEntity> argumentCaptor =
+                ArgumentCaptor.forClass(ProcessInstanceEntity.class);
         verify(processInstanceRepository).save(argumentCaptor.capture());
 
         ProcessInstanceEntity processInstanceEntity = argumentCaptor.getValue();
@@ -83,10 +82,11 @@ public class ProcessCreatedEventHandlerTest {
 
     @Test
     public void getHandledEventShouldReturnProcessCreatedEvent() {
-        //when
+        // when
         String handledEvent = handler.getHandledEvent();
 
-        //then
-        assertThat(handledEvent).isEqualTo(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED.name());
+        // then
+        assertThat(handledEvent)
+                .isEqualTo(ProcessRuntimeEvent.ProcessEvents.PROCESS_CREATED.name());
     }
 }

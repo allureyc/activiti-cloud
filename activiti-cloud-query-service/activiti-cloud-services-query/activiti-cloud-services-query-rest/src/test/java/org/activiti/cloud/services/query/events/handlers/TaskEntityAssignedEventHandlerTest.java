@@ -15,23 +15,6 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
-
-import org.activiti.api.task.model.Task;
-import org.activiti.api.task.model.events.TaskRuntimeEvent;
-import org.activiti.cloud.api.task.model.events.CloudTaskAssignedEvent;
-import org.activiti.cloud.api.task.model.impl.events.CloudTaskAssignedEventImpl;
-import org.activiti.cloud.services.query.app.repository.TaskRepository;
-import org.activiti.cloud.services.query.model.QueryException;
-import org.activiti.cloud.services.query.model.TaskEntity;
-import org.activiti.api.task.model.impl.TaskImpl;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
 import static org.activiti.cloud.services.query.events.handlers.TaskBuilder.aTask;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -40,13 +23,28 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.events.TaskRuntimeEvent;
+import org.activiti.api.task.model.impl.TaskImpl;
+import org.activiti.cloud.api.task.model.events.CloudTaskAssignedEvent;
+import org.activiti.cloud.api.task.model.impl.events.CloudTaskAssignedEventImpl;
+import org.activiti.cloud.services.query.app.repository.TaskRepository;
+import org.activiti.cloud.services.query.model.QueryException;
+import org.activiti.cloud.services.query.model.TaskEntity;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
+import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
+
 public class TaskEntityAssignedEventHandlerTest {
 
-    @InjectMocks
-    private TaskAssignedEventHandler handler;
+    @InjectMocks private TaskAssignedEventHandler handler;
 
-    @Mock
-    private TaskRepository taskRepository;
+    @Mock private TaskRepository taskRepository;
 
     @BeforeEach
     public void setUp() {
@@ -55,21 +53,18 @@ public class TaskEntityAssignedEventHandlerTest {
 
     @Test
     public void handleShouldUpdateTaskStatusToAssigned() {
-        //given
+        // given
         CloudTaskAssignedEvent event = buildTaskAssignedEvent();
 
         String taskId = event.getEntity().getId();
-        TaskEntity taskEntity = aTask()
-                .withId(taskId)
-                .withAssignee("previousUser")
-                .build();
+        TaskEntity taskEntity = aTask().withId(taskId).withAssignee("previousUser").build();
 
         given(taskRepository.findById(taskId)).willReturn(Optional.of(taskEntity));
 
-        //when
+        // when
         handler.handle(event);
 
-        //then
+        // then
         verify(taskRepository).save(taskEntity);
         verify(taskEntity).setStatus(Task.TaskStatus.ASSIGNED);
         verify(taskEntity).setAssignee(event.getEntity().getAssignee());
@@ -77,34 +72,33 @@ public class TaskEntityAssignedEventHandlerTest {
     }
 
     private CloudTaskAssignedEvent buildTaskAssignedEvent() {
-        TaskImpl task = new TaskImpl(UUID.randomUUID().toString(),
-                                     "task",
-                                     Task.TaskStatus.ASSIGNED);
+        TaskImpl task =
+                new TaskImpl(UUID.randomUUID().toString(), "task", Task.TaskStatus.ASSIGNED);
         task.setAssignee("user");
         return new CloudTaskAssignedEventImpl(task);
     }
 
     @Test
     public void handleShouldThrowExceptionWhenNoTaskIsFoundForTheGivenId() {
-        //given
+        // given
         CloudTaskAssignedEvent event = buildTaskAssignedEvent();
 
         String taskId = event.getEntity().getId();
         given(taskRepository.findById(taskId)).willReturn(Optional.empty());
 
-        //then
-        //when
+        // then
+        // when
         assertThatExceptionOfType(QueryException.class)
-            .isThrownBy(() -> handler.handle(event))
-            .withMessageContaining("Unable to find task with id: " + taskId);
+                .isThrownBy(() -> handler.handle(event))
+                .withMessageContaining("Unable to find task with id: " + taskId);
     }
 
     @Test
     public void getHandledEventShouldReturnTaskAssignedEvent() {
-        //when
+        // when
         String handledEvent = handler.getHandledEvent();
 
-        //then
+        // then
         assertThat(handledEvent).isEqualTo(TaskRuntimeEvent.TaskEvents.TASK_ASSIGNED.name());
     }
 }

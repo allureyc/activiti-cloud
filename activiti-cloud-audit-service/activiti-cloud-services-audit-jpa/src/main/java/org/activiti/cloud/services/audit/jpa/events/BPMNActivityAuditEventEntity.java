@@ -32,14 +32,12 @@ public abstract class BPMNActivityAuditEventEntity extends AuditEventEntity {
     @Column(columnDefinition = "text")
     private BPMNActivity bpmnActivity;
 
-    public BPMNActivityAuditEventEntity() {
-    }
+    public BPMNActivityAuditEventEntity() {}
 
     public BPMNActivityAuditEventEntity(CloudBPMNActivityEvent cloudEvent) {
         super(cloudEvent);
         setBpmnActivity(cloudEvent.getEntity());
     }
-
 
     public BPMNActivity getBpmnActivity() {
         return bpmnActivity;
@@ -76,11 +74,10 @@ public abstract class BPMNActivityAuditEventEntity extends AuditEventEntity {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("BPMNActivityAuditEventEntity [bpmnActivity=")
-               .append(bpmnActivity)
-               .append(", toString()=")
-               .append(super.toString())
-               .append("]");
+                .append(bpmnActivity)
+                .append(", toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
     }
-
 }

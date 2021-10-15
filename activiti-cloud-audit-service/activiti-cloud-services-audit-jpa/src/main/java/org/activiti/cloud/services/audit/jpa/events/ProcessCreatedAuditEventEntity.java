@@ -26,8 +26,7 @@ public class ProcessCreatedAuditEventEntity extends ProcessAuditEventEntity {
 
     protected static final String PROCESS_CREATED_EVENT = "ProcessCreatedEvent";
 
-    public ProcessCreatedAuditEventEntity() {
-    }
+    public ProcessCreatedAuditEventEntity() {}
 
     public ProcessCreatedAuditEventEntity(CloudProcessCreatedEvent cloudEvent) {
         super(cloudEvent);
@@ -55,7 +54,9 @@ public class ProcessCreatedAuditEventEntity extends ProcessAuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("ProcessCreatedAuditEventEntity [toString()=").append(super.toString()).append("]");
+        builder.append("ProcessCreatedAuditEventEntity [toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
-    }  
+    }
 }

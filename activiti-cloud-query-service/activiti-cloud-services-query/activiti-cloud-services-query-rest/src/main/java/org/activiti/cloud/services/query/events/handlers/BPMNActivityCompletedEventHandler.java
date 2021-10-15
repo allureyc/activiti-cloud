@@ -15,10 +15,6 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.Date;
-
-import javax.persistence.EntityManager;
-
 import org.activiti.api.process.model.events.BPMNActivityEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
 import org.activiti.cloud.api.process.model.CloudBPMNActivity;
@@ -27,24 +23,28 @@ import org.activiti.cloud.services.query.app.repository.BPMNActivityRepository;
 import org.activiti.cloud.services.query.model.BPMNActivityEntity;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
-public class BPMNActivityCompletedEventHandler extends BaseBPMNActivityEventHandler implements QueryEventHandler {
+import java.util.Date;
 
-    public BPMNActivityCompletedEventHandler(BPMNActivityRepository activitiyRepository,
-                                             EntityManager entityManager) {
-        super(activitiyRepository,
-              entityManager);
+import javax.persistence.EntityManager;
+
+@Transactional
+public class BPMNActivityCompletedEventHandler extends BaseBPMNActivityEventHandler
+        implements QueryEventHandler {
+
+    public BPMNActivityCompletedEventHandler(
+            BPMNActivityRepository activitiyRepository, EntityManager entityManager) {
+        super(activitiyRepository, entityManager);
     }
 
     @Override
     public void handle(CloudRuntimeEvent<?, ?> event) {
-        CloudBPMNActivityCompletedEvent activityEvent = CloudBPMNActivityCompletedEvent.class.cast(event);
+        CloudBPMNActivityCompletedEvent activityEvent =
+                CloudBPMNActivityCompletedEvent.class.cast(event);
 
         BPMNActivityEntity bpmnActivityEntity = findOrCreateBPMNActivityEntity(event);
 
         bpmnActivityEntity.setCompletedDate(new Date(activityEvent.getTimestamp()));
         bpmnActivityEntity.setStatus(CloudBPMNActivity.BPMNActivityStatus.COMPLETED);
-
     }
 
     @Override

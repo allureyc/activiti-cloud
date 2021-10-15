@@ -26,8 +26,7 @@ public class TaskCompletedEventEntity extends TaskAuditEventEntity {
 
     protected static final String TASK_COMPLETED_EVENT = "TaskCompletedEvent";
 
-    public TaskCompletedEventEntity() {
-    }
+    public TaskCompletedEventEntity() {}
 
     public TaskCompletedEventEntity(CloudTaskCompletedEvent cloudEvent) {
         super(cloudEvent);
@@ -55,7 +54,9 @@ public class TaskCompletedEventEntity extends TaskAuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("TaskCompletedEventEntity [toString()=").append(super.toString()).append("]");
+        builder.append("TaskCompletedEventEntity [toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
     }
 }

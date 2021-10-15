@@ -15,26 +15,22 @@
  */
 package org.activiti.cloud.services.modeling.validation.process;
 
-import java.util.stream.Stream;
-
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.FlowElement;
 import org.activiti.cloud.modeling.api.ModelValidationError;
 import org.activiti.cloud.modeling.api.ModelValidationErrorProducer;
 import org.activiti.cloud.modeling.api.ValidationContext;
 
-/**
- * Interface for validating {@link BpmnModel} objects
- */
+import java.util.stream.Stream;
+
+/** Interface for validating {@link BpmnModel} objects */
 public interface BpmnModelValidator extends ModelValidationErrorProducer {
 
-    Stream<ModelValidationError> validate(BpmnModel bpmnModel,
-                                          ValidationContext validationContext);
+    Stream<ModelValidationError> validate(BpmnModel bpmnModel, ValidationContext validationContext);
 
-    default <T extends FlowElement> Stream<T> getFlowElements(BpmnModel bpmnModel,
-                                                       Class<T> taskType) {
-        return bpmnModel.getProcesses()
-                .stream()
+    default <T extends FlowElement> Stream<T> getFlowElements(
+            BpmnModel bpmnModel, Class<T> taskType) {
+        return bpmnModel.getProcesses().stream()
                 .flatMap(process -> process.getFlowElements().stream())
                 .filter(element -> taskType.isAssignableFrom(element.getClass()))
                 .map(taskType::cast);

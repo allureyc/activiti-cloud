@@ -34,6 +34,7 @@ public abstract class AuditEventEntity {
     @Id
     @GeneratedValue(generator = "audit_sequence")
     private Long id;
+
     private String eventId;
     private Long timestamp;
     private String eventType;
@@ -56,10 +57,9 @@ public abstract class AuditEventEntity {
     private String parentProcessInstanceId;
     private String businessKey;
 
-    public AuditEventEntity() {
-    }
+    public AuditEventEntity() {}
 
-    public AuditEventEntity(CloudRuntimeEvent<?,?> cloudEvent) {
+    public AuditEventEntity(CloudRuntimeEvent<?, ?> cloudEvent) {
         this.eventId = cloudEvent.getId();
         this.timestamp = cloudEvent.getTimestamp();
         this.eventType = cloudEvent.getEventType().name();
@@ -225,24 +225,25 @@ public abstract class AuditEventEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(appName,
-                            appVersion,
-                            businessKey,
-                            entityId,
-                            eventId,
-                            eventType,
-                            id,
-                            messageId,
-                            parentProcessInstanceId,
-                            processDefinitionId,
-                            processDefinitionKey,
-                            processInstanceId,
-                            sequenceNumber,
-                            serviceFullName,
-                            serviceName,
-                            serviceType,
-                            serviceVersion,
-                            timestamp);
+        return Objects.hash(
+                appName,
+                appVersion,
+                businessKey,
+                entityId,
+                eventId,
+                eventType,
+                id,
+                messageId,
+                parentProcessInstanceId,
+                processDefinitionId,
+                processDefinitionKey,
+                processInstanceId,
+                sequenceNumber,
+                serviceFullName,
+                serviceName,
+                serviceType,
+                serviceVersion,
+                timestamp);
     }
 
     @Override
@@ -281,42 +282,42 @@ public abstract class AuditEventEntity {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("AuditEventEntity [id=")
-               .append(id)
-               .append(", eventId=")
-               .append(eventId)
-               .append(", timestamp=")
-               .append(timestamp)
-               .append(", eventType=")
-               .append(eventType)
-               .append(", appName=")
-               .append(appName)
-               .append(", appVersion=")
-               .append(appVersion)
-               .append(", serviceName=")
-               .append(serviceName)
-               .append(", serviceFullName=")
-               .append(serviceFullName)
-               .append(", serviceType=")
-               .append(serviceType)
-               .append(", serviceVersion=")
-               .append(serviceVersion)
-               .append(", sequenceNumber=")
-               .append(sequenceNumber)
-               .append(", messageId=")
-               .append(messageId)
-               .append(", entityId=")
-               .append(entityId)
-               .append(", processDefinitionId=")
-               .append(processDefinitionId)
-               .append(", processInstanceId=")
-               .append(processInstanceId)
-               .append(", processDefinitionKey=")
-               .append(processDefinitionKey)
-               .append(", parentProcessInstanceId=")
-               .append(parentProcessInstanceId)
-               .append(", businessKey=")
-               .append(businessKey)
-               .append("]");
+                .append(id)
+                .append(", eventId=")
+                .append(eventId)
+                .append(", timestamp=")
+                .append(timestamp)
+                .append(", eventType=")
+                .append(eventType)
+                .append(", appName=")
+                .append(appName)
+                .append(", appVersion=")
+                .append(appVersion)
+                .append(", serviceName=")
+                .append(serviceName)
+                .append(", serviceFullName=")
+                .append(serviceFullName)
+                .append(", serviceType=")
+                .append(serviceType)
+                .append(", serviceVersion=")
+                .append(serviceVersion)
+                .append(", sequenceNumber=")
+                .append(sequenceNumber)
+                .append(", messageId=")
+                .append(messageId)
+                .append(", entityId=")
+                .append(entityId)
+                .append(", processDefinitionId=")
+                .append(processDefinitionId)
+                .append(", processInstanceId=")
+                .append(processInstanceId)
+                .append(", processDefinitionKey=")
+                .append(processDefinitionKey)
+                .append(", parentProcessInstanceId=")
+                .append(parentProcessInstanceId)
+                .append(", businessKey=")
+                .append(businessKey)
+                .append("]");
         return builder.toString();
     }
 }

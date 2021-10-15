@@ -15,10 +15,16 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.Optional;
-import java.util.UUID;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.querydsl.core.types.Predicate;
+
 import org.activiti.api.process.model.ProcessInstance.ProcessInstanceStatus;
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.activiti.cloud.api.model.shared.events.CloudVariableDeletedEvent;
@@ -33,27 +39,17 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.when;
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
+import java.util.Optional;
 
 public class ProcessVariableEntityDeletedHandlerTest {
 
-    @InjectMocks
-    private ProcessVariableDeletedEventHandler handler;
+    @InjectMocks private ProcessVariableDeletedEventHandler handler;
 
-    @Mock
-    private VariableRepository variableRepository;
+    @Mock private VariableRepository variableRepository;
 
-    @Mock
-    private ProcessInstanceRepository processInstanceRepository;
+    @Mock private ProcessInstanceRepository processInstanceRepository;
 
-    @Mock
-    private EntityFinder entityFinder;
+    @Mock private EntityFinder entityFinder;
 
     @BeforeEach
     public void setUp() {
@@ -62,7 +58,7 @@ public class ProcessVariableEntityDeletedHandlerTest {
 
     @Test
     public void handleRemoveVariableFromProcessAnDeleteIt() {
-        //given
+        // given
         CloudVariableDeletedEvent event = buildVariableDeletedEvent();
 
         ProcessInstanceEntity processInstanceEntity = new ProcessInstanceEntity();
@@ -71,17 +67,18 @@ public class ProcessVariableEntityDeletedHandlerTest {
         ProcessVariableEntity variableEntity = new ProcessVariableEntity();
 
         when(processInstanceRepository.findById(anyString())).thenReturn(optional);
-        given(entityFinder.findOne(eq(variableRepository), any(Predicate.class), anyString())).willReturn(variableEntity);
+        given(entityFinder.findOne(eq(variableRepository), any(Predicate.class), anyString()))
+                .willReturn(variableEntity);
 
-        //when
+        // when
         handler.handle(event);
 
-        //then
+        // then
         verify(variableRepository).delete(variableEntity);
     }
 
     private static CloudVariableDeletedEvent buildVariableDeletedEvent() {
-        return new CloudVariableDeletedEventImpl(new VariableInstanceImpl<>("var", "string", "test", "procInstId", null));
+        return new CloudVariableDeletedEventImpl(
+                new VariableInstanceImpl<>("var", "string", "test", "procInstId", null));
     }
-
 }

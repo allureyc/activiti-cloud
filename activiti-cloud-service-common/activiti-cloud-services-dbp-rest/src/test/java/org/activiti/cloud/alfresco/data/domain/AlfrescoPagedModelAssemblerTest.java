@@ -15,7 +15,11 @@
  */
 package org.activiti.cloud.alfresco.data.domain;
 
-import java.util.Collections;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.activiti.cloud.alfresco.argument.resolver.AlfrescoPageRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,29 +30,20 @@ import org.mockito.Spy;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.mock;
-import static org.mockito.MockitoAnnotations.initMocks;
+import java.util.Collections;
 
 public class AlfrescoPagedModelAssemblerTest {
 
-    @Spy
-    @InjectMocks
-    private AlfrescoPagedModelAssembler<String> alfrescoPagedModelAssembler;
+    @Spy @InjectMocks private AlfrescoPagedModelAssembler<String> alfrescoPagedModelAssembler;
 
-    @Mock
-    private ExtendedPageMetadataConverter extendedPageMetadataConverter;
+    @Mock private ExtendedPageMetadataConverter extendedPageMetadataConverter;
 
-    @Mock
-    private RepresentationModelAssembler<String, RepresentationModel<?>> resourceAssembler;
+    @Mock private RepresentationModelAssembler<String, RepresentationModel<?>> resourceAssembler;
 
-    @Mock
-    private Page<String> page;
+    @Mock private Page<String> page;
 
     @BeforeEach
     public void setUp() throws Exception {
@@ -57,35 +52,30 @@ public class AlfrescoPagedModelAssemblerTest {
 
     @Test
     public void toResourceShouldReplaceBasePageMetadataByExtendedPageMetadata() throws Exception {
-        //given
-        AlfrescoPageRequest alfrescoPageRequest = new AlfrescoPageRequest(3,
-                                                                          10,
-                                                                          null);
+        // given
+        AlfrescoPageRequest alfrescoPageRequest = new AlfrescoPageRequest(3, 10, null);
 
-        PagedModel.PageMetadata baseMetadata = new PagedModel.PageMetadata(10,
-                                                                               0,
-                                                                               30);
+        PagedModel.PageMetadata baseMetadata = new PagedModel.PageMetadata(10, 0, 30);
         RepresentationModel resourceSupport = new RepresentationModel();
         Link link = mock(Link.class);
-        PagedModel<RepresentationModel> basePagedModel = new PagedModel<>(Collections.singletonList(resourceSupport),
-                                                                                        baseMetadata,
-                                                                                        link);
+        PagedModel<RepresentationModel> basePagedModel =
+                new PagedModel<>(Collections.singletonList(resourceSupport), baseMetadata, link);
 
-        doReturn(basePagedModel).when(alfrescoPagedModelAssembler).toModel(page,
-                                                                                      resourceAssembler);
+        doReturn(basePagedModel).when(alfrescoPagedModelAssembler).toModel(page, resourceAssembler);
         ExtendedPageMetadata extendedPageMetadata = mock(ExtendedPageMetadata.class);
-        given(extendedPageMetadataConverter.toExtendedPageMetadata(alfrescoPageRequest.getOffset(), baseMetadata)).willReturn(extendedPageMetadata);
+        given(
+                        extendedPageMetadataConverter.toExtendedPageMetadata(
+                                alfrescoPageRequest.getOffset(), baseMetadata))
+                .willReturn(extendedPageMetadata);
 
-        //when
-        PagedModel<RepresentationModel<?>> pagedCollectionModel = alfrescoPagedModelAssembler.toModel(alfrescoPageRequest,
-                                                                                                    page,
-                                                                                                    resourceAssembler);
+        // when
+        PagedModel<RepresentationModel<?>> pagedCollectionModel =
+                alfrescoPagedModelAssembler.toModel(alfrescoPageRequest, page, resourceAssembler);
 
-        //then
+        // then
         assertThat(pagedCollectionModel).isNotNull();
         assertThat(pagedCollectionModel.getMetadata()).isEqualTo(extendedPageMetadata);
         assertThat(pagedCollectionModel.getContent()).containsExactly(resourceSupport);
         assertThat(pagedCollectionModel.getLinks()).contains(link);
     }
-
 }

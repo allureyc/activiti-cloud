@@ -15,6 +15,13 @@
  */
 package org.activiti.cloud.starter.tests.swagger;
 
+import static org.hamcrest.Matchers.hasKey;
+import static org.hamcrest.Matchers.startsWith;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 import org.activiti.cloud.services.test.containers.KeycloakContainerApplicationInitializer;
 import org.activiti.cloud.services.test.containers.RabbitMQContainerApplicationInitializer;
 import org.activiti.spring.ProcessDeployedEventProducer;
@@ -27,40 +34,40 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import static org.hamcrest.Matchers.hasKey;
-import static org.hamcrest.Matchers.startsWith;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext
-@ContextConfiguration(initializers = {RabbitMQContainerApplicationInitializer.class, KeycloakContainerApplicationInitializer.class})
+@ContextConfiguration(
+        initializers = {
+            RabbitMQContainerApplicationInitializer.class,
+            KeycloakContainerApplicationInitializer.class
+        })
 public class RuntimeBundleSwaggerIT {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired private MockMvc mockMvc;
 
-    @MockBean
-    private ProcessDeployedEventProducer producer;
+    @MockBean private ProcessDeployedEventProducer producer;
 
     @Test
     public void should_swaggerDefinitionHavePathsAndDefinitionsAndInfo() throws Exception {
         mockMvc.perform(get("/v2/api-docs").accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
-            .andExpect(jsonPath("$.paths").isNotEmpty())
-            .andExpect(jsonPath("$.definitions").isNotEmpty())
-            .andExpect(jsonPath("$.definitions").value(hasKey(startsWith("ListResponseContent"))))
-            .andExpect(
-                jsonPath("$.definitions").value(hasKey(startsWith("EntriesResponseContent"))))
-            .andExpect(jsonPath("$.definitions").value(hasKey(startsWith("EntryResponseContent"))))
-            .andExpect(jsonPath("$.definitions[\"SaveTaskPayload\"].properties")
-                .value(hasKey("payloadType")))
-            .andExpect(jsonPath("$.info.title")
-                .value("Activiti Cloud Starter :: Runtime Bundle ReST API"));
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.paths").isNotEmpty())
+                .andExpect(jsonPath("$.definitions").isNotEmpty())
+                .andExpect(
+                        jsonPath("$.definitions").value(hasKey(startsWith("ListResponseContent"))))
+                .andExpect(
+                        jsonPath("$.definitions")
+                                .value(hasKey(startsWith("EntriesResponseContent"))))
+                .andExpect(
+                        jsonPath("$.definitions").value(hasKey(startsWith("EntryResponseContent"))))
+                .andExpect(
+                        jsonPath("$.definitions[\"SaveTaskPayload\"].properties")
+                                .value(hasKey("payloadType")))
+                .andExpect(
+                        jsonPath("$.info.title")
+                                .value("Activiti Cloud Starter :: Runtime Bundle ReST API"));
     }
-
 }

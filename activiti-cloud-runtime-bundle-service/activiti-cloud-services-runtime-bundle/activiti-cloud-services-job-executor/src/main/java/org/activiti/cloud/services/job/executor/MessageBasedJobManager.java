@@ -35,9 +35,10 @@ public class MessageBasedJobManager extends DefaultJobManager {
 
     private String inputChannelName = DEFAULT_INPUT_CHANNEL_NAME;
 
-    public MessageBasedJobManager(ProcessEngineConfigurationImpl processEngineConfiguration,
-                                  BindingProperties bindingProperties,
-                                  JobMessageProducer jobMessageProducer) {
+    public MessageBasedJobManager(
+            ProcessEngineConfigurationImpl processEngineConfiguration,
+            BindingProperties bindingProperties,
+            JobMessageProducer jobMessageProducer) {
         super(processEngineConfiguration);
 
         this.bindingProperties = bindingProperties;
@@ -58,11 +59,14 @@ public class MessageBasedJobManager extends DefaultJobManager {
         if (job instanceof JobEntity) {
             JobEntity jobEntity = (JobEntity) job;
 
-            // When unacquiring, we up the lock time again., so that it isn't cleared by the reset expired thread.
-            jobEntity.setLockExpirationTime(new Date(processEngineConfiguration.getClock()
-                                                                               .getCurrentTime()
-                                                                               .getTime() + processEngineConfiguration.getAsyncExecutor()
-                                                                                                                      .getAsyncJobLockTimeInMillis()));
+            // When unacquiring, we up the lock time again., so that it isn't cleared by the reset
+            // expired thread.
+            jobEntity.setLockExpirationTime(
+                    new Date(
+                            processEngineConfiguration.getClock().getCurrentTime().getTime()
+                                    + processEngineConfiguration
+                                            .getAsyncExecutor()
+                                            .getAsyncJobLockTimeInMillis()));
         }
 
         sendMessage(job);

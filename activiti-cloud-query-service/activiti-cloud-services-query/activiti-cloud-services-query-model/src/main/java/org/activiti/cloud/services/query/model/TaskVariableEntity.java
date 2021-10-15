@@ -15,6 +15,8 @@
  */
 package org.activiti.cloud.services.query.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -26,54 +28,65 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-@Entity(name="TaskVariable")
-@Table(name = "TASK_VARIABLE",
+@Entity(name = "TaskVariable")
+@Table(
+        name = "TASK_VARIABLE",
         indexes = {
-                @Index(name = "task_var_processInstanceId_idx", columnList = "processInstanceId", unique = false),
-                @Index(name = "task_var_taskId_idx", columnList = "taskId", unique = false),
-                @Index(name = "task_var_name_idx", columnList = "name", unique = false),
-                @Index(name = "task_var_executionId_idx", columnList = "executionId", unique = false)
-		})
+            @Index(
+                    name = "task_var_processInstanceId_idx",
+                    columnList = "processInstanceId",
+                    unique = false),
+            @Index(name = "task_var_taskId_idx", columnList = "taskId", unique = false),
+            @Index(name = "task_var_name_idx", columnList = "name", unique = false),
+            @Index(name = "task_var_executionId_idx", columnList = "executionId", unique = false)
+        })
 public class TaskVariableEntity extends AbstractVariableEntity {
 
     private String taskId;
-    
+
     @JsonIgnore
-    @ManyToOne(optional = true, fetch=FetchType.LAZY)
-    @JoinColumn(name = "taskId", referencedColumnName = "id", insertable = false, updatable = false, nullable = true
-            , foreignKey = @javax.persistence.ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))
+    @ManyToOne(optional = true, fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "taskId",
+            referencedColumnName = "id",
+            insertable = false,
+            updatable = false,
+            nullable = true,
+            foreignKey =
+                    @javax.persistence.ForeignKey(
+                            value = ConstraintMode.NO_CONSTRAINT,
+                            name = "none"))
     private TaskEntity task;
 
-    public TaskVariableEntity() {
-    }
+    public TaskVariableEntity() {}
 
-    public TaskVariableEntity(Long id,
-                          String type,
-                          String name,
-                          String processInstanceId,
-                          String serviceName,
-                          String serviceFullName,
-                          String serviceVersion,
-                          String appName,
-                          String appVersion,
-                          String taskId,
-                          Date createTime,
-                          Date lastUpdatedTime,
-                          String executionId) {
-        super(id,
-              type,
-              name,
-              processInstanceId,
-              serviceName,
-              serviceFullName,
-              serviceVersion,
-              appName,
-              appVersion,
-              createTime,
-              lastUpdatedTime,
-              executionId);
+    public TaskVariableEntity(
+            Long id,
+            String type,
+            String name,
+            String processInstanceId,
+            String serviceName,
+            String serviceFullName,
+            String serviceVersion,
+            String appName,
+            String appVersion,
+            String taskId,
+            Date createTime,
+            Date lastUpdatedTime,
+            String executionId) {
+        super(
+                id,
+                type,
+                name,
+                processInstanceId,
+                serviceName,
+                serviceFullName,
+                serviceVersion,
+                appName,
+                appVersion,
+                createTime,
+                lastUpdatedTime,
+                executionId);
 
         this.taskId = taskId;
     }
@@ -90,7 +103,7 @@ public class TaskVariableEntity extends AbstractVariableEntity {
     public String getTaskId() {
         return taskId;
     }
-    
+
     public void setTaskId(String taskId) {
         this.taskId = taskId;
     }
@@ -110,14 +123,10 @@ public class TaskVariableEntity extends AbstractVariableEntity {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (!super.equals(obj)) return false;
+        if (getClass() != obj.getClass()) return false;
         TaskVariableEntity other = (TaskVariableEntity) obj;
         return Objects.equals(taskId, other.taskId);
     }
-    
 }

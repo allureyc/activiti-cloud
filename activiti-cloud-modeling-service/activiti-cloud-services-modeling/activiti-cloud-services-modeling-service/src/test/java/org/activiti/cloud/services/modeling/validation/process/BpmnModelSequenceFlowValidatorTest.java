@@ -15,6 +15,11 @@
  */
 package org.activiti.cloud.services.modeling.validation.process;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
+
+import static java.lang.String.format;
+
 import org.activiti.bpmn.model.BpmnModel;
 import org.activiti.bpmn.model.SequenceFlow;
 import org.activiti.cloud.modeling.api.ModelValidationError;
@@ -23,18 +28,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import static java.lang.String.format;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.tuple;
-
 public class BpmnModelSequenceFlowValidatorTest {
 
     private BpmnModelSequenceFlowValidator bpmnModelSequenceFlowValidator;
     private final String testSequenceId = "testSequenceId";
     private final String testSequenceName = "testSequenceName";
 
-    @Mock
-    private ValidationContext validationContext;
+    @Mock private ValidationContext validationContext;
 
     @BeforeEach
     void setUp() {
@@ -44,36 +44,52 @@ public class BpmnModelSequenceFlowValidatorTest {
     @Test
     public void should_returnError_when_noSourceReferenceIsSpecified() {
         BpmnModel bpmnModel = CreateBpmnModelTestHelper.createOneTaskTestProcess();
-        SequenceFlow sequenceFlow = (SequenceFlow) bpmnModel.getMainProcess().getFlowElement(testSequenceId);
+        SequenceFlow sequenceFlow =
+                (SequenceFlow) bpmnModel.getMainProcess().getFlowElement(testSequenceId);
         sequenceFlow.setName(testSequenceName);
         sequenceFlow.setSourceRef(null);
 
         assertThat(bpmnModelSequenceFlowValidator.validate(bpmnModel, validationContext))
-            .extracting(ModelValidationError::getProblem,
+                .extracting(
+                        ModelValidationError::getProblem,
                         ModelValidationError::getDescription,
                         ModelValidationError::getValidatorSetName,
                         ModelValidationError::getReferenceId)
-            .contains(tuple(BpmnModelSequenceFlowValidator.NO_SOURCE_REF_PROBLEM,
-                            format(BpmnModelSequenceFlowValidator.NO_SOURCE_REF_PROBLEM_DESCRIPTION, testSequenceName, testSequenceId),
-                            BpmnModelSequenceFlowValidator.SEQUENCE_FLOW_VALIDATOR_NAME,
-                            testSequenceId));
+                .contains(
+                        tuple(
+                                BpmnModelSequenceFlowValidator.NO_SOURCE_REF_PROBLEM,
+                                format(
+                                        BpmnModelSequenceFlowValidator
+                                                .NO_SOURCE_REF_PROBLEM_DESCRIPTION,
+                                        testSequenceName,
+                                        testSequenceId),
+                                BpmnModelSequenceFlowValidator.SEQUENCE_FLOW_VALIDATOR_NAME,
+                                testSequenceId));
     }
 
     @Test
     public void should_returnError_when_noTargetReferenceIsSpecified() {
         BpmnModel bpmnModel = CreateBpmnModelTestHelper.createOneTaskTestProcess();
-        SequenceFlow sequenceFlow = (SequenceFlow) bpmnModel.getMainProcess().getFlowElement(testSequenceId);
+        SequenceFlow sequenceFlow =
+                (SequenceFlow) bpmnModel.getMainProcess().getFlowElement(testSequenceId);
         sequenceFlow.setName(testSequenceName);
         sequenceFlow.setTargetRef(null);
 
         assertThat(bpmnModelSequenceFlowValidator.validate(bpmnModel, validationContext))
-            .extracting(ModelValidationError::getProblem,
+                .extracting(
+                        ModelValidationError::getProblem,
                         ModelValidationError::getDescription,
                         ModelValidationError::getValidatorSetName,
                         ModelValidationError::getReferenceId)
-            .contains(tuple(BpmnModelSequenceFlowValidator.NO_TARGET_REF_PROBLEM,
-                            format(BpmnModelSequenceFlowValidator.NO_TARGET_REF_PROBLEM_DESCRIPTION, testSequenceName, testSequenceId),
-                            BpmnModelSequenceFlowValidator.SEQUENCE_FLOW_VALIDATOR_NAME,
-                            testSequenceId));
+                .contains(
+                        tuple(
+                                BpmnModelSequenceFlowValidator.NO_TARGET_REF_PROBLEM,
+                                format(
+                                        BpmnModelSequenceFlowValidator
+                                                .NO_TARGET_REF_PROBLEM_DESCRIPTION,
+                                        testSequenceName,
+                                        testSequenceId),
+                                BpmnModelSequenceFlowValidator.SEQUENCE_FLOW_VALIDATOR_NAME,
+                                testSequenceId));
     }
 }

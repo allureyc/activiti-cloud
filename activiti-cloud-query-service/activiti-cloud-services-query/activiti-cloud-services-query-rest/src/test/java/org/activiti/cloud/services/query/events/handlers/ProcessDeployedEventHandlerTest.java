@@ -15,7 +15,9 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.UUID;
+import static org.activiti.test.Assertions.assertThat;
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 import org.activiti.api.process.model.events.ProcessDefinitionEvent;
 import org.activiti.api.runtime.model.impl.ProcessDefinitionImpl;
@@ -31,20 +33,15 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static org.activiti.test.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
+import java.util.UUID;
 
 public class ProcessDeployedEventHandlerTest {
 
-    @InjectMocks
-    private ProcessDeployedEventHandler handler;
+    @InjectMocks private ProcessDeployedEventHandler handler;
 
-    @Mock
-    private ProcessDefinitionRepository processDefinitionRepository;
+    @Mock private ProcessDefinitionRepository processDefinitionRepository;
 
-    @Mock
-    private ProcessModelRepository processModelRepository;
+    @Mock private ProcessModelRepository processModelRepository;
 
     @BeforeEach
     public void setUp() {
@@ -53,7 +50,7 @@ public class ProcessDeployedEventHandlerTest {
 
     @Test
     public void handleShouldStoreProcessDefinitionAndProcessModel() {
-        //given
+        // given
         ProcessDefinitionImpl eventProcess = new ProcessDefinitionImpl();
         eventProcess.setId(UUID.randomUUID().toString());
         eventProcess.setKey("myProcess");
@@ -62,7 +59,8 @@ public class ProcessDeployedEventHandlerTest {
         eventProcess.setFormKey("formKey");
         eventProcess.setVersion(2);
 
-        CloudProcessDeployedEventImpl processDeployedEvent = new CloudProcessDeployedEventImpl(eventProcess);
+        CloudProcessDeployedEventImpl processDeployedEvent =
+                new CloudProcessDeployedEventImpl(eventProcess);
         processDeployedEvent.setAppName("myApp");
         processDeployedEvent.setAppVersion("2.1");
         processDeployedEvent.setServiceFullName("my.full.service.name");
@@ -71,11 +69,12 @@ public class ProcessDeployedEventHandlerTest {
         processDeployedEvent.setServiceVersion("1.0");
         processDeployedEvent.setProcessModelContent("<model/>");
 
-        //when
+        // when
         handler.handle(processDeployedEvent);
 
-        //then
-        ArgumentCaptor<ProcessDefinitionEntity> processDefinitionCaptor = ArgumentCaptor.forClass(ProcessDefinitionEntity.class);
+        // then
+        ArgumentCaptor<ProcessDefinitionEntity> processDefinitionCaptor =
+                ArgumentCaptor.forClass(ProcessDefinitionEntity.class);
 
         verify(processDefinitionRepository).save(processDefinitionCaptor.capture());
         ProcessDefinitionEntity storedProcess = processDefinitionCaptor.getValue();
@@ -93,18 +92,19 @@ public class ProcessDeployedEventHandlerTest {
                 .hasServiceType(processDeployedEvent.getServiceType())
                 .hasServiceVersion(processDeployedEvent.getServiceVersion());
 
-        ArgumentCaptor<ProcessModelEntity> processModelCaptor = ArgumentCaptor.forClass(ProcessModelEntity.class);
+        ArgumentCaptor<ProcessModelEntity> processModelCaptor =
+                ArgumentCaptor.forClass(ProcessModelEntity.class);
         verify(processModelRepository).save(processModelCaptor.capture());
-        assertThat(processModelCaptor.getValue())
-                .hasProcessModelContent("<model/>");
+        assertThat(processModelCaptor.getValue()).hasProcessModelContent("<model/>");
     }
 
     @Test
     public void getHandledEventShouldReturnProcessDeployedEvent() {
-        //when
+        // when
         String handledEvent = handler.getHandledEvent();
 
-        //then
-        Assertions.assertThat(handledEvent).isEqualTo(ProcessDefinitionEvent.ProcessDefinitionEvents.PROCESS_DEPLOYED.name());
+        // then
+        Assertions.assertThat(handledEvent)
+                .isEqualTo(ProcessDefinitionEvent.ProcessDefinitionEvents.PROCESS_DEPLOYED.name());
     }
 }

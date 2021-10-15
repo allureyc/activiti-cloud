@@ -29,22 +29,20 @@ import javax.persistence.Table;
 @Table(name = "PROCESS_MODEL")
 public class ProcessModelEntity {
 
-    @Id
-    private String id;
+    @Id private String id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @MapsId
     private ProcessDefinitionEntity processDefinition;
 
-    @Column(columnDefinition="text")
+    @Column(columnDefinition = "text")
     private String processModelContent;
 
-    //used by persistence framework
-    public ProcessModelEntity() {
-    }
+    // used by persistence framework
+    public ProcessModelEntity() {}
 
-    public ProcessModelEntity(ProcessDefinitionEntity processDefinition,
-                              String processModelContent) {
+    public ProcessModelEntity(
+            ProcessDefinitionEntity processDefinition, String processModelContent) {
         this.processDefinition = processDefinition;
         this.processModelContent = processModelContent;
     }
@@ -72,12 +70,9 @@ public class ProcessModelEntity {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         ProcessModelEntity other = (ProcessModelEntity) obj;
         return Objects.equals(id, other.id);
     }

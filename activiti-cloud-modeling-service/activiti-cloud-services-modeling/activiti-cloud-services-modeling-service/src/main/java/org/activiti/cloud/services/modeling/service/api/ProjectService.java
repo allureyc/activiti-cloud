@@ -15,10 +15,6 @@
  */
 package org.activiti.cloud.services.modeling.service.api;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Optional;
-
 import org.activiti.cloud.modeling.api.Project;
 import org.activiti.cloud.services.common.file.FileContent;
 import org.activiti.cloud.services.modeling.service.api.ModelService.ProjectAccessControl;
@@ -27,17 +23,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 
-/**
- * Business logic related to {@link Project} entities
- */
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Optional;
+
+/** Business logic related to {@link Project} entities */
 public interface ProjectService {
-    Page<Project> getProjects(Pageable pageable,
-                              String name);
+    Page<Project> getProjects(Pageable pageable, String name);
 
     Project createProject(Project project);
 
-    Project updateProject(Project projectToUpdate,
-                          Project newProject);
+    Project updateProject(Project projectToUpdate, Project newProject);
 
     void deleteProject(Project project);
 
@@ -45,8 +41,7 @@ public interface ProjectService {
 
     FileContent exportProject(Project project) throws IOException;
 
-    Project copyProject(Project projectToCopy,
-                        String newProjectName);
+    Project copyProject(Project projectToCopy, String newProjectName);
 
     ProjectAccessControl getProjectAccessControl(Project project);
 

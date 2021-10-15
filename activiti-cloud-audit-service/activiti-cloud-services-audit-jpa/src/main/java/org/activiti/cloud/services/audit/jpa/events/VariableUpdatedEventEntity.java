@@ -15,10 +15,10 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
-import javax.persistence.Column;
-import javax.persistence.Convert;
 import org.activiti.cloud.api.model.shared.events.CloudVariableUpdatedEvent;
 
+import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 
@@ -32,8 +32,7 @@ public class VariableUpdatedEventEntity extends VariableAuditEventEntity {
     @Column(name = "variable_previous_value", columnDefinition = "text")
     private VariableValue<?> previousValue;
 
-    public VariableUpdatedEventEntity() {
-    }
+    public VariableUpdatedEventEntity() {}
 
     public VariableUpdatedEventEntity(CloudVariableUpdatedEvent cloudEvent) {
         super(cloudEvent);
@@ -70,7 +69,9 @@ public class VariableUpdatedEventEntity extends VariableAuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("VariableUpdatedEventEntity [toString()=").append(super.toString()).append("]");
+        builder.append("VariableUpdatedEventEntity [toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
     }
 }

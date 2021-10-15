@@ -15,8 +15,13 @@
  */
 package org.activiti.cloud.services.query.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.querydsl.core.annotations.PropertyType;
 import com.querydsl.core.annotations.QueryType;
+
+import org.activiti.cloud.api.process.model.CloudProcessInstance;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -34,37 +39,48 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.activiti.cloud.api.process.model.CloudProcessInstance;
-import org.springframework.format.annotation.DateTimeFormat;
-
-@Entity(name="ProcessInstance")
-@Table(name = "PROCESS_INSTANCE",
-		indexes= {
-				@Index(name="pi_status_idx", columnList="status", unique=false),
-				@Index(name="pi_businessKey_idx", columnList="businessKey", unique=false),
-				@Index(name="pi_name_idx", columnList="name", unique=false),
-				@Index(name="pi_processDefinitionId_idx", columnList="processDefinitionId", unique=false),
-				@Index(name="pi_processDefinitionKey_idx", columnList="processDefinitionKey", unique=false),
-                @Index(name="pi_processDefinitionName_idx", columnList="processDefinitionName", unique=false)
+@Entity(name = "ProcessInstance")
+@Table(
+        name = "PROCESS_INSTANCE",
+        indexes = {
+            @Index(name = "pi_status_idx", columnList = "status", unique = false),
+            @Index(name = "pi_businessKey_idx", columnList = "businessKey", unique = false),
+            @Index(name = "pi_name_idx", columnList = "name", unique = false),
+            @Index(
+                    name = "pi_processDefinitionId_idx",
+                    columnList = "processDefinitionId",
+                    unique = false),
+            @Index(
+                    name = "pi_processDefinitionKey_idx",
+                    columnList = "processDefinitionKey",
+                    unique = false),
+            @Index(
+                    name = "pi_processDefinitionName_idx",
+                    columnList = "processDefinitionName",
+                    unique = false)
         })
 public class ProcessInstanceEntity extends ActivitiEntityMetadata implements CloudProcessInstance {
 
-    @Id
-    private String id;
+    @Id private String id;
     private String name;
     private String processDefinitionId;
     private String processDefinitionKey;
     private String initiator;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date startDate;
+
     private String businessKey;
+
     @Enumerated(EnumType.STRING)
     private ProcessInstanceStatus status;
+
     private Integer processDefinitionVersion;
     private String processDefinitionName;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date completedDate;
+
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date suspendedDate;
 
@@ -114,48 +130,72 @@ public class ProcessInstanceEntity extends ActivitiEntityMetadata implements Clo
     private Date suspendedFrom;
 
     @JsonIgnore
-    @OneToMany(fetch=FetchType.LAZY)
-    @JoinColumn(name = "processInstanceId", referencedColumnName = "id", insertable = false, updatable = false
-    	, foreignKey = @javax.persistence.ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "processInstanceId",
+            referencedColumnName = "id",
+            insertable = false,
+            updatable = false,
+            foreignKey =
+                    @javax.persistence.ForeignKey(
+                            value = ConstraintMode.NO_CONSTRAINT,
+                            name = "none"))
     private Set<TaskEntity> tasks;
 
     @JsonIgnore
-    @OneToMany(fetch=FetchType.LAZY)
-    @JoinColumn(name = "processInstanceId", referencedColumnName = "id", insertable = false, updatable = false
-		, foreignKey = @javax.persistence.ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "processInstanceId",
+            referencedColumnName = "id",
+            insertable = false,
+            updatable = false,
+            foreignKey =
+                    @javax.persistence.ForeignKey(
+                            value = ConstraintMode.NO_CONSTRAINT,
+                            name = "none"))
     private Set<ProcessVariableEntity> variables;
 
     @JsonIgnore
-    @OneToMany(fetch=FetchType.LAZY)
-    @JoinColumn(name = "processInstanceId", referencedColumnName = "id", insertable = false, updatable = false
-        , foreignKey = @javax.persistence.ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "processInstanceId",
+            referencedColumnName = "id",
+            insertable = false,
+            updatable = false,
+            foreignKey =
+                    @javax.persistence.ForeignKey(
+                            value = ConstraintMode.NO_CONSTRAINT,
+                            name = "none"))
     private Set<BPMNActivityEntity> activities;
 
     @JsonIgnore
-    @OneToMany(fetch=FetchType.LAZY)
-    @JoinColumn(name = "processInstanceId", referencedColumnName = "id", insertable = false, updatable = false
-        , foreignKey = @javax.persistence.ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(
+            name = "processInstanceId",
+            referencedColumnName = "id",
+            insertable = false,
+            updatable = false,
+            foreignKey =
+                    @javax.persistence.ForeignKey(
+                            value = ConstraintMode.NO_CONSTRAINT,
+                            name = "none"))
     private List<BPMNSequenceFlowEntity> sequenceFlows;
 
     private String parentId;
 
-    public ProcessInstanceEntity() {
-    }
+    public ProcessInstanceEntity() {}
 
-    public ProcessInstanceEntity(String serviceName,
-                                 String serviceFullName,
-                                 String serviceVersion,
-                                 String appName,
-                                 String appVersion,
-                                 String processInstanceId,
-                                 String processDefinitionId,
-                                 ProcessInstanceStatus status,
-                                 Date lastModified) {
-        super(serviceName,
-              serviceFullName,
-              serviceVersion,
-              appName,
-              appVersion);
+    public ProcessInstanceEntity(
+            String serviceName,
+            String serviceFullName,
+            String serviceVersion,
+            String appName,
+            String appVersion,
+            String processInstanceId,
+            String processDefinitionId,
+            ProcessInstanceStatus status,
+            Date lastModified) {
+        super(serviceName, serviceFullName, serviceVersion, appName, appVersion);
         this.id = processInstanceId;
         this.processDefinitionId = processDefinitionId;
         this.status = status;
@@ -308,7 +348,6 @@ public class ProcessInstanceEntity extends ActivitiEntityMetadata implements Clo
         return startFrom;
     }
 
-
     public void setStartFrom(Date startFrom) {
         this.startFrom = startFrom;
     }
@@ -317,7 +356,6 @@ public class ProcessInstanceEntity extends ActivitiEntityMetadata implements Clo
     public Date getStartTo() {
         return startTo;
     }
-
 
     public void setStartTo(Date startTo) {
         this.startTo = startTo;
@@ -372,27 +410,23 @@ public class ProcessInstanceEntity extends ActivitiEntityMetadata implements Clo
         this.suspendedFrom = suspendedFrom;
     }
 
-    public boolean isInFinalState(){
-        return  !(ProcessInstanceStatus.CREATED.equals(status) ||
-                  ProcessInstanceStatus.RUNNING.equals(status)||
-                  ProcessInstanceStatus.SUSPENDED.equals(status));
+    public boolean isInFinalState() {
+        return !(ProcessInstanceStatus.CREATED.equals(status)
+                || ProcessInstanceStatus.RUNNING.equals(status)
+                || ProcessInstanceStatus.SUSPENDED.equals(status));
     }
-
 
     public Set<BPMNActivityEntity> getActivities() {
         return activities;
     }
 
-
     public void setActivities(Set<BPMNActivityEntity> bpmnActivities) {
         this.activities = bpmnActivities;
     }
 
-
     public List<BPMNSequenceFlowEntity> getSequenceFlows() {
         return sequenceFlows;
     }
-
 
     public void setSequenceFlows(List<BPMNSequenceFlowEntity> sequenceFlows) {
         this.sequenceFlows = sequenceFlows;
@@ -402,65 +436,61 @@ public class ProcessInstanceEntity extends ActivitiEntityMetadata implements Clo
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + Objects.hash(businessKey,
-                                               id,
-                                               initiator,
-                                               lastModified,
-                                               lastModifiedFrom,
-                                               lastModifiedTo,
-                                               name,
-                                               parentId,
-                                               processDefinitionId,
-                                               processDefinitionKey,
-                                               processDefinitionVersion,
-                                               processDefinitionName,
-                                               startDate,
-                                               startFrom,
-                                               startTo,
-                                               completedDate,
-                                               completedFrom,
-                                               completedTo,
-                                               suspendedDate,
-                                               suspendedFrom,
-                                               suspendedTo,
-                                               status);
+        result =
+                prime * result
+                        + Objects.hash(
+                                businessKey,
+                                id,
+                                initiator,
+                                lastModified,
+                                lastModifiedFrom,
+                                lastModifiedTo,
+                                name,
+                                parentId,
+                                processDefinitionId,
+                                processDefinitionKey,
+                                processDefinitionVersion,
+                                processDefinitionName,
+                                startDate,
+                                startFrom,
+                                startTo,
+                                completedDate,
+                                completedFrom,
+                                completedTo,
+                                suspendedDate,
+                                suspendedFrom,
+                                suspendedTo,
+                                status);
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (!super.equals(obj)) return false;
+        if (getClass() != obj.getClass()) return false;
         ProcessInstanceEntity other = (ProcessInstanceEntity) obj;
-        return Objects.equals(businessKey, other.businessKey) &&
-                Objects.equals(id, other.id) &&
-                Objects.equals(initiator, other.initiator) &&
-                Objects.equals(lastModified, other.lastModified) &&
-                Objects.equals(lastModifiedFrom, other.lastModifiedFrom) &&
-                Objects.equals(lastModifiedTo, other.lastModifiedTo) &&
-                Objects.equals(name, other.name) &&
-                Objects.equals(parentId, other.parentId) &&
-                Objects.equals(processDefinitionId, other.processDefinitionId) &&
-                Objects.equals(processDefinitionKey, other.processDefinitionKey) &&
-                Objects.equals(processDefinitionVersion, other.processDefinitionVersion) &&
-                Objects.equals(processDefinitionName, other.processDefinitionName) &&
-                Objects.equals(startDate, other.startDate) &&
-                Objects.equals(startFrom, other.startFrom) &&
-                Objects.equals(startTo, other.startTo) &&
-                Objects.equals(completedDate, other.completedDate) &&
-                Objects.equals(completedFrom, other.completedFrom) &&
-                Objects.equals(completedTo, other.completedTo) &&
-                Objects.equals(suspendedDate, other.suspendedDate) &&
-                Objects.equals(suspendedFrom, other.suspendedFrom) &&
-                Objects.equals(suspendedTo, other.suspendedTo) &&
-                status == other.status;
+        return Objects.equals(businessKey, other.businessKey)
+                && Objects.equals(id, other.id)
+                && Objects.equals(initiator, other.initiator)
+                && Objects.equals(lastModified, other.lastModified)
+                && Objects.equals(lastModifiedFrom, other.lastModifiedFrom)
+                && Objects.equals(lastModifiedTo, other.lastModifiedTo)
+                && Objects.equals(name, other.name)
+                && Objects.equals(parentId, other.parentId)
+                && Objects.equals(processDefinitionId, other.processDefinitionId)
+                && Objects.equals(processDefinitionKey, other.processDefinitionKey)
+                && Objects.equals(processDefinitionVersion, other.processDefinitionVersion)
+                && Objects.equals(processDefinitionName, other.processDefinitionName)
+                && Objects.equals(startDate, other.startDate)
+                && Objects.equals(startFrom, other.startFrom)
+                && Objects.equals(startTo, other.startTo)
+                && Objects.equals(completedDate, other.completedDate)
+                && Objects.equals(completedFrom, other.completedFrom)
+                && Objects.equals(completedTo, other.completedTo)
+                && Objects.equals(suspendedDate, other.suspendedDate)
+                && Objects.equals(suspendedFrom, other.suspendedFrom)
+                && Objects.equals(suspendedTo, other.suspendedTo)
+                && status == other.status;
     }
-
-
-
-
 }

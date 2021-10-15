@@ -15,11 +15,6 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.Date;
-import java.util.UUID;
-
-import javax.persistence.EntityManager;
-
 import org.activiti.api.process.model.BPMNSequenceFlow;
 import org.activiti.api.process.model.events.SequenceFlowEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
@@ -30,15 +25,21 @@ import org.activiti.cloud.services.query.model.QueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.Date;
+import java.util.UUID;
+
+import javax.persistence.EntityManager;
+
 public class BPMNSequenceFlowTakenEventHandler implements QueryEventHandler {
-    
-    private static final Logger logger = LoggerFactory.getLogger(BPMNSequenceFlowTakenEventHandler.class);
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(BPMNSequenceFlowTakenEventHandler.class);
 
     private final BPMNSequenceFlowRepository bpmnSequenceFlowRepository;
     private final EntityManager entityManager;
 
-    public BPMNSequenceFlowTakenEventHandler(BPMNSequenceFlowRepository activitiyRepository,
-                                             EntityManager entityManager) {
+    public BPMNSequenceFlowTakenEventHandler(
+            BPMNSequenceFlowRepository activitiyRepository, EntityManager entityManager) {
         this.bpmnSequenceFlowRepository = activitiyRepository;
         this.entityManager = entityManager;
     }
@@ -46,50 +47,57 @@ public class BPMNSequenceFlowTakenEventHandler implements QueryEventHandler {
     @Override
     public void handle(CloudRuntimeEvent<?, ?> event) {
         CloudSequenceFlowTakenEvent activityEvent = CloudSequenceFlowTakenEvent.class.cast(event);
-        
+
         BPMNSequenceFlow bpmnSequenceFlow = activityEvent.getEntity();
-        
+
         // Let's find if there an existing record with event's messageId
-        BPMNSequenceFlowEntity bpmnSequenceFlowEntity = bpmnSequenceFlowRepository.findByEventId(event.getId());
-        
+        BPMNSequenceFlowEntity bpmnSequenceFlowEntity =
+                bpmnSequenceFlowRepository.findByEventId(event.getId());
+
         // Let's add sequence flow record if does not exist
-        if(bpmnSequenceFlowEntity == null) {
-            bpmnSequenceFlowEntity = new BPMNSequenceFlowEntity(event.getServiceName(),
-                                                            event.getServiceFullName(),
-                                                            event.getServiceVersion(),
-                                                            event.getAppName(),
-                                                            event.getAppVersion());
-            
+        if (bpmnSequenceFlowEntity == null) {
+            bpmnSequenceFlowEntity =
+                    new BPMNSequenceFlowEntity(
+                            event.getServiceName(),
+                            event.getServiceFullName(),
+                            event.getServiceVersion(),
+                            event.getAppName(),
+                            event.getAppVersion());
+
             bpmnSequenceFlowEntity.setId(UUID.randomUUID().toString());
             bpmnSequenceFlowEntity.setElementId(bpmnSequenceFlow.getElementId());
-            bpmnSequenceFlowEntity.setProcessDefinitionId(bpmnSequenceFlow.getProcessDefinitionId());
+            bpmnSequenceFlowEntity.setProcessDefinitionId(
+                    bpmnSequenceFlow.getProcessDefinitionId());
             bpmnSequenceFlowEntity.setProcessInstanceId(bpmnSequenceFlow.getProcessInstanceId());
             bpmnSequenceFlowEntity.setDate(new Date(activityEvent.getTimestamp()));
-            bpmnSequenceFlowEntity.setSourceActivityElementId(bpmnSequenceFlow.getSourceActivityElementId());
+            bpmnSequenceFlowEntity.setSourceActivityElementId(
+                    bpmnSequenceFlow.getSourceActivityElementId());
             bpmnSequenceFlowEntity.setSourceActivityType(bpmnSequenceFlow.getSourceActivityType());
             bpmnSequenceFlowEntity.setSourceActivityName(bpmnSequenceFlow.getSourceActivityName());
-            bpmnSequenceFlowEntity.setTargetActivityElementId(bpmnSequenceFlow.getTargetActivityElementId());
+            bpmnSequenceFlowEntity.setTargetActivityElementId(
+                    bpmnSequenceFlow.getTargetActivityElementId());
             bpmnSequenceFlowEntity.setTargetActivityType(bpmnSequenceFlow.getTargetActivityType());
             bpmnSequenceFlowEntity.setTargetActivityName(bpmnSequenceFlow.getTargetActivityName());
             bpmnSequenceFlowEntity.setProcessDefinitionKey(event.getProcessDefinitionKey());
             bpmnSequenceFlowEntity.setProcessDefinitionVersion(event.getProcessDefinitionVersion());
             bpmnSequenceFlowEntity.setBusinessKey(event.getBusinessKey());
             bpmnSequenceFlowEntity.setEventId(event.getId());
-    
-            persistIntoDatabase(event,
-                                bpmnSequenceFlowEntity);
+
+            persistIntoDatabase(event, bpmnSequenceFlowEntity);
         } else {
-            logger.debug("Found existing record {} with message id {}. ", bpmnSequenceFlowEntity, event.getMessageId());
+            logger.debug(
+                    "Found existing record {} with message id {}. ",
+                    bpmnSequenceFlowEntity,
+                    event.getMessageId());
         }
     }
 
-    private void persistIntoDatabase(CloudRuntimeEvent<?, ?> event,
-                                     BPMNSequenceFlowEntity entity) {
+    private void persistIntoDatabase(CloudRuntimeEvent<?, ?> event, BPMNSequenceFlowEntity entity) {
         try {
             bpmnSequenceFlowRepository.save(entity);
         } catch (Exception cause) {
-            throw new QueryException("Error handling CloudSequenceFlowTakenEvent[" + event + "]",
-                                     cause);
+            throw new QueryException(
+                    "Error handling CloudSequenceFlowTakenEvent[" + event + "]", cause);
         }
     }
 

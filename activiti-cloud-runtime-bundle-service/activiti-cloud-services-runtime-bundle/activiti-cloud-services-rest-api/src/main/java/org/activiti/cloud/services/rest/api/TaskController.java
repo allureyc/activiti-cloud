@@ -34,7 +34,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequestMapping(value = "/v1/tasks", produces = {MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
+@RequestMapping(
+        value = "/v1/tasks",
+        produces = {MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public interface TaskController {
 
     @GetMapping()
@@ -49,15 +51,15 @@ public interface TaskController {
     @PostMapping(value = "/{taskId}/release")
     EntityModel<CloudTask> releaseTask(@PathVariable(value = "taskId") String taskId);
 
-    @PostMapping(value = "/{taskId}/complete",
-        headers = "Content-type=application/json")
-    EntityModel<CloudTask> completeTask(@PathVariable(value = "taskId") String taskId,
-        @RequestBody CompleteTaskPayload completeTaskPayload);
+    @PostMapping(value = "/{taskId}/complete", headers = "Content-type=application/json")
+    EntityModel<CloudTask> completeTask(
+            @PathVariable(value = "taskId") String taskId,
+            @RequestBody CompleteTaskPayload completeTaskPayload);
 
-    @PostMapping(value = "/{taskId}/save",
-        headers = "Content-type=application/json")
-    void saveTask(@PathVariable(value = "taskId") String taskId,
-        @RequestBody SaveTaskPayload saveTaskPayload);
+    @PostMapping(value = "/{taskId}/save", headers = "Content-type=application/json")
+    void saveTask(
+            @PathVariable(value = "taskId") String taskId,
+            @RequestBody SaveTaskPayload saveTaskPayload);
 
     @DeleteMapping(value = "/{taskId}")
     EntityModel<CloudTask> deleteTask(@PathVariable(value = "taskId") String taskId);
@@ -65,16 +67,17 @@ public interface TaskController {
     @PostMapping(headers = "Content-type=application/json")
     EntityModel<CloudTask> createNewTask(@RequestBody CreateTaskPayload createTaskPayload);
 
-    @PutMapping(value = "/{taskId}",
-        headers = "Content-type=application/json")
-    EntityModel<CloudTask> updateTask(@PathVariable(value = "taskId") String taskId,
-        @RequestBody UpdateTaskPayload updateTaskPayload);
+    @PutMapping(value = "/{taskId}", headers = "Content-type=application/json")
+    EntityModel<CloudTask> updateTask(
+            @PathVariable(value = "taskId") String taskId,
+            @RequestBody UpdateTaskPayload updateTaskPayload);
 
     @GetMapping(value = "/{taskId}/subtasks")
-    PagedModel<EntityModel<CloudTask>> getSubtasks(Pageable pageable, @PathVariable(value = "taskId") String taskId);
+    PagedModel<EntityModel<CloudTask>> getSubtasks(
+            Pageable pageable, @PathVariable(value = "taskId") String taskId);
 
-    @PostMapping(value = "/{taskId}/assign",
-        headers = "Content-type=application/json")
-    EntityModel<CloudTask> assign(@PathVariable("taskId") String taskId,
-                                  @RequestBody AssignTaskPayload assignTaskPayload);
+    @PostMapping(value = "/{taskId}/assign", headers = "Content-type=application/json")
+    EntityModel<CloudTask> assign(
+            @PathVariable("taskId") String taskId,
+            @RequestBody AssignTaskPayload assignTaskPayload);
 }

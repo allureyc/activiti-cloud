@@ -15,8 +15,6 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.Date;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
@@ -24,6 +22,8 @@ import org.activiti.cloud.api.task.model.events.CloudTaskSuspendedEvent;
 import org.activiti.cloud.services.query.app.repository.TaskRepository;
 import org.activiti.cloud.services.query.model.QueryException;
 import org.activiti.cloud.services.query.model.TaskEntity;
+
+import java.util.Date;
 
 public class TaskSuspendedEventHandler implements QueryEventHandler {
 
@@ -38,8 +38,14 @@ public class TaskSuspendedEventHandler implements QueryEventHandler {
         CloudTaskSuspendedEvent taskSuspendedEvent = (CloudTaskSuspendedEvent) event;
         Task eventTask = taskSuspendedEvent.getEntity();
 
-        TaskEntity taskEntity = taskRepository.findById(eventTask.getId())
-                .orElseThrow(() -> new QueryException("Unable to find task with id: " + eventTask.getId()));
+        TaskEntity taskEntity =
+                taskRepository
+                        .findById(eventTask.getId())
+                        .orElseThrow(
+                                () ->
+                                        new QueryException(
+                                                "Unable to find task with id: "
+                                                        + eventTask.getId()));
         taskEntity.setStatus(Task.TaskStatus.SUSPENDED);
         taskEntity.setLastModified(new Date(taskSuspendedEvent.getTimestamp()));
         taskRepository.save(taskEntity);

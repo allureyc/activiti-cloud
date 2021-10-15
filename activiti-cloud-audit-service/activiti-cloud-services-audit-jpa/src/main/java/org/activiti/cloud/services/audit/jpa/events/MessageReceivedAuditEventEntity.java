@@ -25,10 +25,9 @@ import javax.persistence.Entity;
 public class MessageReceivedAuditEventEntity extends MessageAuditEventEntity {
 
     protected static final String MESSAGE_RECEIVED_EVENT = "MessageReceivedEvent";
-    
-    public MessageReceivedAuditEventEntity() {
-    }
-    
+
+    public MessageReceivedAuditEventEntity() {}
+
     public MessageReceivedAuditEventEntity(CloudBPMNMessageReceivedEvent cloudEvent) {
         super(cloudEvent);
     }
@@ -55,7 +54,9 @@ public class MessageReceivedAuditEventEntity extends MessageAuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("MessageReceivedAuditEventEntity [toString()=").append(super.toString()).append("]");
+        builder.append("MessageReceivedAuditEventEntity [toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
-    }    
+    }
 }

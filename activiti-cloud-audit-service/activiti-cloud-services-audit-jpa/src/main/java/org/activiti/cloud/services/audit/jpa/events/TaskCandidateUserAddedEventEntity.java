@@ -36,31 +36,31 @@ public class TaskCandidateUserAddedEventEntity extends AuditEventEntity {
     @Convert(converter = TaskCandidateUserJpaJsonConverter.class)
     @Column(columnDefinition = "text")
     private TaskCandidateUserImpl candidateUser;
-    
-    public TaskCandidateUserAddedEventEntity() {
-    }
+
+    public TaskCandidateUserAddedEventEntity() {}
 
     public TaskCandidateUserAddedEventEntity(CloudTaskCandidateUserAddedEvent cloudEvent) {
         super(cloudEvent);
         setCandidateUser(cloudEvent.getEntity());
     }
-    
+
     public TaskCandidateUser getCandidateUser() {
         return candidateUser;
     }
 
     public void setCandidateUser(TaskCandidateUser candidateUser) {
-        this.candidateUser = new TaskCandidateUserImpl(candidateUser.getUserId(),candidateUser.getTaskId());
+        this.candidateUser =
+                new TaskCandidateUserImpl(candidateUser.getUserId(), candidateUser.getTaskId());
     }
 
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("TaskCandidateUserAddedEventEntity [candidateUser=")
-               .append(candidateUser)
-               .append(", toString()=")
-               .append(super.toString())
-               .append("]");
+                .append(candidateUser)
+                .append(", toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
     }
 

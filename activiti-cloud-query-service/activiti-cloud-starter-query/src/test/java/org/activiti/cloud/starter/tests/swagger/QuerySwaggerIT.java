@@ -16,6 +16,7 @@
 package org.activiti.cloud.starter.tests.swagger;
 
 import static net.javacrumbs.jsonunit.assertj.JsonAssertions.assertThatJson;
+
 import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.startsWith;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -38,33 +39,43 @@ import org.springframework.test.web.servlet.MvcResult;
 @SpringBootTest
 @AutoConfigureMockMvc
 @DirtiesContext
-@ContextConfiguration(initializers = { RabbitMQContainerApplicationInitializer.class, KeycloakContainerApplicationInitializer.class})
+@ContextConfiguration(
+        initializers = {
+            RabbitMQContainerApplicationInitializer.class,
+            KeycloakContainerApplicationInitializer.class
+        })
 public class QuerySwaggerIT {
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired private MockMvc mockMvc;
 
     @Test
     public void should_swaggerDefinitionHavePathsAndDefinitionsAndInfo() throws Exception {
-        MvcResult result = mockMvc
-            .perform(get("/v2/api-docs").accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
-            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("$.paths").isNotEmpty())
-            .andExpect(jsonPath("$.definitions").isNotEmpty())
-            .andExpect(jsonPath("$.definitions").value(hasKey(startsWith("ListResponseContent"))))
-            .andExpect(jsonPath("$.definitions").value(hasKey(startsWith("EntriesResponseContent"))))
-            .andExpect(jsonPath("$.definitions").value(hasKey(startsWith("EntryResponseContent"))))
-            .andExpect(jsonPath("$.info.title").value("Activiti Cloud Query :: Starter :: Query ReST API"))
-            .andReturn();
+        MvcResult result =
+                mockMvc.perform(get("/v2/api-docs").accept(MediaType.APPLICATION_JSON))
+                        .andExpect(status().isOk())
+                        .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                        .andExpect(jsonPath("$.paths").isNotEmpty())
+                        .andExpect(jsonPath("$.definitions").isNotEmpty())
+                        .andExpect(
+                                jsonPath("$.definitions")
+                                        .value(hasKey(startsWith("ListResponseContent"))))
+                        .andExpect(
+                                jsonPath("$.definitions")
+                                        .value(hasKey(startsWith("EntriesResponseContent"))))
+                        .andExpect(
+                                jsonPath("$.definitions")
+                                        .value(hasKey(startsWith("EntryResponseContent"))))
+                        .andExpect(
+                                jsonPath("$.info.title")
+                                        .value("Activiti Cloud Query :: Starter :: Query ReST API"))
+                        .andReturn();
 
         assertThatJson(result.getResponse().getContentAsString())
-            .inPath("$.paths./v1/tasks.get.parameters[*].['name', 'required']")
-            .isArray()
-            .contains(
-                "{name: \"variables.name\", required: false}",
-                "{name: \"variables.value\", required: false}",
-                "{name: \"variables.type\", required: false}");
+                .inPath("$.paths./v1/tasks.get.parameters[*].['name', 'required']")
+                .isArray()
+                .contains(
+                        "{name: \"variables.name\", required: false}",
+                        "{name: \"variables.value\", required: false}",
+                        "{name: \"variables.type\", required: false}");
     }
-
 }

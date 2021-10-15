@@ -16,6 +16,7 @@
 package org.activiti.services.subscription.config;
 
 import static org.activiti.services.subscriptions.behavior.BroadcastSignalEventActivityBehavior.DEFAULT_THROW_SIGNAL_EVENT_BEAN_NAME;
+
 import org.activiti.bpmn.model.Signal;
 import org.activiti.bpmn.model.SignalEventDefinition;
 import org.activiti.engine.RuntimeService;
@@ -45,10 +46,9 @@ public class ActivitiCloudSubscriptionsAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public BroadcastSignalEventHandler broadcastSignalEventHandler(BinderAwareChannelResolver resolver,
-                                                                  RuntimeService runtimeService) {
-        return new BroadcastSignalEventHandler(resolver,
-                                              runtimeService);
+    public BroadcastSignalEventHandler broadcastSignalEventHandler(
+            BinderAwareChannelResolver resolver, RuntimeService runtimeService) {
+        return new BroadcastSignalEventHandler(resolver, runtimeService);
     }
 
     @Bean
@@ -60,12 +60,11 @@ public class ActivitiCloudSubscriptionsAutoConfiguration {
     @Bean(DEFAULT_THROW_SIGNAL_EVENT_BEAN_NAME)
     @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
     @ConditionalOnMissingBean
-    public IntermediateThrowSignalEventActivityBehavior broadcastSignalEventActivityBehavior(ApplicationEventPublisher eventPublisher,
-                                                                                     SignalEventDefinition signalEventDefinition,
-                                                                                     Signal signal) {
-        return new BroadcastSignalEventActivityBehavior(eventPublisher,
-                                                        signalEventDefinition,
-                                                        signal);
+    public IntermediateThrowSignalEventActivityBehavior broadcastSignalEventActivityBehavior(
+            ApplicationEventPublisher eventPublisher,
+            SignalEventDefinition signalEventDefinition,
+            Signal signal) {
+        return new BroadcastSignalEventActivityBehavior(
+                eventPublisher, signalEventDefinition, signal);
     }
-
 }

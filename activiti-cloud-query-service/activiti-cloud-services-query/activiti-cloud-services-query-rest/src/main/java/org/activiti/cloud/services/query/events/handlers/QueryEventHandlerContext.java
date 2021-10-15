@@ -15,14 +15,14 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
+import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class QueryEventHandlerContext {
 
@@ -31,8 +31,11 @@ public class QueryEventHandlerContext {
     private Map<String, QueryEventHandler> handlers;
 
     public QueryEventHandlerContext(Set<QueryEventHandler> handlers) {
-        this.handlers = handlers.stream().collect(Collectors.toMap(QueryEventHandler::getHandledEvent,
-                                                                   Function.identity()));
+        this.handlers =
+                handlers.stream()
+                        .collect(
+                                Collectors.toMap(
+                                        QueryEventHandler::getHandledEvent, Function.identity()));
     }
 
     public void handle(CloudRuntimeEvent<?, ?>... events) {
@@ -43,7 +46,10 @@ public class QueryEventHandlerContext {
                     LOGGER.debug("Handling event: " + handler.getHandledEvent());
                     handler.handle(event);
                 } else {
-                    LOGGER.info("No handler found for event: " + event.getEventType().name() + ". Ignoring event");
+                    LOGGER.info(
+                            "No handler found for event: "
+                                    + event.getEventType().name()
+                                    + ". Ignoring event");
                 }
             }
         }

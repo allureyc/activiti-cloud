@@ -15,6 +15,8 @@
  */
 package org.activiti.cloud.services.query.model;
 
+import org.activiti.cloud.api.process.model.CloudProcessDefinition;
+
 import java.util.Objects;
 
 import javax.persistence.Column;
@@ -23,38 +25,35 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
 
-import org.activiti.cloud.api.process.model.CloudProcessDefinition;
-
 @Entity(name = "ProcessDefinition")
-@Table(name = "PROCESS_DEFINITION",
+@Table(
+        name = "PROCESS_DEFINITION",
         indexes = {
-                @Index(name = "pd_name_idx", columnList = "name"),
-                @Index(name = "pd_key_idx", columnList = "processDefinitionKey")
+            @Index(name = "pd_name_idx", columnList = "name"),
+            @Index(name = "pd_key_idx", columnList = "processDefinitionKey")
         })
-public class ProcessDefinitionEntity extends ActivitiEntityMetadata implements CloudProcessDefinition {
+public class ProcessDefinitionEntity extends ActivitiEntityMetadata
+        implements CloudProcessDefinition {
 
-    @Id
-    private String id;
+    @Id private String id;
     private String name;
+
     @Column(name = "processDefinitionKey")
     private String key;
+
     private String description;
     private int version;
     private String formKey;
 
-    public ProcessDefinitionEntity() {
-    }
+    public ProcessDefinitionEntity() {}
 
-    public ProcessDefinitionEntity(String serviceName,
-                                   String serviceFullName,
-                                   String serviceVersion,
-                                   String appName,
-                                   String appVersion) {
-        super(serviceName,
-              serviceFullName,
-              serviceVersion,
-              appName,
-              appVersion);
+    public ProcessDefinitionEntity(
+            String serviceName,
+            String serviceFullName,
+            String serviceVersion,
+            String appName,
+            String appVersion) {
+        super(serviceName, serviceFullName, serviceVersion, appName, appVersion);
     }
 
     @Override
@@ -121,12 +120,9 @@ public class ProcessDefinitionEntity extends ActivitiEntityMetadata implements C
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (!super.equals(obj)) return false;
+        if (getClass() != obj.getClass()) return false;
         ProcessDefinitionEntity other = (ProcessDefinitionEntity) obj;
         return Objects.equals(id, other.id);
     }

@@ -42,7 +42,7 @@ public class QueryRepositoryConfig implements RepositoryRestConfigurer {
         // Expose only repositories annotated with @RepositoryRestResource
         config.setRepositoryDetectionStrategy(RepositoryDetectionStrategies.ANNOTATED);
 
-        //by default the ids are not exposed the the REST API
+        // by default the ids are not exposed the the REST API
         config.exposeIdsFor(ProcessInstanceEntity.class)
                 .exposeIdsFor(TaskEntity.class)
                 .exposeIdsFor(ProcessVariableEntity.class)
@@ -55,5 +55,4 @@ public class QueryRepositoryConfig implements RepositoryRestConfigurer {
                 .exposeIdsFor(ServiceTaskEntity.class)
                 .exposeIdsFor(ApplicationEntity.class);
     }
-
 }

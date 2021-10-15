@@ -33,8 +33,9 @@ public class ProcessDeployedEventHandler implements QueryEventHandler {
     private ProcessDefinitionRepository processDefinitionRepository;
     private ProcessModelRepository processModelRepository;
 
-    public ProcessDeployedEventHandler(ProcessDefinitionRepository processDefinitionRepository,
-                                       ProcessModelRepository processModelRepository) {
+    public ProcessDeployedEventHandler(
+            ProcessDefinitionRepository processDefinitionRepository,
+            ProcessModelRepository processModelRepository) {
         this.processDefinitionRepository = processDefinitionRepository;
         this.processModelRepository = processModelRepository;
     }
@@ -44,11 +45,13 @@ public class ProcessDeployedEventHandler implements QueryEventHandler {
         CloudProcessDeployedEvent processDeployedEvent = (CloudProcessDeployedEvent) event;
         ProcessDefinition eventProcessDefinition = processDeployedEvent.getEntity();
         LOGGER.debug("Handling process deployed event for " + eventProcessDefinition.getKey());
-        ProcessDefinitionEntity processDefinition = new ProcessDefinitionEntity(processDeployedEvent.getServiceName(),
-                                                                                      processDeployedEvent.getServiceFullName(),
-                                                                                      processDeployedEvent.getServiceVersion(),
-                                                                                      processDeployedEvent.getAppName(),
-                                                                                      processDeployedEvent.getAppVersion());
+        ProcessDefinitionEntity processDefinition =
+                new ProcessDefinitionEntity(
+                        processDeployedEvent.getServiceName(),
+                        processDeployedEvent.getServiceFullName(),
+                        processDeployedEvent.getServiceVersion(),
+                        processDeployedEvent.getAppName(),
+                        processDeployedEvent.getAppVersion());
         processDefinition.setId(eventProcessDefinition.getId());
         processDefinition.setDescription(eventProcessDefinition.getDescription());
         processDefinition.setFormKey(eventProcessDefinition.getFormKey());
@@ -58,8 +61,9 @@ public class ProcessDeployedEventHandler implements QueryEventHandler {
         processDefinition.setServiceType(processDeployedEvent.getServiceType());
         processDefinitionRepository.save(processDefinition);
 
-        ProcessModelEntity processModelEntity = new ProcessModelEntity(processDefinition,
-                                                                       processDeployedEvent.getProcessModelContent());
+        ProcessModelEntity processModelEntity =
+                new ProcessModelEntity(
+                        processDefinition, processDeployedEvent.getProcessModelContent());
         processModelEntity.setId(processDefinition.getId());
         processModelRepository.save(processModelEntity);
     }

@@ -36,8 +36,7 @@ public abstract class TaskAuditEventEntity extends AuditEventEntity {
 
     private String taskName;
 
-    public TaskAuditEventEntity() {
-    }
+    public TaskAuditEventEntity() {}
 
     public TaskAuditEventEntity(CloudTaskRuntimeEvent cloudEvent) {
         super(cloudEvent);
@@ -101,14 +100,14 @@ public abstract class TaskAuditEventEntity extends AuditEventEntity {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("TaskAuditEventEntity [task=")
-               .append(task)
-               .append(", taskId=")
-               .append(taskId)
-               .append(", taskName=")
-               .append(taskName)
-               .append(", toString()=")
-               .append(super.toString())
-               .append("]");
+                .append(task)
+                .append(", taskId=")
+                .append(taskId)
+                .append(", taskName=")
+                .append(taskName)
+                .append(", toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
     }
 }

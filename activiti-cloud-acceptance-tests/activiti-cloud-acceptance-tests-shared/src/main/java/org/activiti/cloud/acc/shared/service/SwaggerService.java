@@ -21,5 +21,4 @@ public interface SwaggerService {
 
     @RequestLine("GET /v2/api-docs")
     String getSwaggerSpecification();
-
 }

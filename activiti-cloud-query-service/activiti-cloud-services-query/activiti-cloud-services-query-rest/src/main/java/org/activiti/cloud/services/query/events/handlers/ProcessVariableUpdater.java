@@ -16,6 +16,7 @@
 package org.activiti.cloud.services.query.events.handlers;
 
 import com.querydsl.core.types.Predicate;
+
 import org.activiti.cloud.services.query.app.repository.EntityFinder;
 import org.activiti.cloud.services.query.app.repository.VariableRepository;
 import org.activiti.cloud.services.query.model.ProcessVariableEntity;
@@ -26,21 +27,22 @@ public class ProcessVariableUpdater {
 
     private VariableRepository variableRepository;
 
-    public ProcessVariableUpdater(EntityFinder entityFinder,
-                           VariableRepository variableRepository) {
+    public ProcessVariableUpdater(
+            EntityFinder entityFinder, VariableRepository variableRepository) {
         this.entityFinder = entityFinder;
         this.variableRepository = variableRepository;
     }
 
-    public void update(ProcessVariableEntity updatedVariableEntity, Predicate predicate, String notFoundMessage) {
-        ProcessVariableEntity variableEntity = entityFinder.findOne(variableRepository,
-                                                             predicate,
-                                                             notFoundMessage);
+    public void update(
+            ProcessVariableEntity updatedVariableEntity,
+            Predicate predicate,
+            String notFoundMessage) {
+        ProcessVariableEntity variableEntity =
+                entityFinder.findOne(variableRepository, predicate, notFoundMessage);
         variableEntity.setLastUpdatedTime(updatedVariableEntity.getLastUpdatedTime());
         variableEntity.setType(updatedVariableEntity.getType());
         variableEntity.setValue(updatedVariableEntity.getValue());
 
         variableRepository.save(variableEntity);
     }
-
 }

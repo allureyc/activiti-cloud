@@ -27,17 +27,16 @@ import javax.persistence.Entity;
 public class ProcessCancelledAuditEventEntity extends ProcessAuditEventEntity {
 
     protected static final String PROCESS_CANCELLED_EVENT = "ProcessCancelledEvent";
-    
+
     private String cause;
-    
-    public ProcessCancelledAuditEventEntity() {
-    }
-    
+
+    public ProcessCancelledAuditEventEntity() {}
+
     public ProcessCancelledAuditEventEntity(CloudProcessCancelledEvent cloudEvent) {
         super(cloudEvent);
         this.cause = cloudEvent.getCause();
     }
-    
+
     public String getCause() {
         return cause;
     }
@@ -73,10 +72,10 @@ public class ProcessCancelledAuditEventEntity extends ProcessAuditEventEntity {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("ProcessCancelledAuditEventEntity [cause=")
-               .append(cause)
-               .append(", toString()=")
-               .append(super.toString())
-               .append("]");
+                .append(cause)
+                .append(", toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
     }
 }

@@ -24,9 +24,9 @@ import org.activiti.cloud.services.query.rest.assembler.TaskRepresentationModelA
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.PagedModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -36,10 +36,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping(
         value = "/v1/process-instances/{processInstanceId}",
-        produces = {
-                MediaTypes.HAL_JSON_VALUE,
-                MediaType.APPLICATION_JSON_VALUE
-        })
+        produces = {MediaTypes.HAL_JSON_VALUE, MediaType.APPLICATION_JSON_VALUE})
 public class ProcessInstanceTasksController {
 
     private TaskRepresentationModelAssembler taskRepresentationModelAssembler;
@@ -49,21 +46,22 @@ public class ProcessInstanceTasksController {
     private final TaskRepository taskRepository;
 
     @Autowired
-    public ProcessInstanceTasksController(TaskRepository taskRepository,
-                                          TaskRepresentationModelAssembler taskRepresentationModelAssembler,
-                                          AlfrescoPagedModelAssembler<TaskEntity> pagedCollectionModelAssembler) {
+    public ProcessInstanceTasksController(
+            TaskRepository taskRepository,
+            TaskRepresentationModelAssembler taskRepresentationModelAssembler,
+            AlfrescoPagedModelAssembler<TaskEntity> pagedCollectionModelAssembler) {
         this.taskRepository = taskRepository;
         this.taskRepresentationModelAssembler = taskRepresentationModelAssembler;
         this.pagedCollectionModelAssembler = pagedCollectionModelAssembler;
     }
 
     @RequestMapping(value = "/tasks", method = RequestMethod.GET)
-    public PagedModel<EntityModel<QueryCloudTask>> getTasks(@PathVariable String processInstanceId,
-                                                        Pageable pageable) {
-        Page<TaskEntity> page = taskRepository.findAll(QTaskEntity.taskEntity.processInstanceId.eq(processInstanceId),
-                                                       pageable);
-        return pagedCollectionModelAssembler.toModel(pageable,
-                                                  page,
-                                                  taskRepresentationModelAssembler);
+    public PagedModel<EntityModel<QueryCloudTask>> getTasks(
+            @PathVariable String processInstanceId, Pageable pageable) {
+        Page<TaskEntity> page =
+                taskRepository.findAll(
+                        QTaskEntity.taskEntity.processInstanceId.eq(processInstanceId), pageable);
+        return pagedCollectionModelAssembler.toModel(
+                pageable, page, taskRepresentationModelAssembler);
     }
 }

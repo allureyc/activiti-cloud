@@ -22,6 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.querydsl.core.types.Predicate;
+
 import org.activiti.cloud.services.query.model.TaskVariableEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,12 +31,9 @@ import org.mockito.Mock;
 
 public class TaskEntityVariableEntityUpdatedEventHandlerTest {
 
-    @InjectMocks
-    private TaskVariableUpdatedEventHandler handler;
+    @InjectMocks private TaskVariableUpdatedEventHandler handler;
 
-    @Mock
-    private TaskVariableUpdater variableUpdater;
-
+    @Mock private TaskVariableUpdater variableUpdater;
 
     @BeforeEach
     public void setUp() {
@@ -44,7 +42,7 @@ public class TaskEntityVariableEntityUpdatedEventHandlerTest {
 
     @Test
     public void handleShouldUpdateVariableValue() {
-        //given
+        // given
         String taskId = "10";
         TaskVariableEntity updatedVariableEntity = new TaskVariableEntity();
         updatedVariableEntity.setName("var");
@@ -52,11 +50,11 @@ public class TaskEntityVariableEntityUpdatedEventHandlerTest {
         updatedVariableEntity.setValue("content");
         updatedVariableEntity.setTaskId(taskId);
 
-        //when
+        // when
         handler.handle(updatedVariableEntity);
 
-        //then
-        verify(variableUpdater).update(eq(updatedVariableEntity), any(Predicate.class), anyString());
+        // then
+        verify(variableUpdater)
+                .update(eq(updatedVariableEntity), any(Predicate.class), anyString());
     }
-
 }

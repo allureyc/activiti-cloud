@@ -15,6 +15,11 @@
  */
 package org.activiti.cloud.services.query.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import org.activiti.cloud.api.model.shared.CloudVariableInstance;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 import java.util.Objects;
 
@@ -29,12 +34,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.MappedSuperclass;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.activiti.cloud.api.model.shared.CloudVariableInstance;
-import org.springframework.format.annotation.DateTimeFormat;
-
 @MappedSuperclass
-public abstract class AbstractVariableEntity extends ActivitiEntityMetadata implements CloudVariableInstance {
+public abstract class AbstractVariableEntity extends ActivitiEntityMetadata
+        implements CloudVariableInstance {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -62,30 +64,33 @@ public abstract class AbstractVariableEntity extends ActivitiEntityMetadata impl
 
     @JsonIgnore
     @ManyToOne(optional = true, fetch = FetchType.LAZY)
-    @JoinColumn(name = "processInstanceId", referencedColumnName = "id", insertable = false, updatable = false,
-        foreignKey = @javax.persistence.ForeignKey(value = ConstraintMode.NO_CONSTRAINT, name = "none"))
+    @JoinColumn(
+            name = "processInstanceId",
+            referencedColumnName = "id",
+            insertable = false,
+            updatable = false,
+            foreignKey =
+                    @javax.persistence.ForeignKey(
+                            value = ConstraintMode.NO_CONSTRAINT,
+                            name = "none"))
     private ProcessInstanceEntity processInstance;
 
-    public AbstractVariableEntity() {
-    }
+    public AbstractVariableEntity() {}
 
-    public AbstractVariableEntity(Long id,
-                          String type,
-                          String name,
-                          String processInstanceId,
-                          String serviceName,
-                          String serviceFullName,
-                          String serviceVersion,
-                          String appName,
-                          String appVersion,
-                          Date createTime,
-                          Date lastUpdatedTime,
-                          String executionId) {
-        super(serviceName,
-              serviceFullName,
-              serviceVersion,
-              appName,
-              appVersion);
+    public AbstractVariableEntity(
+            Long id,
+            String type,
+            String name,
+            String processInstanceId,
+            String serviceName,
+            String serviceFullName,
+            String serviceVersion,
+            String appName,
+            String appVersion,
+            Date createTime,
+            Date lastUpdatedTime,
+            String executionId) {
+        super(serviceName, serviceFullName, serviceVersion, appName, appVersion);
         this.id = id;
         this.type = type;
         this.name = name;
@@ -185,14 +190,10 @@ public abstract class AbstractVariableEntity extends ActivitiEntityMetadata impl
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (!super.equals(obj))
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
+        if (this == obj) return true;
+        if (!super.equals(obj)) return false;
+        if (getClass() != obj.getClass()) return false;
         AbstractVariableEntity other = (AbstractVariableEntity) obj;
         return Objects.equals(id, other.id);
     }
-
- }
+}

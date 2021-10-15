@@ -15,10 +15,6 @@
  */
 package org.activiti.cloud.conf;
 
-import java.util.Set;
-
-import javax.persistence.EntityManager;
-
 import org.activiti.cloud.services.query.app.QueryConsumerChannelHandler;
 import org.activiti.cloud.services.query.app.QueryConsumerChannels;
 import org.activiti.cloud.services.query.app.repository.ApplicationRepository;
@@ -78,63 +74,75 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+
 @Configuration
 @EnableBinding(QueryConsumerChannels.class)
 public class EventHandlersAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public QueryConsumerChannelHandler queryConsumerChannelHandler(QueryEventHandlerContext eventHandlerContext) {
+    public QueryConsumerChannelHandler queryConsumerChannelHandler(
+            QueryEventHandlerContext eventHandlerContext) {
         return new QueryConsumerChannelHandler(eventHandlerContext);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessDeployedEventHandler processDeployedEventHandler(ProcessDefinitionRepository processDefinitionRepository,
-                                                                   ProcessModelRepository processModelRepository) {
-        return new ProcessDeployedEventHandler(processDefinitionRepository,
-                                               processModelRepository);
+    public ProcessDeployedEventHandler processDeployedEventHandler(
+            ProcessDefinitionRepository processDefinitionRepository,
+            ProcessModelRepository processModelRepository) {
+        return new ProcessDeployedEventHandler(processDefinitionRepository, processModelRepository);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessCancelledEventHandler processCancelledEventHandler(ProcessInstanceRepository processInstanceRepository) {
+    public ProcessCancelledEventHandler processCancelledEventHandler(
+            ProcessInstanceRepository processInstanceRepository) {
         return new ProcessCancelledEventHandler(processInstanceRepository);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessCompletedEventHandler processCompletedEventHandler(ProcessInstanceRepository processInstanceRepository) {
+    public ProcessCompletedEventHandler processCompletedEventHandler(
+            ProcessInstanceRepository processInstanceRepository) {
         return new ProcessCompletedEventHandler(processInstanceRepository);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessCreatedEventHandler processCreatedEventHandler(ProcessInstanceRepository processInstanceRepository) {
+    public ProcessCreatedEventHandler processCreatedEventHandler(
+            ProcessInstanceRepository processInstanceRepository) {
         return new ProcessCreatedEventHandler(processInstanceRepository);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessResumedEventHandler processResumedEventHandler(ProcessInstanceRepository processInstanceRepository) {
+    public ProcessResumedEventHandler processResumedEventHandler(
+            ProcessInstanceRepository processInstanceRepository) {
         return new ProcessResumedEventHandler(processInstanceRepository);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessStartedEventHandler processStartedEventHandler(ProcessInstanceRepository processInstanceRepository) {
+    public ProcessStartedEventHandler processStartedEventHandler(
+            ProcessInstanceRepository processInstanceRepository) {
         return new ProcessStartedEventHandler(processInstanceRepository);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessSuspendedEventHandler processSuspendedEventHandler(ProcessInstanceRepository processInstanceRepository) {
+    public ProcessSuspendedEventHandler processSuspendedEventHandler(
+            ProcessInstanceRepository processInstanceRepository) {
         return new ProcessSuspendedEventHandler(processInstanceRepository);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public ProcessUpdatedEventHandler processUpdatedEventHandler(ProcessInstanceRepository processInstanceRepository) {
+    public ProcessUpdatedEventHandler processUpdatedEventHandler(
+            ProcessInstanceRepository processInstanceRepository) {
         return new ProcessUpdatedEventHandler(processInstanceRepository);
     }
 
@@ -158,28 +166,34 @@ public class EventHandlersAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TaskCandidateGroupAddedEventHandler taskCandidateGroupAddedEventHandler(TaskCandidateGroupRepository taskCandidateGroupRepository) {
+    public TaskCandidateGroupAddedEventHandler taskCandidateGroupAddedEventHandler(
+            TaskCandidateGroupRepository taskCandidateGroupRepository) {
         return new TaskCandidateGroupAddedEventHandler(taskCandidateGroupRepository);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public TaskCandidateGroupRemovedEventHandler taskCandidateGroupRemovedEventHandler(TaskRepository taskRepository,
-                                                                                       TaskCandidateGroupRepository taskCandidateGroupRepository) {
-        return new TaskCandidateGroupRemovedEventHandler(taskRepository, taskCandidateGroupRepository);
+    public TaskCandidateGroupRemovedEventHandler taskCandidateGroupRemovedEventHandler(
+            TaskRepository taskRepository,
+            TaskCandidateGroupRepository taskCandidateGroupRepository) {
+        return new TaskCandidateGroupRemovedEventHandler(
+                taskRepository, taskCandidateGroupRepository);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public TaskCandidateUserAddedEventHandler taskCandidateUserAddedEventHandler(TaskCandidateUserRepository taskCandidateUserRepository) {
+    public TaskCandidateUserAddedEventHandler taskCandidateUserAddedEventHandler(
+            TaskCandidateUserRepository taskCandidateUserRepository) {
         return new TaskCandidateUserAddedEventHandler(taskCandidateUserRepository);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public TaskCandidateUserRemovedEventHandler taskCandidateUserRemovedEventHandler(TaskRepository taskRepository,
-                                                                                     TaskCandidateUserRepository taskCandidateUserRepository) {
-        return new TaskCandidateUserRemovedEventHandler(taskRepository, taskCandidateUserRepository);
+    public TaskCandidateUserRemovedEventHandler taskCandidateUserRemovedEventHandler(
+            TaskRepository taskRepository,
+            TaskCandidateUserRepository taskCandidateUserRepository) {
+        return new TaskCandidateUserRemovedEventHandler(
+                taskRepository, taskCandidateUserRepository);
     }
 
     @Bean
@@ -190,10 +204,9 @@ public class EventHandlersAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public TaskCreatedEventHandler taskCreatedEventHandler(TaskRepository taskRepository,
-                                                           ProcessInstanceRepository processInstanceRepository) {
-        return new TaskCreatedEventHandler(taskRepository,
-                                            processInstanceRepository);
+    public TaskCreatedEventHandler taskCreatedEventHandler(
+            TaskRepository taskRepository, ProcessInstanceRepository processInstanceRepository) {
+        return new TaskCreatedEventHandler(taskRepository, processInstanceRepository);
     }
 
     @Bean
@@ -210,102 +223,99 @@ public class EventHandlersAutoConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public VariableCreatedEventHandler variableCreatedEventHandler(VariableRepository variableRepository,
-                                                                   TaskVariableRepository taskVariableRepository,
-                                                                   EntityManager entityManager) {
-        return new VariableCreatedEventHandler(variableRepository,
-                                               taskVariableRepository,
-                                               entityManager);
+    public VariableCreatedEventHandler variableCreatedEventHandler(
+            VariableRepository variableRepository,
+            TaskVariableRepository taskVariableRepository,
+            EntityManager entityManager) {
+        return new VariableCreatedEventHandler(
+                variableRepository, taskVariableRepository, entityManager);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public VariableDeletedEventHandler variableDeletedEventHandler(TaskRepository taskRepository,
-                                                                   ProcessInstanceRepository processInstanceRepository,
-                                                                   VariableRepository variableRepository,
-                                                                   EntityFinder entityFinder,
-                                                                   TaskVariableRepository taskVariableRepository) {
-        return new VariableDeletedEventHandler(new ProcessVariableDeletedEventHandler(processInstanceRepository,
-                                                                                      variableRepository,
-                                                                                      entityFinder),
-                                               new TaskVariableDeletedEventHandler(taskRepository,
-                                                                                   taskVariableRepository,
-                                                                                   entityFinder));
+    public VariableDeletedEventHandler variableDeletedEventHandler(
+            TaskRepository taskRepository,
+            ProcessInstanceRepository processInstanceRepository,
+            VariableRepository variableRepository,
+            EntityFinder entityFinder,
+            TaskVariableRepository taskVariableRepository) {
+        return new VariableDeletedEventHandler(
+                new ProcessVariableDeletedEventHandler(
+                        processInstanceRepository, variableRepository, entityFinder),
+                new TaskVariableDeletedEventHandler(
+                        taskRepository, taskVariableRepository, entityFinder));
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public VariableUpdatedEventHandler variableUpdatedEventHandler(EntityFinder entityFinder,
-                                                                   VariableRepository variableRepository,
-                                                                   TaskVariableRepository taskVariableRepository) {
-        return new VariableUpdatedEventHandler(new ProcessVariableUpdateEventHandler(new ProcessVariableUpdater(entityFinder,
-                                                                                                                variableRepository)),
-                                               new TaskVariableUpdatedEventHandler(new TaskVariableUpdater(entityFinder,
-                                                                                                           taskVariableRepository)));
+    public VariableUpdatedEventHandler variableUpdatedEventHandler(
+            EntityFinder entityFinder,
+            VariableRepository variableRepository,
+            TaskVariableRepository taskVariableRepository) {
+        return new VariableUpdatedEventHandler(
+                new ProcessVariableUpdateEventHandler(
+                        new ProcessVariableUpdater(entityFinder, variableRepository)),
+                new TaskVariableUpdatedEventHandler(
+                        new TaskVariableUpdater(entityFinder, taskVariableRepository)));
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public BPMNActivityStartedEventHandler bpmnActivityStartedEventHandler(BPMNActivityRepository bpmnActivityRepository,
-                                                                           EntityManager entityManager) {
-        return new BPMNActivityStartedEventHandler(bpmnActivityRepository,
-                                                   entityManager);
+    public BPMNActivityStartedEventHandler bpmnActivityStartedEventHandler(
+            BPMNActivityRepository bpmnActivityRepository, EntityManager entityManager) {
+        return new BPMNActivityStartedEventHandler(bpmnActivityRepository, entityManager);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public BPMNActivityCompletedEventHandler bpmnActivityCompletedEventHandler(BPMNActivityRepository bpmnActivityRepository,
-                                                                               EntityManager entityManager) {
-        return new BPMNActivityCompletedEventHandler(bpmnActivityRepository,
-                                                     entityManager);
+    public BPMNActivityCompletedEventHandler bpmnActivityCompletedEventHandler(
+            BPMNActivityRepository bpmnActivityRepository, EntityManager entityManager) {
+        return new BPMNActivityCompletedEventHandler(bpmnActivityRepository, entityManager);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public BPMNActivityCancelledEventHandler bpmnActivityCancelledEventHandler(BPMNActivityRepository bpmnActivityRepository,
-                                                                               EntityManager entityManager) {
-        return new BPMNActivityCancelledEventHandler(bpmnActivityRepository,
-                                                     entityManager);
+    public BPMNActivityCancelledEventHandler bpmnActivityCancelledEventHandler(
+            BPMNActivityRepository bpmnActivityRepository, EntityManager entityManager) {
+        return new BPMNActivityCancelledEventHandler(bpmnActivityRepository, entityManager);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public BPMNSequenceFlowTakenEventHandler bpmnSequenceFlowTakenEventHandler(BPMNSequenceFlowRepository bpmnSequenceFlowRepository,
-                                                                               EntityManager entityManager) {
-        return new BPMNSequenceFlowTakenEventHandler(bpmnSequenceFlowRepository,
-                                                     entityManager);
+    public BPMNSequenceFlowTakenEventHandler bpmnSequenceFlowTakenEventHandler(
+            BPMNSequenceFlowRepository bpmnSequenceFlowRepository, EntityManager entityManager) {
+        return new BPMNSequenceFlowTakenEventHandler(bpmnSequenceFlowRepository, entityManager);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public IntegrationResultReceivedEventHandler integrationResultReceivedEventHandler(IntegrationContextRepository integrationContextRepository,
-                                                                                       ServiceTaskRepository serviceTaskRepository,
-                                                                                       EntityManager entityManager) {
-        return new IntegrationResultReceivedEventHandler(integrationContextRepository,
-                                                         serviceTaskRepository,
-                                                         entityManager);
+    public IntegrationResultReceivedEventHandler integrationResultReceivedEventHandler(
+            IntegrationContextRepository integrationContextRepository,
+            ServiceTaskRepository serviceTaskRepository,
+            EntityManager entityManager) {
+        return new IntegrationResultReceivedEventHandler(
+                integrationContextRepository, serviceTaskRepository, entityManager);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public IntegrationRequestedEventHandler integrationRequestedEventHandler(IntegrationContextRepository integrationContextRepository,
-                                                                             ServiceTaskRepository serviceTaskRepository,
-                                                                             EntityManager entityManager) {
-        return new IntegrationRequestedEventHandler(integrationContextRepository,
-                                                    serviceTaskRepository,
-                                                    entityManager);
+    public IntegrationRequestedEventHandler integrationRequestedEventHandler(
+            IntegrationContextRepository integrationContextRepository,
+            ServiceTaskRepository serviceTaskRepository,
+            EntityManager entityManager) {
+        return new IntegrationRequestedEventHandler(
+                integrationContextRepository, serviceTaskRepository, entityManager);
     }
 
     @Bean
     @ConditionalOnMissingBean
-    public IntegrationErrorReceivedEventHandler integrationErrorReceivedEventHandler(IntegrationContextRepository integrationContextRepository,
-                                                                                     ServiceTaskRepository serviceTaskRepository,
-                                                                                     EntityManager entityManager) {
-        return new IntegrationErrorReceivedEventHandler(integrationContextRepository,
-                                                        serviceTaskRepository,
-                                                        entityManager);
+    public IntegrationErrorReceivedEventHandler integrationErrorReceivedEventHandler(
+            IntegrationContextRepository integrationContextRepository,
+            ServiceTaskRepository serviceTaskRepository,
+            EntityManager entityManager) {
+        return new IntegrationErrorReceivedEventHandler(
+                integrationContextRepository, serviceTaskRepository, entityManager);
     }
-
 
     @Bean
     @ConditionalOnMissingBean

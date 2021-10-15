@@ -15,23 +15,25 @@
  */
 package org.activiti.cloud.services.rest.assemblers;
 
+import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.RepresentationModel;
+import org.springframework.hateoas.server.RepresentationModelAssembler;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.hateoas.Link;
-import org.springframework.hateoas.server.RepresentationModelAssembler;
-import org.springframework.hateoas.RepresentationModel;
-import org.springframework.hateoas.CollectionModel;
-
 public class CollectionModelAssembler {
 
-    public <T, D extends RepresentationModel<?>> CollectionModel<D> toCollectionModel(List<T> entities,
-                                                                   RepresentationModelAssembler<T, D> representationModelAssembler,
-                                                                   Link ... links) {
+    public <T, D extends RepresentationModel<?>> CollectionModel<D> toCollectionModel(
+            List<T> entities,
+            RepresentationModelAssembler<T, D> representationModelAssembler,
+            Link... links) {
 
-        return new CollectionModel<>(entities.stream()
-                                       .map(representationModelAssembler::toModel)
-                                       .collect(Collectors.toList()),
-                               links);
+        return new CollectionModel<>(
+                entities.stream()
+                        .map(representationModelAssembler::toModel)
+                        .collect(Collectors.toList()),
+                links);
     }
 }

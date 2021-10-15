@@ -15,33 +15,30 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.Date;
-
-import com.querydsl.core.types.Predicate;
-import org.activiti.cloud.services.query.model.ProcessVariableEntity;
-import org.activiti.cloud.services.query.app.repository.EntityFinder;
-import org.activiti.cloud.services.query.app.repository.VariableRepository;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
 import static org.activiti.test.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import com.querydsl.core.types.Predicate;
+
+import org.activiti.cloud.services.query.app.repository.EntityFinder;
+import org.activiti.cloud.services.query.app.repository.VariableRepository;
+import org.activiti.cloud.services.query.model.ProcessVariableEntity;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
+import java.util.Date;
+
 public class VariableEntityUpdaterTest {
 
-    @InjectMocks
-    private ProcessVariableUpdater updater;
+    @InjectMocks private ProcessVariableUpdater updater;
 
-    @Mock
-    private EntityFinder entityFinder;
+    @Mock private EntityFinder entityFinder;
 
-    @Mock
-    private VariableRepository variableRepository;
-
+    @Mock private VariableRepository variableRepository;
 
     @BeforeEach
     public void setUp() {
@@ -50,11 +47,12 @@ public class VariableEntityUpdaterTest {
 
     @Test
     public void updateShouldUpdateVariableRetrievedByPredicate() {
-        //given
+        // given
         ProcessVariableEntity currentVariableEntity = new ProcessVariableEntity();
 
         Predicate predicate = mock(Predicate.class);
-        given(entityFinder.findOne(variableRepository, predicate, "error")).willReturn(currentVariableEntity);
+        given(entityFinder.findOne(variableRepository, predicate, "error"))
+                .willReturn(currentVariableEntity);
 
         Date now = new Date();
         ProcessVariableEntity updatedVariableEntity = new ProcessVariableEntity();
@@ -62,16 +60,14 @@ public class VariableEntityUpdaterTest {
         updatedVariableEntity.setValue("content");
         updatedVariableEntity.setLastUpdatedTime(now);
 
-        //when
-        updater.update(updatedVariableEntity,
-                       predicate, "error");
+        // when
+        updater.update(updatedVariableEntity, predicate, "error");
 
-        //then
+        // then
         assertThat(currentVariableEntity)
                 .hasType("string")
                 .hasValue("content")
                 .hasLastUpdatedTime(now);
         verify(variableRepository).save(currentVariableEntity);
     }
-
 }

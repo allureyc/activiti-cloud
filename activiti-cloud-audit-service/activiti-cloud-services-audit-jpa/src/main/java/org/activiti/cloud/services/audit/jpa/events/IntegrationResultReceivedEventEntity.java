@@ -15,16 +15,17 @@
  */
 package org.activiti.cloud.services.audit.jpa.events;
 
+import org.activiti.cloud.api.process.model.events.CloudIntegrationResultReceivedEvent;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
-
-import org.activiti.cloud.api.process.model.events.CloudIntegrationResultReceivedEvent;
 
 @Entity(name = IntegrationResultReceivedEventEntity.INTEGRATION_RESULT_RECEIVED_EVENT)
 @DiscriminatorValue(value = IntegrationResultReceivedEventEntity.INTEGRATION_RESULT_RECEIVED_EVENT)
 public class IntegrationResultReceivedEventEntity extends IntegrationEventEntity {
 
-    protected static final String INTEGRATION_RESULT_RECEIVED_EVENT = "IntegrationResultReceivedEvent";
+    protected static final String INTEGRATION_RESULT_RECEIVED_EVENT =
+            "IntegrationResultReceivedEvent";
 
     IntegrationResultReceivedEventEntity() {}
 
@@ -54,8 +55,9 @@ public class IntegrationResultReceivedEventEntity extends IntegrationEventEntity
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("IntegrationResultReceivedEventEntity [toString()=").append(super.toString()).append("]");
+        builder.append("IntegrationResultReceivedEventEntity [toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
     }
-
 }

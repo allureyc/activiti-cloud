@@ -31,7 +31,6 @@ public class QueryConsumerChannelHandler {
 
     @StreamListener(QueryConsumerChannels.QUERY_CONSUMER)
     public synchronized void receive(List<CloudRuntimeEvent<?, ?>> events) {
-        eventHandlerContext.handle(events.toArray(new CloudRuntimeEvent[]{}));
+        eventHandlerContext.handle(events.toArray(new CloudRuntimeEvent[] {}));
     }
-
 }

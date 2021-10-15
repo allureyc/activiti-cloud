@@ -36,14 +36,13 @@ public class ApplicationDeployedAuditEventEntity extends AuditEventEntity {
     @Column(columnDefinition = "text")
     private Deployment deployment;
 
-    public ApplicationDeployedAuditEventEntity() {
-    }
-    
+    public ApplicationDeployedAuditEventEntity() {}
+
     public ApplicationDeployedAuditEventEntity(CloudApplicationDeployedEvent cloudEvent) {
         super(cloudEvent);
         setDeployment(cloudEvent.getEntity());
     }
-    
+
     public Deployment getDeployment() {
         return deployment;
     }
@@ -51,7 +50,7 @@ public class ApplicationDeployedAuditEventEntity extends AuditEventEntity {
     public void setDeployment(Deployment deployment) {
         this.deployment = deployment;
     }
-    
+
     @Override
     public int hashCode() {
         final int prime = 31;

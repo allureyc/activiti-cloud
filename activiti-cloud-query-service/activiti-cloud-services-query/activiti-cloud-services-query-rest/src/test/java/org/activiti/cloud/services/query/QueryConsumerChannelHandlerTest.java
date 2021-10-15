@@ -15,6 +15,11 @@
  */
 package org.activiti.cloud.services.query;
 
+import static org.mockito.Mockito.verify;
+import static org.mockito.MockitoAnnotations.initMocks;
+
+import static java.util.Arrays.asList;
+
 import org.activiti.cloud.api.process.model.impl.events.CloudProcessCreatedEventImpl;
 import org.activiti.cloud.api.process.model.impl.events.CloudProcessStartedEventImpl;
 import org.activiti.cloud.services.query.app.QueryConsumerChannelHandler;
@@ -24,17 +29,11 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import static java.util.Arrays.asList;
-import static org.mockito.Mockito.verify;
-import static org.mockito.MockitoAnnotations.initMocks;
-
 public class QueryConsumerChannelHandlerTest {
 
-    @InjectMocks
-    private QueryConsumerChannelHandler consumer;
+    @InjectMocks private QueryConsumerChannelHandler consumer;
 
-    @Mock
-    private QueryEventHandlerContext eventHandlerContext;
+    @Mock private QueryEventHandlerContext eventHandlerContext;
 
     @BeforeEach
     public void setUp() {
@@ -43,15 +42,14 @@ public class QueryConsumerChannelHandlerTest {
 
     @Test
     public void receiveShouldHandleReceivedEvent() {
-        //given
+        // given
         CloudProcessCreatedEventImpl processCreatedEvent = new CloudProcessCreatedEventImpl();
         CloudProcessStartedEventImpl processStartedEvent = new CloudProcessStartedEventImpl();
 
-        //when
+        // when
         consumer.receive(asList(processCreatedEvent, processStartedEvent));
 
-        //then
+        // then
         verify(eventHandlerContext).handle(processCreatedEvent, processStartedEvent);
     }
-
 }

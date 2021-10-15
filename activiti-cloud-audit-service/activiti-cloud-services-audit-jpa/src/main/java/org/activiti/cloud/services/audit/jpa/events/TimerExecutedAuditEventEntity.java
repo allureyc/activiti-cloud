@@ -25,9 +25,8 @@ import javax.persistence.Entity;
 public class TimerExecutedAuditEventEntity extends TimerAuditEventEntity {
 
     protected static final String TIMER_EXECUTED_EVENT = "TimerExecutedEvent";
-    
-    public TimerExecutedAuditEventEntity() {
-    }
+
+    public TimerExecutedAuditEventEntity() {}
 
     public TimerExecutedAuditEventEntity(CloudBPMNTimerExecutedEvent cloudEvent) {
         super(cloudEvent);
@@ -55,7 +54,9 @@ public class TimerExecutedAuditEventEntity extends TimerAuditEventEntity {
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
-        builder.append("TimerExecutedAuditEventEntity [toString()=").append(super.toString()).append("]");
+        builder.append("TimerExecutedAuditEventEntity [toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
-    }   
+    }
 }

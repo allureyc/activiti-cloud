@@ -16,6 +16,7 @@
 package org.activiti.cloud.services.query.app.repository;
 
 import com.querydsl.core.types.dsl.StringPath;
+
 import org.activiti.cloud.services.query.model.QTaskCandidateGroup;
 import org.activiti.cloud.services.query.model.TaskCandidateGroup;
 import org.activiti.cloud.services.query.model.TaskCandidateGroupId;
@@ -26,14 +27,14 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource(exported = false)
-public interface TaskCandidateGroupRepository extends PagingAndSortingRepository<TaskCandidateGroup, TaskCandidateGroupId>, QuerydslPredicateExecutor<TaskCandidateGroup>, QuerydslBinderCustomizer<QTaskCandidateGroup> {
+public interface TaskCandidateGroupRepository
+        extends PagingAndSortingRepository<TaskCandidateGroup, TaskCandidateGroupId>,
+                QuerydslPredicateExecutor<TaskCandidateGroup>,
+                QuerydslBinderCustomizer<QTaskCandidateGroup> {
 
     @Override
-    default void customize(QuerydslBindings bindings,
-                           QTaskCandidateGroup root) {
+    default void customize(QuerydslBindings bindings, QTaskCandidateGroup root) {
 
-        bindings.bind(String.class).first(
-                (StringPath path, String value) -> path.eq(value));
-
+        bindings.bind(String.class).first((StringPath path, String value) -> path.eq(value));
     }
 }

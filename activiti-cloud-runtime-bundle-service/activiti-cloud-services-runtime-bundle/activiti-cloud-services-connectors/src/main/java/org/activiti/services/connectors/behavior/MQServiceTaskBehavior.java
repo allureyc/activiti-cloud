@@ -36,7 +36,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.Date;
 
-public class MQServiceTaskBehavior extends AbstractBpmnActivityBehavior implements TriggerableActivityBehavior {
+public class MQServiceTaskBehavior extends AbstractBpmnActivityBehavior
+        implements TriggerableActivityBehavior {
 
     private final IntegrationContextManager integrationContextManager;
     private final ApplicationEventPublisher eventPublisher;
@@ -46,13 +47,14 @@ public class MQServiceTaskBehavior extends AbstractBpmnActivityBehavior implemen
     private final ProcessEngineEventsAggregator processEngineEventsAggregator;
     private final RuntimeBundleProperties runtimeBundleProperties;
 
-    public MQServiceTaskBehavior(IntegrationContextManager integrationContextManager,
-                                 ApplicationEventPublisher eventPublisher,
-                                 IntegrationContextBuilder integrationContextBuilder,
-                                 RuntimeBundleInfoAppender runtimeBundleInfoAppender,
-                                 DefaultServiceTaskBehavior defaultServiceTaskBehavior,
-                                 ProcessEngineEventsAggregator processEngineEventsAggregator,
-                                 RuntimeBundleProperties runtimeBundleProperties) {
+    public MQServiceTaskBehavior(
+            IntegrationContextManager integrationContextManager,
+            ApplicationEventPublisher eventPublisher,
+            IntegrationContextBuilder integrationContextBuilder,
+            RuntimeBundleInfoAppender runtimeBundleInfoAppender,
+            DefaultServiceTaskBehavior defaultServiceTaskBehavior,
+            ProcessEngineEventsAggregator processEngineEventsAggregator,
+            RuntimeBundleProperties runtimeBundleProperties) {
         this.integrationContextManager = integrationContextManager;
         this.eventPublisher = eventPublisher;
         this.integrationContextBuilder = integrationContextBuilder;
@@ -70,8 +72,8 @@ public class MQServiceTaskBehavior extends AbstractBpmnActivityBehavior implemen
         } else {
             IntegrationContextEntity integrationContextEntity = storeIntegrationContext(execution);
 
-            IntegrationContext integrationContext = integrationContextBuilder.from(integrationContextEntity,
-                                                                                   execution);
+            IntegrationContext integrationContext =
+                    integrationContextBuilder.from(integrationContextEntity, execution);
             publishSpringEvent(integrationContext);
 
             aggregateCloudIntegrationRequestedEvent(integrationContext);
@@ -80,16 +82,18 @@ public class MQServiceTaskBehavior extends AbstractBpmnActivityBehavior implemen
 
     private void aggregateCloudIntegrationRequestedEvent(IntegrationContext integrationContext) {
         if (runtimeBundleProperties.getEventsProperties().isIntegrationAuditEventsEnabled()) {
-            CloudIntegrationRequestedEventImpl cloudEvent = new CloudIntegrationRequestedEventImpl(integrationContext);
+            CloudIntegrationRequestedEventImpl cloudEvent =
+                    new CloudIntegrationRequestedEventImpl(integrationContext);
 
             processEngineEventsAggregator.add(cloudEvent);
         }
     }
 
     /**
-     * Publishes an custom event using the Spring {@link ApplicationEventPublisher}. This event will be caught by
-     * {@link IntegrationRequestSender#sendIntegrationRequest(IntegrationRequest)} which is annotated with
-     * {@link TransactionalEventListener} on phase {@link TransactionPhase#AFTER_COMMIT}.
+     * Publishes an custom event using the Spring {@link ApplicationEventPublisher}. This event will
+     * be caught by {@link IntegrationRequestSender#sendIntegrationRequest(IntegrationRequest)}
+     * which is annotated with {@link TransactionalEventListener} on phase {@link
+     * TransactionPhase#AFTER_COMMIT}.
      *
      * @param integrationContext the related integration context
      */
@@ -118,9 +122,7 @@ public class MQServiceTaskBehavior extends AbstractBpmnActivityBehavior implemen
     }
 
     @Override
-    public void trigger(DelegateExecution execution,
-                        String signalEvent,
-                        Object signalData) {
+    public void trigger(DelegateExecution execution, String signalEvent, Object signalData) {
         leave(execution);
     }
 }

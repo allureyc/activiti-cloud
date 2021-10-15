@@ -31,11 +31,13 @@ public class IntegrationErrorDestinationBuilderImpl implements IntegrationErrorD
     public String buildDestination(IntegrationRequest event) {
         String errorDestinationOverride = connectorProperties.getErrorDestinationOverride();
 
-        String destination = ObjectUtils.isEmpty(errorDestinationOverride)
-            ? new StringBuilder("integrationError").append(connectorProperties.getMqDestinationSeparator())
-                                                   .append(event.getServiceFullName())
-                                                   .toString()
-            : errorDestinationOverride;
+        String destination =
+                ObjectUtils.isEmpty(errorDestinationOverride)
+                        ? new StringBuilder("integrationError")
+                                .append(connectorProperties.getMqDestinationSeparator())
+                                .append(event.getServiceFullName())
+                                .toString()
+                        : errorDestinationOverride;
 
         return destination;
     }

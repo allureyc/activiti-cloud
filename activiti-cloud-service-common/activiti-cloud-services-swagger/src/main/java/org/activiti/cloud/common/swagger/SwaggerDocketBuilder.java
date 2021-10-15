@@ -19,17 +19,15 @@ import static springfox.documentation.schema.AlternateTypeRules.newRule;
 
 import com.fasterxml.classmate.ResolvedType;
 import com.fasterxml.classmate.TypeResolver;
-import java.lang.reflect.Type;
-import java.util.Arrays;
-import java.util.List;
-import java.util.function.Predicate;
+
 import org.activiti.cloud.alfresco.rest.model.EntryResponseContent;
 import org.activiti.cloud.alfresco.rest.model.ListResponseContent;
 import org.springframework.core.Ordered;
 import org.springframework.data.domain.Pageable;
-import org.springframework.hateoas.PagedModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.CollectionModel;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.PagedModel;
+
 import springfox.documentation.RequestHandler;
 import springfox.documentation.builders.AlternateTypeBuilder;
 import springfox.documentation.builders.AlternateTypePropertyBuilder;
@@ -39,6 +37,11 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
+import java.lang.reflect.Type;
+import java.util.Arrays;
+import java.util.List;
+import java.util.function.Predicate;
+
 public class SwaggerDocketBuilder {
 
     private final Predicate<RequestHandler> apiSelector;
@@ -46,10 +49,11 @@ public class SwaggerDocketBuilder {
     private final List<DocketCustomizer> docketCustomizers;
     private final ApiInfo apiInfo;
 
-    public SwaggerDocketBuilder(Predicate<RequestHandler> apiSelector,
-                                TypeResolver typeResolver,
-                                List<DocketCustomizer> docketCustomizers,
-                                ApiInfo apiInfo) {
+    public SwaggerDocketBuilder(
+            Predicate<RequestHandler> apiSelector,
+            TypeResolver typeResolver,
+            List<DocketCustomizer> docketCustomizers,
+            ApiInfo apiInfo) {
         this.apiSelector = apiSelector;
         this.typeResolver = typeResolver;
         this.docketCustomizers = docketCustomizers;
@@ -57,11 +61,12 @@ public class SwaggerDocketBuilder {
     }
 
     private Docket baseDocket() {
-        Docket baseDocket = new Docket(DocumentationType.SWAGGER_2)
-            .select()
-            .apis(apiSelector::test)
-            .paths(PathSelectors.any())
-            .build();
+        Docket baseDocket =
+                new Docket(DocumentationType.SWAGGER_2)
+                        .select()
+                        .apis(apiSelector::test)
+                        .paths(PathSelectors.any())
+                        .build();
         if (apiInfo != null) {
             baseDocket.apiInfo(apiInfo);
         }
@@ -79,44 +84,48 @@ public class SwaggerDocketBuilder {
     }
 
     public Docket buildAlfrescoAPIDocket() {
-        ResolvedType resourceTypeWithWildCard = typeResolver.resolve(EntityModel.class,
-                                                                     WildcardType.class);
+        ResolvedType resourceTypeWithWildCard =
+                typeResolver.resolve(EntityModel.class, WildcardType.class);
         return baseDocket()
-                .alternateTypeRules(newRule(typeResolver.resolve(CollectionModel.class,
-                                                                 resourceTypeWithWildCard),
-                                            typeResolver.resolve(ListResponseContent.class,
-                                                                 WildcardType.class)))
-                .alternateTypeRules(newRule(typeResolver.resolve(PagedModel.class,
-                                                                 resourceTypeWithWildCard),
-                                            typeResolver.resolve(ListResponseContent.class,
-                                                                 WildcardType.class)))
-                .alternateTypeRules(newRule(resourceTypeWithWildCard,
-                                            typeResolver.resolve(EntryResponseContent.class,
-                                                                 WildcardType.class)))
-                .alternateTypeRules(newRule(typeResolver.resolve(Pageable.class),
-                                            pageableMixin(),
-                                            Ordered.HIGHEST_PRECEDENCE));
+                .alternateTypeRules(
+                        newRule(
+                                typeResolver.resolve(
+                                        CollectionModel.class, resourceTypeWithWildCard),
+                                typeResolver.resolve(
+                                        ListResponseContent.class, WildcardType.class)))
+                .alternateTypeRules(
+                        newRule(
+                                typeResolver.resolve(PagedModel.class, resourceTypeWithWildCard),
+                                typeResolver.resolve(
+                                        ListResponseContent.class, WildcardType.class)))
+                .alternateTypeRules(
+                        newRule(
+                                resourceTypeWithWildCard,
+                                typeResolver.resolve(
+                                        EntryResponseContent.class, WildcardType.class)))
+                .alternateTypeRules(
+                        newRule(
+                                typeResolver.resolve(Pageable.class),
+                                pageableMixin(),
+                                Ordered.HIGHEST_PRECEDENCE));
     }
 
     private Type pageableMixin() {
         return new AlternateTypeBuilder()
                 .fullyQualifiedClassName(
-                        String.format("%s.generated.%s",
-                                      Pageable.class.getPackage().getName(),
-                                      Pageable.class.getSimpleName()))
-                .withProperties(Arrays.asList(
-                        property(Integer.class,
-                                 "skipCount"),
-                        property(Integer.class,
-                                 "maxItems"),
-                        property(String.class,
-                                 "sort")
-                ))
+                        String.format(
+                                "%s.generated.%s",
+                                Pageable.class.getPackage().getName(),
+                                Pageable.class.getSimpleName()))
+                .withProperties(
+                        Arrays.asList(
+                                property(Integer.class, "skipCount"),
+                                property(Integer.class, "maxItems"),
+                                property(String.class, "sort")))
                 .build();
     }
 
-    private AlternateTypePropertyBuilder property(Class<?> type,
-                                                  String name) {
+    private AlternateTypePropertyBuilder property(Class<?> type, String name) {
         return new AlternateTypePropertyBuilder()
                 .withName(name)
                 .withType(type)

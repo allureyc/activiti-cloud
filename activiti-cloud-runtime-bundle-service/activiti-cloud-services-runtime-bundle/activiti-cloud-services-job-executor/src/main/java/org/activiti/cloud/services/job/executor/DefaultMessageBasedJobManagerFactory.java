@@ -23,16 +23,16 @@ public class DefaultMessageBasedJobManagerFactory implements MessageBasedJobMana
     private final BindingProperties bindingProperties;
     private final JobMessageProducer jobMessageProducer;
 
-    public DefaultMessageBasedJobManagerFactory(BindingProperties bindingProperties,
-                                                JobMessageProducer jobMessageProducer) {
+    public DefaultMessageBasedJobManagerFactory(
+            BindingProperties bindingProperties, JobMessageProducer jobMessageProducer) {
         this.bindingProperties = bindingProperties;
         this.jobMessageProducer = jobMessageProducer;
     }
 
     @Override
-    public MessageBasedJobManager create(ProcessEngineConfigurationImpl processEngineConfiguration) {
-        return new MessageBasedJobManager(processEngineConfiguration,
-                                          bindingProperties,
-                                          jobMessageProducer);
+    public MessageBasedJobManager create(
+            ProcessEngineConfigurationImpl processEngineConfiguration) {
+        return new MessageBasedJobManager(
+                processEngineConfiguration, bindingProperties, jobMessageProducer);
     }
 }

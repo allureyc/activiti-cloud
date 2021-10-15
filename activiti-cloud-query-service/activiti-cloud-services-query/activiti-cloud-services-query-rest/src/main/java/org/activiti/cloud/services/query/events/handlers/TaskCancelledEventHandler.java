@@ -15,8 +15,6 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.Date;
-
 import org.activiti.api.task.model.Task;
 import org.activiti.api.task.model.events.TaskRuntimeEvent;
 import org.activiti.cloud.api.model.shared.events.CloudRuntimeEvent;
@@ -24,6 +22,8 @@ import org.activiti.cloud.api.task.model.events.CloudTaskCancelledEvent;
 import org.activiti.cloud.services.query.app.repository.TaskRepository;
 import org.activiti.cloud.services.query.model.QueryException;
 import org.activiti.cloud.services.query.model.TaskEntity;
+
+import java.util.Date;
 
 public class TaskCancelledEventHandler implements QueryEventHandler {
 
@@ -38,14 +38,18 @@ public class TaskCancelledEventHandler implements QueryEventHandler {
         CloudTaskCancelledEvent taskCancelledEvent = (CloudTaskCancelledEvent) event;
         Task eventTask = taskCancelledEvent.getEntity();
 
-        updateTaskStatus(taskRepository
-                                 .findById(eventTask.getId())
-                                 .orElseThrow(() -> new QueryException("Unable to find task with id: " + eventTask.getId())),
-                         taskCancelledEvent.getTimestamp());
+        updateTaskStatus(
+                taskRepository
+                        .findById(eventTask.getId())
+                        .orElseThrow(
+                                () ->
+                                        new QueryException(
+                                                "Unable to find task with id: "
+                                                        + eventTask.getId())),
+                taskCancelledEvent.getTimestamp());
     }
 
-    private void updateTaskStatus(TaskEntity taskEntity,
-                                  Long eventTimestamp) {
+    private void updateTaskStatus(TaskEntity taskEntity, Long eventTimestamp) {
         taskEntity.setStatus(Task.TaskStatus.CANCELLED);
         taskEntity.setLastModified(new Date(eventTimestamp));
         taskRepository.save(taskEntity);

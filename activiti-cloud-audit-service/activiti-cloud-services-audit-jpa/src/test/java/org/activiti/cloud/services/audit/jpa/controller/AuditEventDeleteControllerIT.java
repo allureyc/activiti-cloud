@@ -22,8 +22,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.activiti.api.process.model.events.ProcessRuntimeEvent;
 import org.activiti.api.runtime.model.impl.ProcessInstanceImpl;
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
@@ -48,6 +46,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @TestPropertySource(properties = "activiti.rest.enable-deletion=true")
 @WebMvcTest(AuditEventsDeleteController.class)
 @EnableSpringDataWebSupport
@@ -61,17 +62,13 @@ public class AuditEventDeleteControllerIT {
 
     private static final String DOCUMENTATION_ALFRESCO_IDENTIFIER = "events-alfresco";
 
-    @MockBean
-    private EventsRepository eventsRepository;
+    @MockBean private EventsRepository eventsRepository;
 
-    @Autowired
-    private MockMvc mockMvc;
+    @Autowired private MockMvc mockMvc;
 
-    @MockBean
-    private SecurityManager securityManager;
+    @MockBean private SecurityManager securityManager;
 
-    @MockBean
-    private UserGroupManager userGroupManager;
+    @MockBean private UserGroupManager userGroupManager;
 
     @BeforeEach
     public void setUp() {
@@ -82,15 +79,15 @@ public class AuditEventDeleteControllerIT {
     @Test
     public void deleteEventsShouldReturnAllEventsAndDeleteThem() throws Exception {
 
-        //given
+        // given
         List<AuditEventEntity> list = buildEventsData(1);
-        given(eventsRepository.findAll())
-                .willReturn(list);
+        given(eventsRepository.findAll()).willReturn(list);
 
-        //when
-        mockMvc.perform(delete("/admin/v1/" + EventsLinkRelationProvider.COLLECTION_RESOURCE_REL)
-                .accept(MediaType.APPLICATION_JSON))
-                //then
+        // when
+        mockMvc.perform(
+                        delete("/admin/v1/" + EventsLinkRelationProvider.COLLECTION_RESOURCE_REL)
+                                .accept(MediaType.APPLICATION_JSON))
+                // then
                 .andExpect(status().isOk());
 
         verify(eventsRepository).deleteAll(list);
@@ -101,7 +98,7 @@ public class AuditEventDeleteControllerIT {
         List<AuditEventEntity> eventsList = new ArrayList<>();
 
         for (long i = 0; i < recordsNumber; i++) {
-            //would like to mock this but jackson and mockito not happy together
+            // would like to mock this but jackson and mockito not happy together
             AuditEventEntity eventEntity = buildAuditEventEntity(i);
             eventsList.add(eventEntity);
         }

@@ -21,8 +21,7 @@ public class VariableValue<T> {
 
     private T value;
 
-    public VariableValue() {
-    }
+    public VariableValue() {}
 
     public VariableValue(T value) {
         this.value = value;

@@ -27,15 +27,17 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
-public class CommandConsumerMessageChannelResolver extends BeanFactoryMessageChannelDestinationResolver {
+public class CommandConsumerMessageChannelResolver
+        extends BeanFactoryMessageChannelDestinationResolver {
 
     private final BinderAwareChannelResolver binderAwareChannelResolver;
     private final BindingService bindingService;
     private final Function<String, String> destinationMapper;
 
-    public CommandConsumerMessageChannelResolver(Function<String, String> destinationMapper,
-                                                 BinderAwareChannelResolver binderAwareChannelResolver,
-                                                 BindingService bindingService) {
+    public CommandConsumerMessageChannelResolver(
+            Function<String, String> destinationMapper,
+            BinderAwareChannelResolver binderAwareChannelResolver,
+            BindingService bindingService) {
         this.destinationMapper = destinationMapper;
         this.binderAwareChannelResolver = binderAwareChannelResolver;
         this.bindingService = bindingService;
@@ -47,21 +49,17 @@ public class CommandConsumerMessageChannelResolver extends BeanFactoryMessageCha
 
         Optional<String> channelName = getChannelName(destination);
 
-        return channelName.map(super::resolveDestination)
-                          .orElseGet(() -> binderAwareChannelResolver.resolveDestination(destination));
+        return channelName
+                .map(super::resolveDestination)
+                .orElseGet(() -> binderAwareChannelResolver.resolveDestination(destination));
     }
 
     protected Optional<String> getChannelName(String destination) {
         BindingServiceProperties bindingProperties = bindingService.getBindingServiceProperties();
 
-        return bindingProperties.getBindings()
-                                .entrySet()
-                                .stream()
-                                .filter(entry -> entry.getValue()
-                                                      .getDestination()
-                                                      .equals(destination))
-                                .map(Map.Entry::getKey)
-                                .findFirst();
+        return bindingProperties.getBindings().entrySet().stream()
+                .filter(entry -> entry.getValue().getDestination().equals(destination))
+                .map(Map.Entry::getKey)
+                .findFirst();
     }
-
 }

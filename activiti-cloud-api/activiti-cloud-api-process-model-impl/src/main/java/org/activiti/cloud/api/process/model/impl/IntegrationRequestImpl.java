@@ -23,8 +23,7 @@ public class IntegrationRequestImpl extends CloudRuntimeEntityImpl implements In
 
     private IntegrationContext integrationContext;
 
-    public IntegrationRequestImpl() {
-    }
+    public IntegrationRequestImpl() {}
 
     public IntegrationRequestImpl(IntegrationContext integrationContext) {
         this.integrationContext = integrationContext;

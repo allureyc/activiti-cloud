@@ -20,20 +20,19 @@ import org.springframework.messaging.MessageChannel;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 public class MessageEventsDispatcher {
-    
+
     private final MessageChannel messageEvents;
-    
+
     public MessageEventsDispatcher(MessageChannel messageEvents) {
         this.messageEvents = messageEvents;
     }
-    
+
     public void dispatch(Message<?> message) {
         if (!TransactionSynchronizationManager.isSynchronizationActive()) {
             throw new IllegalStateException("requires active transaction synchronization");
         }
 
-        TransactionSynchronizationManager.registerSynchronization(new MessageSenderTransactionSynchronization(message,
-                                                                                                              messageEvents));
+        TransactionSynchronizationManager.registerSynchronization(
+                new MessageSenderTransactionSynchronization(message, messageEvents));
     }
-
 }

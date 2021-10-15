@@ -15,7 +15,6 @@
  */
 package org.activiti.cloud.services.modeling.service;
 
-import static java.util.Arrays.asList;
 import static org.activiti.cloud.services.common.util.FileUtils.resourceAsStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,12 +27,9 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+
+import static java.util.Arrays.asList;
+
 import org.activiti.bpmn.model.UserTask;
 import org.activiti.cloud.modeling.api.Model;
 import org.activiti.cloud.modeling.api.ProcessModelType;
@@ -53,37 +49,34 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 public class ProjectServiceImplTest {
 
-    @InjectMocks
-    private ProjectServiceImpl projectService;
+    @InjectMocks private ProjectServiceImpl projectService;
 
-    @Mock
-    private ModelService modelService;
+    @Mock private ModelService modelService;
 
-    @Mock
-    private Project project;
+    @Mock private Project project;
 
-    @Mock
-    private UserTask taskOne;
+    @Mock private UserTask taskOne;
 
-    @Mock
-    private UserTask taskTwo;
+    @Mock private UserTask taskTwo;
 
-    @Mock
-    private ProjectRepository projectRepository;
+    @Mock private ProjectRepository projectRepository;
 
-    @Mock
-    private JsonConverter<Project> jsonConverter;
+    @Mock private JsonConverter<Project> jsonConverter;
 
-    @Mock
-    private ModelTypeService modelTypeService;
+    @Mock private ModelTypeService modelTypeService;
 
-    @Mock
-    private Set<ProjectValidator> projectValidators;
+    @Mock private Set<ProjectValidator> projectValidators;
 
-    @Mock
-    private Model modelOne;
+    @Mock private Model modelOne;
 
     @BeforeEach
     public void setUp() {
@@ -102,19 +95,19 @@ public class ProjectServiceImplTest {
 
         ProjectAccessControl projectAccessControl = projectService.getProjectAccessControl(project);
 
-        assertThat(projectAccessControl.getGroups())
-                .hasSize(2)
-                .contains("groupOne", "groupTwo");
+        assertThat(projectAccessControl.getGroups()).hasSize(2).contains("groupOne", "groupTwo");
         assertThat(projectAccessControl.getUsers())
                 .hasSize(3)
                 .contains("userOne", "userTwo", "userThree");
     }
 
     @Test
-    public void should_getUsersAndGroupsBelongingToAProjectExludingExpressions_when_getProcessAccessControl() {
+    public void
+            should_getUsersAndGroupsBelongingToAProjectExludingExpressions_when_getProcessAccessControl() {
         List<UserTask> userTasks = asList(taskOne, taskTwo);
 
-        when(taskOne.getCandidateGroups()).thenReturn(asList("groupOne", "${processsVariable.groupName}", "groupTwo"));
+        when(taskOne.getCandidateGroups())
+                .thenReturn(asList("groupOne", "${processsVariable.groupName}", "groupTwo"));
         when(taskOne.getCandidateUsers()).thenReturn(asList("${username_Var}", "userOne"));
         when(taskTwo.getAssignee()).thenReturn("${processsVariable.username}");
         when(modelService.getTasksBy(eq(project), any(ProcessModelType.class), eq(UserTask.class)))
@@ -122,12 +115,8 @@ public class ProjectServiceImplTest {
 
         ProjectAccessControl projectAccessControl = projectService.getProjectAccessControl(project);
 
-        assertThat(projectAccessControl.getGroups())
-                .hasSize(2)
-                .contains("groupOne", "groupTwo");
-        assertThat(projectAccessControl.getUsers())
-                .hasSize(1)
-                .contains("userOne");
+        assertThat(projectAccessControl.getGroups()).hasSize(2).contains("groupOne", "groupTwo");
+        assertThat(projectAccessControl.getUsers()).hasSize(1).contains("userOne");
     }
 
     @Test
@@ -182,7 +171,8 @@ public class ProjectServiceImplTest {
         Optional<InputStream> file = resourceAsStream("project/project-xy.zip");
 
         when(jsonConverter.tryConvertToEntity(any(byte[].class))).thenReturn(Optional.of(project));
-        when(modelTypeService.findModelTypeByFolderName("processes")).thenReturn(Optional.of(new ProcessModelType()));
+        when(modelTypeService.findModelTypeByFolderName("processes"))
+                .thenReturn(Optional.of(new ProcessModelType()));
         projectValidators.add(new ProjectNameValidator());
         when(projectRepository.createProject(any())).thenReturn(project);
 
@@ -199,11 +189,15 @@ public class ProjectServiceImplTest {
         Optional<InputStream> file = resourceAsStream("project/project-xy-invalid.zip");
 
         when(jsonConverter.tryConvertToEntity(any(byte[].class))).thenReturn(Optional.of(project));
-        when(modelTypeService.findModelTypeByFolderName("processes")).thenReturn(Optional.of(new ProcessModelType()));
+        when(modelTypeService.findModelTypeByFolderName("processes"))
+                .thenReturn(Optional.of(new ProcessModelType()));
 
-        Exception exception = assertThrows(ImportProjectException.class, () -> {
-            projectService.importProject(file.get(), "new-project-name");
-        });
+        Exception exception =
+                assertThrows(
+                        ImportProjectException.class,
+                        () -> {
+                            projectService.importProject(file.get(), "new-project-name");
+                        });
         String expectedMessage = "No valid project entry found to import";
         String actualMessage = exception.getMessage();
 
@@ -215,7 +209,8 @@ public class ProjectServiceImplTest {
         String copiedProjectName = "copied-project";
         Project projectToCopy = new ProjectImpl("id", "copied-project");
 
-        when(projectRepository.copyProject(projectToCopy, copiedProjectName)).thenReturn(projectToCopy);
+        when(projectRepository.copyProject(projectToCopy, copiedProjectName))
+                .thenReturn(projectToCopy);
         when(modelService.getAllModels(any())).thenReturn(asList(modelOne));
 
         Project copiedProject = projectService.copyProject(projectToCopy, copiedProjectName);

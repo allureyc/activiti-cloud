@@ -21,5 +21,4 @@ import org.activiti.cloud.api.model.shared.CloudRuntimeEntity;
 public interface IntegrationRequest extends CloudRuntimeEntity {
 
     IntegrationContext getIntegrationContext();
-
 }

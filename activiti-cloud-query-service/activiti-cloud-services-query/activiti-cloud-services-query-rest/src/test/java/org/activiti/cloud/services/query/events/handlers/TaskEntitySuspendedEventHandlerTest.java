@@ -15,22 +15,6 @@
  */
 package org.activiti.cloud.services.query.events.handlers;
 
-import java.util.Date;
-import java.util.Optional;
-import java.util.UUID;
-
-import org.activiti.api.task.model.Task;
-import org.activiti.api.task.model.events.TaskRuntimeEvent;
-import org.activiti.cloud.api.task.model.impl.events.CloudTaskSuspendedEventImpl;
-import org.activiti.cloud.services.query.app.repository.TaskRepository;
-import org.activiti.cloud.services.query.model.QueryException;
-import org.activiti.cloud.services.query.model.TaskEntity;
-import org.activiti.api.task.model.impl.TaskImpl;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-
 import static org.activiti.cloud.services.query.events.handlers.TaskBuilder.aTask;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -39,13 +23,27 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+import org.activiti.api.task.model.Task;
+import org.activiti.api.task.model.events.TaskRuntimeEvent;
+import org.activiti.api.task.model.impl.TaskImpl;
+import org.activiti.cloud.api.task.model.impl.events.CloudTaskSuspendedEventImpl;
+import org.activiti.cloud.services.query.app.repository.TaskRepository;
+import org.activiti.cloud.services.query.model.QueryException;
+import org.activiti.cloud.services.query.model.TaskEntity;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+
+import java.util.Date;
+import java.util.Optional;
+import java.util.UUID;
+
 public class TaskEntitySuspendedEventHandlerTest {
 
-    @InjectMocks
-    private TaskSuspendedEventHandler handler;
+    @InjectMocks private TaskSuspendedEventHandler handler;
 
-    @Mock
-    private TaskRepository taskRepository;
+    @Mock private TaskRepository taskRepository;
 
     @BeforeEach
     public void setUp() {
@@ -54,51 +52,48 @@ public class TaskEntitySuspendedEventHandlerTest {
 
     @Test
     public void handleShouldUpdateTaskStatusToSuspended() {
-        //given
+        // given
         CloudTaskSuspendedEventImpl event = buildTaskSuspendedEvent();
         String taskId = event.getEntity().getId();
-        TaskEntity taskEntity = aTask()
-                .withId(taskId)
-                .build();
+        TaskEntity taskEntity = aTask().withId(taskId).build();
 
         given(taskRepository.findById(taskId)).willReturn(Optional.of(taskEntity));
 
-        //when
+        // when
         handler.handle(event);
 
-        //then
+        // then
         verify(taskRepository).save(taskEntity);
         verify(taskEntity).setStatus(Task.TaskStatus.SUSPENDED);
         verify(taskEntity).setLastModified(any(Date.class));
     }
 
     private CloudTaskSuspendedEventImpl buildTaskSuspendedEvent() {
-        return new CloudTaskSuspendedEventImpl(new TaskImpl(UUID.randomUUID().toString(),
-                                                            "task",
-                                                            Task.TaskStatus.SUSPENDED));
+        return new CloudTaskSuspendedEventImpl(
+                new TaskImpl(UUID.randomUUID().toString(), "task", Task.TaskStatus.SUSPENDED));
     }
 
     @Test
     public void handleShouldThrowExceptionWhenNoTaskIsFoundForTheGivenId() {
-        //given
+        // given
         CloudTaskSuspendedEventImpl event = buildTaskSuspendedEvent();
         String taskId = event.getEntity().getId();
 
         given(taskRepository.findById(taskId)).willReturn(Optional.empty());
 
-        //then
-        //when
+        // then
+        // when
         assertThatExceptionOfType(QueryException.class)
-            .isThrownBy(() -> handler.handle(event))
-            .withMessageContaining("Unable to find task with id: " + taskId);
+                .isThrownBy(() -> handler.handle(event))
+                .withMessageContaining("Unable to find task with id: " + taskId);
     }
 
     @Test
     public void getHandledEventShouldReturnTaskSuspendedEvent() {
-        //when
+        // when
         String handledEvent = handler.getHandledEvent();
 
-        //then
+        // then
         assertThat(handledEvent).isEqualTo(TaskRuntimeEvent.TaskEvents.TASK_SUSPENDED.name());
     }
 }

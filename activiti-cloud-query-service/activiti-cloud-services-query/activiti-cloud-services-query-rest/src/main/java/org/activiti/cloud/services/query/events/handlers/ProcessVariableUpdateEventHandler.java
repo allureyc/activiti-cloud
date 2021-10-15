@@ -16,6 +16,7 @@
 package org.activiti.cloud.services.query.events.handlers;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+
 import org.activiti.cloud.services.query.model.ProcessVariableEntity;
 import org.activiti.cloud.services.query.model.QProcessVariableEntity;
 
@@ -30,12 +31,20 @@ public class ProcessVariableUpdateEventHandler {
     public void handle(ProcessVariableEntity updatedVariableEntity) {
         String variableName = updatedVariableEntity.getName();
         String processInstanceId = updatedVariableEntity.getProcessInstanceId();
-        BooleanExpression predicate = QProcessVariableEntity.processVariableEntity.name.eq(variableName)
-                .and(
-                        QProcessVariableEntity.processVariableEntity.processInstanceId.eq(processInstanceId)
-                );
-        variableUpdater.update(updatedVariableEntity,
-                               predicate,
-                               "Unable to find variable named '" + variableName + "' for process instance '" + processInstanceId + "'");
+        BooleanExpression predicate =
+                QProcessVariableEntity.processVariableEntity
+                        .name
+                        .eq(variableName)
+                        .and(
+                                QProcessVariableEntity.processVariableEntity.processInstanceId.eq(
+                                        processInstanceId));
+        variableUpdater.update(
+                updatedVariableEntity,
+                predicate,
+                "Unable to find variable named '"
+                        + variableName
+                        + "' for process instance '"
+                        + processInstanceId
+                        + "'");
     }
 }

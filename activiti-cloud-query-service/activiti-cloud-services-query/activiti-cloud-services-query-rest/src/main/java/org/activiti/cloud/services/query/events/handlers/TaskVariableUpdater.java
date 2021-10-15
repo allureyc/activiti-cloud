@@ -16,6 +16,7 @@
 package org.activiti.cloud.services.query.events.handlers;
 
 import com.querydsl.core.types.Predicate;
+
 import org.activiti.cloud.services.query.app.repository.EntityFinder;
 import org.activiti.cloud.services.query.app.repository.TaskVariableRepository;
 import org.activiti.cloud.services.query.model.TaskVariableEntity;
@@ -26,21 +27,20 @@ public class TaskVariableUpdater {
 
     private TaskVariableRepository variableRepository;
 
-    public TaskVariableUpdater(EntityFinder entityFinder,
-                           TaskVariableRepository variableRepository) {
+    public TaskVariableUpdater(
+            EntityFinder entityFinder, TaskVariableRepository variableRepository) {
         this.entityFinder = entityFinder;
         this.variableRepository = variableRepository;
     }
 
-    public void update(TaskVariableEntity updatedVariableEntity, Predicate predicate, String notFoundMessage) {
-        TaskVariableEntity variableEntity = entityFinder.findOne(variableRepository,
-                                                             predicate,
-                                                             notFoundMessage);
+    public void update(
+            TaskVariableEntity updatedVariableEntity, Predicate predicate, String notFoundMessage) {
+        TaskVariableEntity variableEntity =
+                entityFinder.findOne(variableRepository, predicate, notFoundMessage);
         variableEntity.setLastUpdatedTime(updatedVariableEntity.getLastUpdatedTime());
         variableEntity.setType(updatedVariableEntity.getType());
         variableEntity.setValue(updatedVariableEntity.getValue());
 
         variableRepository.save(variableEntity);
     }
-
 }

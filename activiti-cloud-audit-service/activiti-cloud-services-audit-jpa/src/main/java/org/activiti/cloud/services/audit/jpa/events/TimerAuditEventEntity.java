@@ -29,11 +29,10 @@ import javax.persistence.MappedSuperclass;
 public abstract class TimerAuditEventEntity extends AuditEventEntity {
 
     @Convert(converter = TimerJpaJsonConverter.class)
-    @Column(columnDefinition="text")
+    @Column(columnDefinition = "text")
     private BPMNTimer timer;
 
-    public TimerAuditEventEntity() {
-    }
+    public TimerAuditEventEntity() {}
 
     public TimerAuditEventEntity(CloudBPMNTimerEvent cloudEvent) {
         super(cloudEvent);
@@ -82,10 +81,10 @@ public abstract class TimerAuditEventEntity extends AuditEventEntity {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("TimerAuditEventEntity [timer=")
-               .append(timer)
-               .append(", toString()=")
-               .append(super.toString())
-               .append("]");
+                .append(timer)
+                .append(", toString()=")
+                .append(super.toString())
+                .append("]");
         return builder.toString();
     }
 }

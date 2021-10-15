@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 import com.querydsl.core.types.Predicate;
+
 import org.activiti.api.runtime.shared.identity.UserGroupManager;
 import org.activiti.api.runtime.shared.security.SecurityManager;
 import org.activiti.cloud.services.query.app.repository.TaskCandidateGroupRepository;
@@ -44,23 +45,17 @@ import java.util.UUID;
 @EnableAutoConfiguration
 public class RestrictTaskEntityQueryIT {
 
-    @Autowired
-    private TaskRepository taskRepository;
+    @Autowired private TaskRepository taskRepository;
 
-    @Autowired
-    private TaskCandidateUserRepository taskCandidateUserRepository;
+    @Autowired private TaskCandidateUserRepository taskCandidateUserRepository;
 
-    @Autowired
-    private TaskCandidateGroupRepository taskCandidateGroupRepository;
+    @Autowired private TaskCandidateGroupRepository taskCandidateGroupRepository;
 
-    @Autowired
-    private TaskLookupRestrictionService taskLookupRestrictionService;
+    @Autowired private TaskLookupRestrictionService taskLookupRestrictionService;
 
-    @MockBean
-    private SecurityManager securityManager;
+    @MockBean private SecurityManager securityManager;
 
-    @MockBean
-    private UserGroupManager userGroupManager;
+    @MockBean private UserGroupManager userGroupManager;
 
     @BeforeEach
     public void setUp() {
@@ -110,7 +105,7 @@ public class RestrictTaskEntityQueryIT {
 
     @Test
     public void shouldNotGetTasksAssignedToSomeOneElseWhenCandidate() {
-        //given
+        // given
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setId("2");
         taskEntity.setAssignee("someOneElse");
@@ -123,16 +118,16 @@ public class RestrictTaskEntityQueryIT {
 
         Predicate predicate = taskLookupRestrictionService.restrictTaskQuery(null);
 
-        //when
+        // when
         Iterable<TaskEntity> iterable = taskRepository.findAll(predicate);
 
-        //then
+        // then
         assertThat(iterable).isEmpty();
     }
 
     @Test
     public void shouldGetTasksAssignedToSomeOneElseWhenOwner() {
-        //given
+        // given
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setId("2");
         taskEntity.setAssignee("someOneElse");
@@ -146,10 +141,10 @@ public class RestrictTaskEntityQueryIT {
 
         Predicate predicate = taskLookupRestrictionService.restrictTaskQuery(null);
 
-        //when
+        // when
         Iterable<TaskEntity> iterable = taskRepository.findAll(predicate);
 
-        //then
+        // then
         assertThat(iterable).extracting(TaskEntity::getId).containsOnly(taskEntity.getId());
     }
 
@@ -212,7 +207,7 @@ public class RestrictTaskEntityQueryIT {
 
     @Test
     public void shouldNotGetTasksAssignedToSomeOneElseWhenInCandidateGroup() {
-        //given
+        // given
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setId("3");
         taskEntity.setAssignee("someOneElse");
@@ -226,10 +221,10 @@ public class RestrictTaskEntityQueryIT {
 
         Predicate predicate = taskLookupRestrictionService.restrictTaskQuery(null);
 
-        //when
+        // when
         Iterable<TaskEntity> iterable = taskRepository.findAll(predicate);
 
-        //then
+        // then
         assertThat(iterable).isEmpty();
     }
 
@@ -252,22 +247,23 @@ public class RestrictTaskEntityQueryIT {
 
     @Test
     public void shouldNotGetTasksAssignedToSomeOneElseWhenNoCandidatesConfigured() {
-        //given
+        // given
         TaskEntity taskEntity = new TaskEntity();
         taskEntity.setId("5");
         taskEntity.setAssignee("someOneElse");
         taskRepository.save(taskEntity);
 
-        // no candidates or groups - just a taskEntity without any permissions so anyone could see if not assigned
+        // no candidates or groups - just a taskEntity without any permissions so anyone could see
+        // if not assigned
 
         when(securityManager.getAuthenticatedUserId()).thenReturn("testuser");
 
         Predicate predicate = taskLookupRestrictionService.restrictTaskQuery(null);
 
-        //when
+        // when
         Iterable<TaskEntity> iterable = taskRepository.findAll(predicate);
 
-        //then
+        // then
         assertThat(iterable).isEmpty();
     }
 
@@ -283,7 +279,12 @@ public class RestrictTaskEntityQueryIT {
 
         when(securityManager.getAuthenticatedUserId()).thenReturn("testuser");
 
-        Predicate predicate = taskLookupRestrictionService.restrictTaskQuery(QTaskEntity.taskEntity.id.eq("5").and(QTaskEntity.taskEntity.owner.eq("bob")));
+        Predicate predicate =
+                taskLookupRestrictionService.restrictTaskQuery(
+                        QTaskEntity.taskEntity
+                                .id
+                                .eq("5")
+                                .and(QTaskEntity.taskEntity.owner.eq("bob")));
 
         Iterable<TaskEntity> iterable = taskRepository.findAll(predicate);
         assertThat(iterable.iterator().hasNext()).isTrue();
@@ -301,7 +302,12 @@ public class RestrictTaskEntityQueryIT {
 
         when(securityManager.getAuthenticatedUserId()).thenReturn("testuser");
 
-        Predicate predicate = taskLookupRestrictionService.restrictTaskQuery(QTaskEntity.taskEntity.id.eq("7").and(QTaskEntity.taskEntity.owner.eq("fred")));
+        Predicate predicate =
+                taskLookupRestrictionService.restrictTaskQuery(
+                        QTaskEntity.taskEntity
+                                .id
+                                .eq("7")
+                                .and(QTaskEntity.taskEntity.owner.eq("fred")));
 
         Iterable<TaskEntity> iterable = taskRepository.findAll(predicate);
         assertThat(iterable.iterator().hasNext()).isFalse();
@@ -320,10 +326,10 @@ public class RestrictTaskEntityQueryIT {
         when(securityManager.getAuthenticatedUserId()).thenReturn("hruser");
         when(securityManager.getAuthenticatedUserGroups()).thenReturn(Arrays.asList("hr"));
 
-        Predicate predicate = taskLookupRestrictionService.restrictTaskQuery(QTaskEntity.taskEntity.id.eq("7"));
+        Predicate predicate =
+                taskLookupRestrictionService.restrictTaskQuery(QTaskEntity.taskEntity.id.eq("7"));
 
         Iterable<TaskEntity> iterable = taskRepository.findAll(predicate);
         assertThat(iterable.iterator().hasNext()).isFalse();
     }
-
 }

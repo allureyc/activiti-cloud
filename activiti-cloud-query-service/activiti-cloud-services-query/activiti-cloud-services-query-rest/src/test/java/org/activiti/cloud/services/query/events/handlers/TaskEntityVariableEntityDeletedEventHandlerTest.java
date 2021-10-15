@@ -23,10 +23,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
-import java.util.Optional;
-import java.util.UUID;
-
 import com.querydsl.core.types.Predicate;
+
 import org.activiti.api.runtime.model.impl.VariableInstanceImpl;
 import org.activiti.api.task.model.Task.TaskStatus;
 import org.activiti.cloud.api.model.shared.impl.events.CloudVariableDeletedEventImpl;
@@ -40,19 +38,17 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import java.util.Optional;
+
 public class TaskEntityVariableEntityDeletedEventHandlerTest {
 
-    @InjectMocks
-    private TaskVariableDeletedEventHandler handler;
+    @InjectMocks private TaskVariableDeletedEventHandler handler;
 
-    @Mock
-    private TaskVariableRepository variableRepository;
+    @Mock private TaskVariableRepository variableRepository;
 
-    @Mock
-    private EntityFinder entityFinder;
+    @Mock private EntityFinder entityFinder;
 
-    @Mock
-    private TaskRepository taskRepository;
+    @Mock private TaskRepository taskRepository;
 
     @BeforeEach
     public void setUp() {
@@ -61,10 +57,9 @@ public class TaskEntityVariableEntityDeletedEventHandlerTest {
 
     @Test
     public void handleShouldDeleteIt() {
-        //given
-        VariableInstanceImpl<String> variableInstance = new VariableInstanceImpl<>("var",
-                                                                                   "string",
-                                                                                   "v1", "procInstId", "taskId");
+        // given
+        VariableInstanceImpl<String> variableInstance =
+                new VariableInstanceImpl<>("var", "string", "v1", "procInstId", "taskId");
         CloudVariableDeletedEventImpl event = new CloudVariableDeletedEventImpl(variableInstance);
 
         TaskVariableEntity variableEntity = new TaskVariableEntity();
@@ -73,14 +68,13 @@ public class TaskEntityVariableEntityDeletedEventHandlerTest {
         Optional<TaskEntity> optional = Optional.of(taskEntity);
 
         when(taskRepository.findById(anyString())).thenReturn(optional);
-        given(entityFinder.findOne(eq(variableRepository), any(Predicate.class), anyString())).willReturn(variableEntity);
+        given(entityFinder.findOne(eq(variableRepository), any(Predicate.class), anyString()))
+                .willReturn(variableEntity);
 
-        //when
+        // when
         handler.handle(event);
 
-        //then
+        // then
         verify(variableRepository).delete(variableEntity);
-
     }
-
 }
